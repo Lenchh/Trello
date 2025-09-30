@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { JSX } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
+import { Board } from './pages/Board/Board';
 
-function App() {
+function Home(): JSX.Element {
   return (
     <div className="App">
       <header className="App-header">
@@ -15,6 +17,21 @@ function App() {
         </a>
       </header>
     </div>
+  );
+}
+
+function App(): JSX.Element {
+  return (
+    <BrowserRouter>
+      {/* <nav>
+          <Link to="/">Home</Link>
+          <Link to="/board">Board</Link>
+        </nav> */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/board" element={<Board />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

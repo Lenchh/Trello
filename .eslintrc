@@ -26,6 +26,11 @@
   "settings": {
     "react": {
       "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
     }
   },
   "rules": {
@@ -58,7 +63,16 @@
     "no-alert": "error",
     "eol-last": "error",
     "semi": "error",
-    "no-console": "error"
+    "no-console": "error",
+    "react/react-in-jsx-scope": "off",
+    "import/extensions": "off"
+    // "react/self-closing-comp": [
+    //   "error",
+    //   {
+    //     "component": true,
+    //     "html": false
+    //   }
+    // ]
   },
   "overrides": []
 }
