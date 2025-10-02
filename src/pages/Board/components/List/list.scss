@@ -1,0 +1,35 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+.list {
+    margin: 10px;
+    padding: 10px;
+    background-color: $color-secondary;
+    border: 2px solid $color-secondary;
+    border-radius: $border-radius;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+
+    &__header {
+        padding: 10px;
+        color: $color-text-list;
+        margin: 0;
+        font-size: $font-size-head-list;
+        font-family: $font-primary;
+    }
+
+    &:hover {
+        box-shadow: $shadow-background-list;
+    }
+
+    &__cards {
+        margin: 0 auto;
+        padding: 5px;
+        list-style-type: none;
+    }
+
+    &__create-button {
+        @include theme-button($background: $color-background, $color-text: $color-primary, $background-hover: $color-primary);
+    }
+}
