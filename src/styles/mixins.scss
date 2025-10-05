@@ -8,11 +8,29 @@
     background-color: $background;
     color: $color-text;
     border:1px solid #136CF1;
+    cursor: pointer;
 
     &:hover {
         background-color: $background-hover;
         color: $background;
         border: 1px solid $background;
-        box-shadow: $shadow-background-list;
+        box-shadow: $shadow-background-list; 
     }
+}
+
+@mixin theme-container($width-container, $margin-container, $background-container, 
+                       $border-container, $border-radius) {
+    width: $width-container;
+    margin: $margin-container;
+    background-color: $background-container;
+    border: $border-container;
+    border-radius: $border-radius;
+}
+
+@mixin theme-header($padding-head, $color-head, $font-size-header, $font-family-head, $margin-head: 0) {
+    padding: $padding-head;
+    margin: $margin-head;
+    color: $color-head;
+    font-size: $font-size-header;
+    font-family: $font-family-head;
 }

@@ -1,0 +1,15 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+.card {
+    @include theme-container($width-container: 90%, $margin-container: 15px auto, 
+                             $background-container: $color-primary, 
+                             $border-container: 1px solid $color-primary, 
+                             $border-radius: $border-radius); 
+    box-shadow: $shadow-primary;
+
+    &__textCard {
+        @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text, 
+                            $font-family-head: $font-primary);
+    }
+}

@@ -1,5 +1,5 @@
 import { JSX, useState } from 'react';
-import './card.scss';
+import cardStyle from './card.module.scss';
 
 interface propsCard {
   title: string;
@@ -7,8 +7,8 @@ interface propsCard {
 
 export function Card({ title }: propsCard): JSX.Element {
   return (
-    <div className="card">
-      <li className="card__text-card">{title}</li>
+    <div className={cardStyle.card}>
+      <li className={cardStyle.card__textCard}>{title}</li>
     </div>
   );
 }
