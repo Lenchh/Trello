@@ -1,0 +1,17 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+.board {
+     @include theme-container($width-container: 200px, $margin-container: 10px 10px, 
+                             $background-container: $color-primary, 
+                             $border-container: 1px solid $color-primary, 
+                             $border-radius: $border-radius); 
+    height: 100px;
+    overflow-y: auto;
+    justify-self: center;
+
+    .textHead {
+          @include theme-header($padding-head: 5px, $color-head: black, $font-size-header: $font-size-head-list, 
+                            $font-family-head: $font-primary);
+    }
+}

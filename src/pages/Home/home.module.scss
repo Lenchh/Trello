@@ -1,0 +1,41 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+body {
+    box-sizing: border-box;
+}
+
+
+.home {
+    @include theme-container($width-container: 90%, $margin-container: 20px auto,
+        $background-container: $color-primary,
+        $border-container: 4px solid $color-background,
+        $border-radius: $border-radius);
+    max-width: 2440px;
+    box-shadow: $shadow-background;
+
+    &__header {
+        @include theme-header($padding-head: 15px, $color-head: $color-dark, $font-size-header: $font-size-head,
+            $font-family-head: $font-primary);
+        text-align: center;
+        // color: ;
+    }
+
+    &__boards {
+        width: 90%;
+        margin: 10px auto;
+        // display: flex;
+        // flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        justify-content: center;
+    }
+
+    &__button {
+        @include theme-button($background-hover: $color-background);
+        margin: 10px 15px;
+        flex-shrink: 0;
+        width: 200px;
+        height: 100px;
+    }
+}

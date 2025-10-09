@@ -1,5 +1,6 @@
 import { JSX, useState } from 'react';
 import boardStyle from './components/Board1/board.module.scss';
+import boardHomeStyle from './components/Board1/boardHome.module.scss';
 import { List } from './components/List';
 
 export function Board(): JSX.Element {
@@ -139,6 +140,19 @@ export function Board(): JSX.Element {
           Create list
         </button>
       </div>
+    </div>
+  );
+}
+
+interface propsBoard {
+  title: string;
+  custom: { background: string };
+}
+
+export function BoardHome({ title, custom }: propsBoard): JSX.Element {
+  return (
+    <div style={custom} className={boardHomeStyle.board}>
+      <h2 className={boardHomeStyle.textHead}>{title}</h2>
     </div>
   );
 }
