@@ -1,4 +1,5 @@
 import { JSX, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import boardStyle from './components/Board1/board.module.scss';
 import boardHomeStyle from './components/Board1/boardHome.module.scss';
 import { List } from './components/List';
@@ -131,9 +132,12 @@ export function Board(): JSX.Element {
   const [title, setTitle] = useState('Моя тестова дошка');
   const [lists, setLists] = useState(exampleLists);
   const arrayList = lists.map((list) => <List title={list.title} cards={list.cards} key={list.id} />);
+  const { boardId } = useParams();
   return (
     <div className={boardStyle.board}>
-      <h1 className={boardStyle.board__header}>{title}</h1>
+      <h1 className={boardStyle.board__header}>
+        {title} {boardId}
+      </h1>
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
         <button type="button" className={boardStyle.board__createButton}>
@@ -147,12 +151,14 @@ export function Board(): JSX.Element {
 interface propsBoard {
   title: string;
   custom: { background: string };
+  id: number;
 }
 
-export function BoardHome({ title, custom }: propsBoard): JSX.Element {
+export function BoardHome({ title, custom, id }: propsBoard): JSX.Element {
   return (
     <div style={custom} className={boardHomeStyle.board}>
       <h2 className={boardHomeStyle.textHead}>{title}</h2>
+      <p>{id}</p>
     </div>
   );
 }

@@ -5,6 +5,10 @@ body {
     box-sizing: border-box;
 }
 
+a {
+    text-decoration: none;
+}
+
 
 .home {
     @include theme-container($width-container: 90%, $margin-container: 20px auto,
@@ -24,8 +28,6 @@ body {
     &__boards {
         width: 90%;
         margin: 10px auto;
-        // display: flex;
-        // flex-wrap: wrap;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         justify-content: center;
@@ -33,7 +35,8 @@ body {
 
     &__button {
         @include theme-button($background-hover: $color-background);
-        margin: 10px 15px;
+        justify-self: center;
+        margin: 10px 10px;
         flex-shrink: 0;
         width: 200px;
         height: 100px;

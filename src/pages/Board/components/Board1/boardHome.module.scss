@@ -9,6 +9,11 @@
     height: 100px;
     overflow-y: auto;
     justify-self: center;
+    cursor: pointer;
+
+     &:hover {
+        box-shadow: $shadow-secondary;
+     }
 
     .textHead {
           @include theme-header($padding-head: 5px, $color-head: black, $font-size-header: $font-size-head-list, 

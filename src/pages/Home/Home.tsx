@@ -1,4 +1,5 @@
 import { JSX, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BoardHome } from '../Board/Board';
 import homeStyle from './home.module.scss';
 
@@ -18,7 +19,12 @@ export function Home(): JSX.Element {
     { id: 8, title: 'курс по просуванню у соцмережах', custom: { background: 'brown' } },
   ];
   const [boards, setBoards] = useState(exampleBoards);
-  const arrayBoards = boards.map((board) => <BoardHome title={board.title} custom={board.custom} key={board.id} />);
+  const arrayBoards = boards.map((board) => (
+    <Link to={`/board/${board.id}`} key={board.id}>
+      {' '}
+      <BoardHome title={board.title} custom={board.custom} key={board.id} id={board.id} />{' '}
+    </Link>
+  ));
 
   return (
     <div className={homeStyle.home}>
@@ -26,7 +32,7 @@ export function Home(): JSX.Element {
       <div className={homeStyle.home__boards}>
         {arrayBoards}
         <button type="button" className={homeStyle.home__button}>
-          Create board
+          + Create board
         </button>
       </div>
     </div>
