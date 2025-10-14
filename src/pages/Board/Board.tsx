@@ -1,143 +1,43 @@
-import { JSX, useState } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import instance from '../../api/request';
 import boardStyle from './components/Board1/board.module.scss';
 import boardHomeStyle from './components/Board1/boardHome.module.scss';
 import { List } from './components/List';
+import { IBoard } from '../../common/interfaces/IBoard';
+import { IList } from '../../common/interfaces/IList';
 
 export function Board(): JSX.Element {
-  const exampleLists = [
-    {
-      id: 1,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 2,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 3,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 4,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 5,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 6,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 7,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 8,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 9,
-      title: 'Плани',
-      cards: [
-        { id: 1, title: 'помити кота' },
-        { id: 2, title: 'приготувати суп' },
-        { id: 3, title: 'сходити в магазин' },
-      ],
-    },
-    {
-      id: 10,
-      title: 'В процесі',
-      cards: [{ id: 4, title: 'подивитися серіал' }],
-    },
-    {
-      id: 11,
-      title: 'Зроблено',
-      cards: [
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-      ],
-    },
-    {
-      id: 12,
-      title: 'Зроблено',
-      cards: [
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-      ],
-    },
-    {
-      id: 13,
-      title: 'Зроблено',
-      cards: [
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-        { id: 5, title: 'зробити домашку' },
-        { id: 6, title: 'погуляти з собакой' },
-      ],
-    },
-  ];
-  const [title, setTitle] = useState('Моя тестова дошка');
-  const [lists, setLists] = useState(exampleLists);
-  const arrayList = lists.map((list) => <List title={list.title} cards={list.cards} key={list.id} />);
+  const [title, setTitle] = useState<string>();
+  const [lists, setLists] = useState<IList[]>();
+  const [errorText, setErrorText] = useState<string | null>(null);
   const { boardId } = useParams();
+  useEffect(() => {
+    const fetchData = async (): Promise<void> => {
+      try {
+        const { data } = await instance.get(`/board/${boardId}`);
+        setLists(data.lists);
+        setTitle(data.title);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        setErrorText('Помилка при завантаженні даних');
+      }
+    };
+    fetchData();
+  }, []);
+
+  const arrayList = lists?.map((list) => <List id={list.id} title={list.title} cards={list.cards} key={list.id} />);
   return (
     <div className={boardStyle.board}>
       <h1 className={boardStyle.board__header}>
         {title} {boardId}
       </h1>
+      {errorText && (
+        <div className={boardStyle.board__header} style={{ color: 'red' }}>
+          {errorText}
+        </div>
+      )}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
         <button type="button" className={boardStyle.board__createButton}>
@@ -148,17 +48,10 @@ export function Board(): JSX.Element {
   );
 }
 
-interface propsBoard {
-  title: string;
-  custom: { background: string };
-  id: number;
-}
-
-export function BoardHome({ title, custom, id }: propsBoard): JSX.Element {
+export function BoardHome({ title, custom }: IBoard): JSX.Element {
   return (
     <div style={custom} className={boardHomeStyle.board}>
       <h2 className={boardHomeStyle.textHead}>{title}</h2>
-      <p>{id}</p>
     </div>
   );
 }

@@ -1,11 +1,8 @@
 import { JSX, useState } from 'react';
 import cardStyle from './card.module.scss';
+import { ICard } from '../../../../common/interfaces/ICard';
 
-interface propsCard {
-  title: string;
-}
-
-export function Card({ title }: propsCard): JSX.Element {
+export function Card({ title }: ICard): JSX.Element {
   return (
     <div className={cardStyle.card}>
       <li className={cardStyle.card__textCard}>{title}</li>

@@ -1,16 +1,11 @@
 // import { title } from 'process';
 import { JSX, useState } from 'react';
-import { ICard } from '../../../common/interfaces/ICard';
+import { IList } from '../../../common/interfaces/IList';
 import { Card } from './Card/Card';
 import listStyle from './List/list.module.scss';
 
-interface listProps {
-  title: string;
-  cards: ICard[];
-}
-
-export function List({ title, cards }: listProps): JSX.Element {
-  const arrayCards = cards.map((card) => <Card title={card.title} key={card.id} />);
+export function List({ title, cards }: IList): JSX.Element {
+  const arrayCards = cards.map((card) => <Card title={card.title} key={card.id} id={card.id} />);
   return (
     <div className={listStyle.list}>
       <h2 className={listStyle.list__header}>{title}</h2>
