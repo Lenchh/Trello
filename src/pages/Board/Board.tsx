@@ -2,16 +2,15 @@ import { JSX, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import instance from '../../api/request';
 import boardStyle from './components/Board1/board.module.scss';
-import boardHomeStyle from './components/Board1/boardHome.module.scss';
 import { List } from './components/List';
-import { IBoard } from '../../common/interfaces/IBoard';
 import { IList } from '../../common/interfaces/IList';
 
 export function Board(): JSX.Element {
-  const [title, setTitle] = useState<string>();
-  const [lists, setLists] = useState<IList[]>();
-  const [errorText, setErrorText] = useState<string | null>(null);
+  const [title, setTitle] = useState<string>('');
+  const [lists, setLists] = useState<IList[]>([]);
+  const [errorText, setErrorText] = useState<string>('');
   const { boardId } = useParams();
+
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
@@ -27,16 +26,32 @@ export function Board(): JSX.Element {
     fetchData();
   }, []);
 
-  const arrayList = lists?.map((list) => <List id={list.id} title={list.title} cards={list.cards} key={list.id} />);
+  const deleteBoard = async (): Promise<void> => {
+    try {
+      await instance.delete(`/board/${boardId}`);
+      setErrorText('Дошку успішно видалено.');
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+      setErrorText('Помилка при видаленні дошки');
+    }
+  };
+
+  const arrayList = lists?.map((list) => <List props={list} key={list.id} />);
   return (
     <div className={boardStyle.board}>
-      <h1 className={boardStyle.board__header}>
-        {title} {boardId}
-      </h1>
+      <div className={boardStyle.board__header}>
+        <h1 className={boardStyle.board__textHeader}>
+          {title} {boardId}
+        </h1>
+        <button className={boardStyle.board__deleteButton} onClick={deleteBoard}>
+          Видалити дошку
+        </button>
+      </div>
       {errorText && (
-        <div className={boardStyle.board__header} style={{ color: 'red' }}>
+        <h2 className={boardStyle.board__textHeader} style={{ color: 'lime' }}>
           {errorText}
-        </div>
+        </h2>
       )}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
@@ -44,14 +59,6 @@ export function Board(): JSX.Element {
           Create list
         </button>
       </div>
-    </div>
-  );
-}
-
-export function BoardHome({ title, custom }: IBoard): JSX.Element {
-  return (
-    <div style={custom} className={boardHomeStyle.board}>
-      <h2 className={boardHomeStyle.textHead}>{title}</h2>
     </div>
   );
 }

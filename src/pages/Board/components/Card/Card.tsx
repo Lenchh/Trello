@@ -1,11 +1,15 @@
-import { JSX, useState } from 'react';
+import { JSX } from 'react';
 import cardStyle from './card.module.scss';
 import { ICard } from '../../../../common/interfaces/ICard';
 
-export function Card({ title }: ICard): JSX.Element {
+interface ICardProps {
+  props: ICard;
+}
+
+export function Card({ props }: ICardProps): JSX.Element {
   return (
     <div className={cardStyle.card}>
-      <li className={cardStyle.card__textCard}>{title}</li>
+      <li className={cardStyle.card__textCard}>{props.title}</li>
     </div>
   );
 }

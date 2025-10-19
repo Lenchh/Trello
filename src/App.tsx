@@ -1,6 +1,5 @@
-import React, { JSX } from 'react';
-import { BrowserRouter, Routes, Route, Link, useParams } from 'react-router-dom';
-import logo from './logo.svg';
+import { JSX } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';

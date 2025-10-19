@@ -17,12 +17,17 @@ body {
     
 
     &__header {
-      @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
-                            $font-family-head: $font-primary);
+        display: flex;
+        justify-content: space-between;
         border-bottom: 1px solid $color-text-card;
         border-radius: $border-radius;
         box-shadow: $shadow-secondary;
         background-color: $color-dark;
+    }
+
+    &__textHeader {
+        @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
+                            $font-family-head: $font-primary);
     }
 
     &__lists {
@@ -43,5 +48,11 @@ body {
         height: 100px; 
         width: 120px;
         font-size: 18px;
+    }
+
+    &__deleteButton {
+        @include theme-button;
+        margin: 10px;
+        
     }
 }
