@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-visit the website - [text](https://lenchh.github.io/Trello)
+visit the website - https://lenchh.github.io/Trello
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
