@@ -6,7 +6,7 @@ import { Home } from './pages/Home/Home';
 
 function App(): JSX.Element {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Trello">
       <nav>
         <Link to="/">Home</Link>
         <Link to="/board">Board</Link>
