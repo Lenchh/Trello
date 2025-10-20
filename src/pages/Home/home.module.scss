@@ -65,6 +65,7 @@ a {
         &__input {
             border-radius: $border-radius;
             outline: none;
+            max-width: 50%;
         }
 
         &__input:focus {
