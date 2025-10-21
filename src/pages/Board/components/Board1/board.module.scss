@@ -28,6 +28,14 @@ body {
     &__textHeader {
         @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
                             $font-family-head: $font-primary);
+                            cursor: pointer;
+                            border: 1px solid $color-dark;
+                            border-radius: $border-radius;
+
+        &:hover {
+            background-color: $color-background;
+            border-color: $color-text-list;
+        }
     }
 
     &__lists {

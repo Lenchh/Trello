@@ -1,0 +1,14 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+ .input {
+        @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
+                            $font-family-head: $font-primary);
+                            border: 1px solid $color-dark;
+                            border-radius: $border-radius;
+                            background-color: $color-background;
+                            border-color: $color-text-list;
+                            width: 100px;
+                            font-weight: bold;
+
+    }
