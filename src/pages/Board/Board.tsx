@@ -1,9 +1,9 @@
-import { JSX, useState, useEffect, useRef } from 'react';
+import { JSX, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import instance from '../../api/request';
-import { EditBoardName } from './components/EditBoardName';
+import { EditBoardName } from './components/Board1/EditBoardName';
 import boardStyle from './components/Board1/board.module.scss';
-import { List } from './components/List';
+import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
 
 export function Board(): JSX.Element {
@@ -40,7 +40,18 @@ export function Board(): JSX.Element {
     }
   };
 
-  const arrayList = lists?.map((list) => <List props={list} key={list.id} />);
+  const createList = async (): Promise<void> => {
+    try {
+      await instance.post(`/board/${boardId}/list`, { title: '', cards: [], position: 1 });
+      fetchData();
+    } catch (error) {
+      setErrorText('Помилка при створенні списку.');
+    }
+  };
+
+  const arrayList = lists?.map((list) => (
+    <List props={list} key={list.id} boardId={boardId} onCardCreated={fetchData} />
+  ));
   return (
     <div className={boardStyle.board}>
       <div className={boardStyle.board__header}>
@@ -68,7 +79,7 @@ export function Board(): JSX.Element {
       )}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
-        <button type="button" className={boardStyle.board__createButton}>
+        <button type="button" className={boardStyle.board__createButton} onClick={createList}>
           Create list
         </button>
       </div>

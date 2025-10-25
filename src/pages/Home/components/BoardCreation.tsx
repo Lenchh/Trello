@@ -18,7 +18,7 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 ,._-]*$/.test(event.target.value)) {
+    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setInputValue(event.target.value);
     }
   };

@@ -1,7 +1,6 @@
 import { ChangeEvent, JSX, useState } from 'react';
-import instance from '../../../api/request';
+import instance from '../../../../api/request';
 import editBoardName from './editBoardName.module.scss';
-import boardStyle from './Board1/board.module.scss';
 
 interface props {
   defaultValue: string;
@@ -16,7 +15,7 @@ export function EditBoardName({ defaultValue, onCardCreated, idBoard, setInput, 
   const [errorInput, setErrorInput] = useState('');
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 ,._-]*$/.test(event.target.value)) {
+    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setInputValue(event.target.value);
     }
   };

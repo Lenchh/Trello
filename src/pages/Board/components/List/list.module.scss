@@ -2,18 +2,30 @@
 @import "/src/styles/mixins.scss";
 
 .list {
-     @include theme-container($width-container: 250px, $margin-container: 10px, 
-                             $background-container: $color-secondary, 
-                             $border-container: 2px solid $color-secondary, 
-                             $border-radius: $border-radius);
+    @include theme-container($width-container: 250px, $margin-container: 10px,
+        $background-container: $color-secondary,
+        $border-container: 2px solid $color-secondary,
+        $border-radius: $border-radius);
     padding: 10px;
     display: flex;
     flex-direction: column;
     align-self: flex-start;
 
     &__header {
-        @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list, 
-                              $font-family-head: $font-primary);
+        @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
+            $font-family-head: $font-primary);
+
+        &:hover {
+            background-color: rgb(185, 185, 185);
+            border-radius: $border-radius;
+        }
+    }
+
+    &__input {
+        @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
+            $font-family-head: $font-primary);
+        font-weight: bold;
+        border-radius: $border-radius;
     }
 
     &:hover {
@@ -29,5 +41,6 @@
 
     &__createButton {
         @include theme-button($background: $color-background, $color-text: $color-primary, $background-hover: $color-primary);
+        margin-bottom: 10px;
     }
 }
