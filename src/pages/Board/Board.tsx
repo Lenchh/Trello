@@ -5,11 +5,13 @@ import { EditBoardName } from './components/Board1/EditBoardName';
 import boardStyle from './components/Board1/board.module.scss';
 import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
+import { createList } from './components/List/CreateList';
 
 export function Board(): JSX.Element {
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState('');
+  const [background, setBackground] = useState('white');
   const [lists, setLists] = useState<IList[]>([]);
-  const [errorText, setErrorText] = useState<string>('');
+  const [errorText, setErrorText] = useState('');
   const [inputName, setInputName] = useState(false);
   const { boardId } = useParams();
 
@@ -18,6 +20,7 @@ export function Board(): JSX.Element {
       const { data } = await instance.get(`/board/${boardId}`);
       setLists(data.lists);
       setTitle(data.title);
+      setBackground(data.custom.background);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -40,20 +43,11 @@ export function Board(): JSX.Element {
     }
   };
 
-  const createList = async (): Promise<void> => {
-    try {
-      await instance.post(`/board/${boardId}/list`, { title: '', cards: [], position: 1 });
-      fetchData();
-    } catch (error) {
-      setErrorText('Помилка при створенні списку.');
-    }
-  };
-
   const arrayList = lists?.map((list) => (
     <List props={list} key={list.id} boardId={boardId} onCardCreated={fetchData} />
   ));
   return (
-    <div className={boardStyle.board}>
+    <div style={{ '--bg-color': `${background}` } as React.CSSProperties} className={boardStyle.board}>
       <div className={boardStyle.board__header}>
         {inputName ? (
           <EditBoardName
@@ -79,7 +73,11 @@ export function Board(): JSX.Element {
       )}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
-        <button type="button" className={boardStyle.board__createButton} onClick={createList}>
+        <button
+          type="button"
+          className={boardStyle.board__createButton}
+          onClick={(): Promise<void> => createList(boardId, fetchData, setErrorText)}
+        >
           Create list
         </button>
       </div>

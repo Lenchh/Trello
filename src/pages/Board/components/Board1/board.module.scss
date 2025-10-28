@@ -9,7 +9,7 @@ body {
 
 .board {
     @include theme-container($width-container: 90%, $margin-container: 20px auto, 
-                             $background-container: $color-background, 
+                             $background-container: var(--bg-color), 
                              $border-container: 2px solid $color-secondary, 
                              $border-radius: $border-radius);
     max-width: 2440px;
@@ -22,18 +22,18 @@ body {
         border-bottom: 1px solid $color-text-card;
         border-radius: $border-radius;
         box-shadow: $shadow-secondary;
-        background-color: $color-dark;
+        background-color: var(--bg-color);
     }
 
     &__textHeader {
         @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
                             $font-family-head: $font-primary);
                             cursor: pointer;
-                            border: 1px solid $color-dark;
+                            border: 1px solid var(--bg-color);
                             border-radius: $border-radius;
 
         &:hover {
-            background-color: $color-background;
+            background-color: var(--bg-color);
             border-color: $color-text-list;
         }
     }

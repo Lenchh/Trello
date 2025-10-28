@@ -40,7 +40,7 @@
     }
 
     &__createButton {
-        @include theme-button($background: $color-background, $color-text: $color-primary, $background-hover: $color-primary);
+        @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
         margin-bottom: 10px;
     }
 }

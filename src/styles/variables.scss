@@ -4,7 +4,9 @@ $font-size-head-list: clamp(14px, 2vw, 24px);
 $font-size-head-card: clamp(13px, 2vw, 20px);
 $font-size-card-text: clamp(12px, 2vw, 17px);
 
-$color-background: #136CF1;
+:root {
+    --bg-color: #136CF1;
+}
 $color-dark: #1055bc;
 $color-primary: #FFFFFF;
 $color-secondary: #eef2f5;
@@ -13,7 +15,7 @@ $color-text-card: #363636;
 $color-text-list: #313131;
 
 $shadow-primary: 6px 8px 0px rgba(#b5b5b6, 0.594); 
-$shadow-secondary: 6px 12px 15px rgba(#183a6d, 0.7); 
+$shadow-secondary: 6px 12px 15px rgba(#000000, 0.7); 
 $shadow-background: 0px 0px 30px rgba(#000000, 0.9); 
 $shadow-background-list: 7px 7px 20px rgba(#d4d4dc, 0.7); 
 

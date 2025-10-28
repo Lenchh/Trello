@@ -13,7 +13,7 @@ a {
 .home {
     @include theme-container($width-container: 90%, $margin-container: 20px auto,
         $background-container: $color-primary,
-        $border-container: 4px solid $color-background,
+        $border-container: 4px solid var(--bg-color),
         $border-radius: $border-radius);
     max-width: 2440px;
     box-shadow: $shadow-background;
@@ -34,7 +34,7 @@ a {
     }
 
     &__button {
-        @include theme-button($background-hover: $color-background);
+        @include theme-button($background-hover: var(--bg-color));
         justify-self: center;
         margin: 10px 10px;
         flex-shrink: 0;
@@ -45,7 +45,7 @@ a {
     &__dialog {
         width: 40%;
         background-color: $color-primary;
-        border: 4px solid $color-background;
+        border: 4px solid var(--bg-color);
         border-radius: $border-radius;
 
         &__header {
@@ -56,10 +56,11 @@ a {
         }
 
         &__form {
-            @include theme-header($padding-head: 15px, $color-head: black, $font-size-header: $font-size-head-list,
+            @include theme-header($padding-head: 8px, $color-head: black, $font-size-header: $font-size-head-list,
                 $font-family-head: $font-primary);
             font-weight: bold;
             padding-right: 0;
+            display: block;
         }
 
         &__input {
@@ -70,7 +71,7 @@ a {
         }
 
         &__input:focus {
-            border: 2px solid $color-background;
+            border: 2px solid var(--bg-color);
             border-radius: $border-radius;
         }
 
@@ -82,7 +83,7 @@ a {
         }
 
         &__button {
-            @include theme-button($background-hover: $color-background);
+            @include theme-button($background-hover: var(--bg-color));
             flex-shrink: 0;
             padding: 5px;
         }

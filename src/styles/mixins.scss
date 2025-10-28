@@ -1,13 +1,13 @@
 @import "./variables.scss";
 
-@mixin theme-button($background: #fff, $color-text: #136CF1, $background-hover: #cfc3c3ab) {
+@mixin theme-button($background: #fff, $color-text: var(--bg-color), $background-hover: #cfc3c333) {
     font-size: $font-size-card-text;
     font-family: $font-primary;
     font-weight: bold;
     border-radius: $border-radius;
     background-color: $background;
     color: $color-text;
-    border:1px solid #136CF1;
+    border:1px solid var(--bg-color);
     cursor: pointer;
 
     &:hover {

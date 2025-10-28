@@ -1,7 +1,9 @@
-import { ChangeEvent, JSX, useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import instance from '../../../../api/request';
+import { createCard } from '../Card/CreateCard';
+import { EditNameList } from './EditNameList';
 import listStyle from './list.module.scss';
 
 interface IListProps {
@@ -11,41 +13,11 @@ interface IListProps {
 }
 
 export function List({ props, boardId, onCardCreated }: IListProps): JSX.Element {
-  const [inputValue, setInputValue] = useState(props.title || 'Default name');
-  const [nameList, setNameList] = useState(false);
-  const arrayCards = props.cards.map((card) => <Card props={card} key={card.id} />);
+  const [nameList, setNameList] = useState(true);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      setInputValue(event.target.value);
-    }
-  };
-
-  useEffect(() => {
-    if (props.title) setNameList(true);
-    else setNameList(false);
-    // eslint-disable-next-line no-console
-    console.log(props);
-  }, []);
-
-  const editName = async (): Promise<void> => {
-    if (inputValue.trim() === '') {
-      return;
-    }
-    try {
-      await instance.put(`/board/${boardId}/list/${props.id}`, { title: inputValue });
-      onCardCreated();
-      setNameList(true);
-    } catch (error) {
-      setNameList(true);
-    }
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter' && inputValue.trim()) {
-      editName();
-    }
-  };
+  const arrayCards = props.cards.map((card) => (
+    <Card props={card} listId={props.id} key={card.id} idBoard={boardId} onCardCreated={onCardCreated} />
+  ));
 
   const deleteList = async (): Promise<void> => {
     try {
@@ -58,24 +30,25 @@ export function List({ props, boardId, onCardCreated }: IListProps): JSX.Element
   };
   return (
     <div className={listStyle.list}>
-      {nameList ? (
+      {nameList && props.title ? (
         <h2 className={listStyle.list__header} onClick={(): void => setNameList(false)}>
           {props.title}
         </h2>
       ) : (
-        <input
-          type="text"
-          value={inputValue}
-          className={listStyle.list__input}
-          onChange={handleChange}
-          onBlur={editName}
-          onKeyDown={handleKeyDown}
-          // eslint-disable-next-line jsx-a11y/no-autofocus
-          autoFocus
+        <EditNameList
+          defaultTitle={props.title}
+          boardId={boardId}
+          idList={props.id}
+          onCardCreated={onCardCreated}
+          setNameList={setNameList}
         />
       )}
       <ul className={listStyle.list__cards}>{arrayCards}</ul>
-      <button type="button" className={listStyle.list__createButton}>
+      <button
+        type="button"
+        className={listStyle.list__createButton}
+        onClick={(): Promise<void> => createCard(boardId, onCardCreated, props.id)}
+      >
         Create card
       </button>
       <button type="button" className={listStyle.list__createButton} onClick={deleteList}>

@@ -11,9 +11,11 @@ interface props {
 
 export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard, onCardCreated }: props): JSX.Element {
   const [inputValue, setInputValue] = useState<string>('');
+  const [inputColor, setInputColor] = useState<string>('#136CF1');
 
   const closeDialog = (): void => {
     setInputValue('');
+    setInputColor('#136CF1');
     dialogRef.current?.close();
   };
 
@@ -23,6 +25,10 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
     }
   };
 
+  const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
+    setInputColor(event.target.value);
+  };
+
   const createBoard = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     if (inputValue.trim() === '') {
@@ -30,7 +36,7 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
       return;
     }
     try {
-      await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: 'darksalmon' } });
+      await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: inputColor } });
       onCardCreated();
       closeDialog();
     } catch (error) {
@@ -50,6 +56,10 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
         <label className={homeStyle.home__dialog__form}>
           Ім'я дошки:
           <input type="text" value={inputValue} onChange={handleChange} className={homeStyle.home__dialog__input} />
+        </label>
+        <label className={homeStyle.home__dialog__form}>
+          Колір Фону:
+          <input type="color" value={inputColor} onChange={handleColor} className={homeStyle.home__dialog__input} />
         </label>
         <div className={homeStyle.home__dialog__buttons}>
           <button type="submit" className={homeStyle.home__dialog__button}>

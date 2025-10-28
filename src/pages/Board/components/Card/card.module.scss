@@ -2,14 +2,29 @@
 @import "/src/styles/mixins.scss";
 
 .card {
-    @include theme-container($width-container: 90%, $margin-container: 15px auto, 
-                             $background-container: $color-primary, 
-                             $border-container: 1px solid $color-primary, 
-                             $border-radius: $border-radius); 
+    @include theme-container($width-container: 90%, $margin-container: 15px auto,
+        $background-container: $color-primary,
+        $border-container: 1px solid $color-primary,
+        $border-radius: $border-radius);
     box-shadow: $shadow-primary;
 
     &__textCard {
-        @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text, 
-                            $font-family-head: $font-primary);
+        @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text,
+            $font-family-head: $font-primary);
+            display: block;
+            width: 100%;
+    }
+
+    &:hover {
+        background-color: rgb(205, 205, 205);
+        cursor: pointer;
+    }
+
+    &__input {
+        @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text,
+            $font-family-head: $font-primary);
+        background-color: rgb(205, 205, 205);
+        border: 1px solid $color-primary;
+        border-radius: $border-radius;
     }
 }

@@ -6,7 +6,7 @@
                             $font-family-head: $font-primary);
                             border: 1px solid $color-dark;
                             border-radius: $border-radius;
-                            background-color: $color-background;
+                            background-color: var(--bg-color);
                             border-color: $color-text-list;
                             width: 100px;
                             font-weight: bold;
