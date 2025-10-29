@@ -58,9 +58,15 @@ body {
         font-size: 18px;
     }
 
-    &__deleteButton {
+    &__selectMenu {
         @include theme-button;
         margin: 10px;
-        
+
+        &:hover {
+        background-color: $color-primary;
+        color: var(--bg-color);
+        border: 1px solid black;
+        box-shadow: $shadow-background-list; 
+        }
     }
 }

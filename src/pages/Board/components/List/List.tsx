@@ -49,10 +49,10 @@ export function List({ props, boardId, onCardCreated }: IListProps): JSX.Element
         className={listStyle.list__createButton}
         onClick={(): Promise<void> => createCard(boardId, onCardCreated, props.id)}
       >
-        Create card
+        Створити карточку
       </button>
       <button type="button" className={listStyle.list__createButton} onClick={deleteList}>
-        Delete list
+        Видалити список
       </button>
     </div>
   );

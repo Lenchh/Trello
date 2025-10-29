@@ -1,4 +1,4 @@
-import { JSX, useState, useEffect } from 'react';
+import { JSX, useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import instance from '../../api/request';
 import { EditBoardName } from './components/Board1/EditBoardName';
@@ -6,14 +6,21 @@ import boardStyle from './components/Board1/board.module.scss';
 import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
 import { createList } from './components/List/CreateList';
+import { EditBackBoard } from './components/Board1/EditBackBoard';
 
 export function Board(): JSX.Element {
   const [title, setTitle] = useState('');
-  const [background, setBackground] = useState('white');
+  const [background, setBackground] = useState('#ffffff');
   const [lists, setLists] = useState<IList[]>([]);
   const [errorText, setErrorText] = useState('');
   const [inputName, setInputName] = useState(false);
+  const [action, setAction] = useState('');
   const { boardId } = useParams();
+
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const openDialog = (): void => {
+    dialogRef.current?.showModal();
+  };
 
   const fetchData = async (): Promise<void> => {
     try {
@@ -43,6 +50,17 @@ export function Board(): JSX.Element {
     }
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
+    const selected = event.target.value;
+    setAction(selected);
+
+    if (selected === 'delete') {
+      deleteBoard();
+    } else if (selected === 'changeBg') {
+      openDialog();
+    }
+  };
+
   const arrayList = lists?.map((list) => (
     <List props={list} key={list.id} boardId={boardId} onCardCreated={fetchData} />
   ));
@@ -62,9 +80,11 @@ export function Board(): JSX.Element {
             {title}
           </h1>
         )}
-        <button className={boardStyle.board__deleteButton} onClick={deleteBoard}>
-          Видалити дошку
-        </button>
+        <select value={action} onChange={handleChange} className={boardStyle.board__selectMenu}>
+          <option value="">...</option>
+          <option value="delete">Видалити дошку</option>
+          <option value="changeBg">Змінити фон дошки</option>
+        </select>
       </div>
       {errorText && (
         <h2 className={boardStyle.board__textHeader} style={{ color: 'brown' }}>
@@ -78,9 +98,16 @@ export function Board(): JSX.Element {
           className={boardStyle.board__createButton}
           onClick={(): Promise<void> => createList(boardId, fetchData, setErrorText)}
         >
-          Create list
+          Створити список
         </button>
       </div>
+      <EditBackBoard
+        dialogRef={dialogRef}
+        boardId={boardId}
+        defaultValue={background}
+        onCardCreated={fetchData}
+        setAction={setAction}
+      />
     </div>
   );
 }

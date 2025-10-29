@@ -57,9 +57,31 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
           Ім'я дошки:
           <input type="text" value={inputValue} onChange={handleChange} className={homeStyle.home__dialog__input} />
         </label>
-        <label className={homeStyle.home__dialog__form}>
+        {/* <label className={homeStyle.home__dialog__form}>
           Колір Фону:
           <input type="color" value={inputColor} onChange={handleColor} className={homeStyle.home__dialog__input} />
+        </label> */}
+        <label className={homeStyle.home__dialog__form}>
+          Колір Фону:<br/>
+          <label>
+            <input
+              type="radio"
+              name="boardAction"
+              value="delete"
+              onChange={handleChange}
+            />
+            Колір
+          </label>
+
+          <label>
+            <input
+              type="radio"
+              name="boardAction"
+              value="changeBg"
+              onChange={handleChange}
+            />
+            Зображення
+          </label>
         </label>
         <div className={homeStyle.home__dialog__buttons}>
           <button type="submit" className={homeStyle.home__dialog__button}>
