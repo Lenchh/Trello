@@ -62,24 +62,14 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
           <input type="color" value={inputColor} onChange={handleColor} className={homeStyle.home__dialog__input} />
         </label> */}
         <label className={homeStyle.home__dialog__form}>
-          Колір Фону:<br/>
+          Колір Фону:
+          <br />
           <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="delete"
-              onChange={handleChange}
-            />
+            <input type="radio" name="boardAction" value="delete" onChange={handleChange} />
             Колір
           </label>
-
           <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="changeBg"
-              onChange={handleChange}
-            />
+            <input type="radio" name="boardAction" value="changeBg" onChange={handleChange} />
             Зображення
           </label>
         </label>
