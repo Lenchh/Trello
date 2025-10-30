@@ -22,7 +22,7 @@ body {
         border-bottom: 1px solid $color-text-card;
         border-radius: $border-radius;
         box-shadow: $shadow-secondary;
-        background-color: var(--bg-color);
+        background-color: rgba(255, 255, 255, 0);
     }
 
     &__textHeader {

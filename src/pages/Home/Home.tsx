@@ -9,11 +9,9 @@ import { IBoard } from '../../common/interfaces/IBoard';
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
   const [errorText, setErrorText] = useState<string>('');
-  const [errorCreateBoard, setErrorCreateBoard] = useState('');
 
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const openDialog = (): void => {
-    setErrorCreateBoard('');
     dialogRef.current?.showModal();
   };
 
@@ -52,12 +50,7 @@ export function Home(): JSX.Element {
           + Створити дошку
         </button>
       </div>
-      <BoardCreation
-        dialogRef={dialogRef}
-        errorCreateBoard={errorCreateBoard}
-        setErrorCreateBoard={setErrorCreateBoard}
-        onCardCreated={fetchData}
-      />
+      <BoardCreation dialogRef={dialogRef} onCardCreated={fetchData} />
     </div>
   );
 }

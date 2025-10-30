@@ -8,7 +8,18 @@ interface IBoardProps {
 
 export function BoardHome({ props }: IBoardProps): JSX.Element {
   return (
-    <div style={{ '--bg-color': `${props.custom.background}` } as React.CSSProperties} className={boardHomeStyle.board}>
+    <div
+      style={
+        props.custom.background.startsWith('data')
+          ? {
+              backgroundImage: `url(${props.custom.background})`,
+              backgroundPosition: 'center',
+              backgroundSize: 'cover',
+            }
+          : { backgroundColor: props.custom.background }
+      }
+      className={boardHomeStyle.board}
+    >
       <h2 className={boardHomeStyle.textHead}>{props.title}</h2>
     </div>
   );

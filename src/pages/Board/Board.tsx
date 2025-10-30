@@ -29,8 +29,6 @@ export function Board(): JSX.Element {
       setTitle(data.title);
       setBackground(data.custom.background);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
       setErrorText('Помилка при завантаженні даних');
     }
   };
@@ -44,8 +42,6 @@ export function Board(): JSX.Element {
       await instance.delete(`/board/${boardId}`);
       setErrorText('Дошку успішно видалено.');
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
       setErrorText('Помилка при видаленні дошки');
     }
   };
@@ -65,7 +61,17 @@ export function Board(): JSX.Element {
     <List props={list} key={list.id} boardId={boardId} onCardCreated={fetchData} />
   ));
   return (
-    <div style={{ '--bg-color': `${background}` } as React.CSSProperties} className={boardStyle.board}>
+    <div
+      style={
+        background.startsWith('data')
+          ? { backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center center' }
+          : ({
+              backgroundColor: background,
+              '--bg-color': background,
+            } as React.CSSProperties)
+      }
+      className={boardStyle.board}
+    >
       <div className={boardStyle.board__header}>
         {inputName ? (
           <EditBoardName

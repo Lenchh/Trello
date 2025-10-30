@@ -4,16 +4,17 @@ import homeStyle from '../home.module.scss';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  errorCreateBoard: string;
-  setErrorCreateBoard: React.Dispatch<React.SetStateAction<string>>;
   onCardCreated: () => Promise<void>;
 }
 
-export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard, onCardCreated }: props): JSX.Element {
+export function BoardCreation({ dialogRef, onCardCreated }: props): JSX.Element {
   const [inputValue, setInputValue] = useState<string>('');
   const [inputColor, setInputColor] = useState<string>('#136CF1');
+  const [selectedOption, setSelectedOption] = useState('color');
+  const [errorCreateBoard, setErrorCreateBoard] = useState('');
 
   const closeDialog = (): void => {
+    setErrorCreateBoard('');
     setInputValue('');
     setInputColor('#136CF1');
     dialogRef.current?.close();
@@ -27,6 +28,21 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
 
   const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
     setInputColor(event.target.value);
+  };
+
+  const handleImage = (event: ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (): void => {
+      setInputColor(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const changeOption = (event: ChangeEvent<HTMLInputElement>): void => {
+    setSelectedOption(event.target.value);
   };
 
   const createBoard = async (event: React.FormEvent): Promise<void> => {
@@ -57,27 +73,47 @@ export function BoardCreation({ dialogRef, errorCreateBoard, setErrorCreateBoard
           Ім'я дошки:
           <input type="text" value={inputValue} onChange={handleChange} className={homeStyle.home__dialog__input} />
         </label>
-        {/* <label className={homeStyle.home__dialog__form}>
-          Колір Фону:
-          <input type="color" value={inputColor} onChange={handleColor} className={homeStyle.home__dialog__input} />
-        </label> */}
-        <label className={homeStyle.home__dialog__form}>
+        <div className={homeStyle.home__dialog__form}>
           Колір Фону:
           <br />
           <label>
-            <input type="radio" name="boardAction" value="delete" onChange={handleChange} />
+            <input
+              type="radio"
+              name="boardAction"
+              value="color"
+              checked={selectedOption === 'color'}
+              onChange={changeOption}
+            />
             Колір
           </label>
           <label>
-            <input type="radio" name="boardAction" value="changeBg" onChange={handleChange} />
+            <input
+              type="radio"
+              name="boardAction"
+              value="image"
+              checked={selectedOption === 'image'}
+              onChange={changeOption}
+            />
             Зображення
           </label>
-        </label>
+          <br />
+          {selectedOption === 'color' ? (
+            <input
+              key="color"
+              type="color"
+              value={inputColor}
+              onChange={handleColor}
+              className={homeStyle.home__dialog__input}
+            />
+          ) : (
+            <input key="image" type="file" accept="image/*" onChange={handleImage} />
+          )}
+        </div>
         <div className={homeStyle.home__dialog__buttons}>
           <button type="submit" className={homeStyle.home__dialog__button}>
             Надіслати
           </button>
-          <button onClick={closeDialog} className={homeStyle.home__dialog__button}>
+          <button type="button" onClick={closeDialog} className={homeStyle.home__dialog__button}>
             Закрити
           </button>
         </div>

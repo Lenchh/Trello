@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import { JSX, useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import instance from '../../../../api/request';
