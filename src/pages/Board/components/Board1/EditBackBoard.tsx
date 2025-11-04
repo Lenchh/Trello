@@ -1,4 +1,4 @@
-import { ChangeEvent, JSX, useEffect, useState } from 'react';
+import { ChangeEvent, JSX, useRef, useState } from 'react';
 import instance from '../../../../api/request';
 import homeStyle from '../../../Home/home.module.scss';
 
@@ -6,16 +6,39 @@ interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
   boardId: string | undefined;
   defaultValue: string;
-  onCardCreated: () => Promise<void>;
+  onRefresh: () => Promise<void>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function EditBackBoard({ dialogRef, boardId, defaultValue, onCardCreated, setAction }: props): JSX.Element {
-  const [inputColor, setInputColor] = useState(defaultValue);
+export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, setAction }: props): JSX.Element {
+  const [inputBackground, setInputBackground] = useState(defaultValue);
   const [selectedOption, setSelectedOption] = useState('color');
+  const imageBackgroundRef = useRef<HTMLInputElement>(null);
+
+  const closeDialog = (): void => {
+    if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
+    dialogRef.current?.close();
+    setAction('');
+  };
+
+  const editBackground = async (event: React.FormEvent): Promise<void> => {
+    event.preventDefault();
+    try {
+      await instance.put(`/board/${boardId}`, { custom: { background: inputBackground } });
+      onRefresh();
+      closeDialog();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  };
 
   const changeOption = (event: ChangeEvent<HTMLInputElement>): void => {
     setSelectedOption(event.target.value);
+  };
+
+  const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
+    setInputBackground(event.target.value);
   };
 
   const handleImage = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -24,32 +47,9 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onCardCreated,
 
     const reader = new FileReader();
     reader.onload = (): void => {
-      setInputColor(reader.result as string);
+      setInputBackground(reader.result as string);
     };
     reader.readAsDataURL(file);
-  };
-
-  const closeDialog = (): void => {
-    dialogRef.current?.close();
-    setAction('');
-  };
-
-  const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
-    setInputColor(event.target.value);
-  };
-
-  const editBackground = async (event: React.FormEvent): Promise<void> => {
-    event.preventDefault();
-    try {
-      await instance.put(`/board/${boardId}`, { custom: { background: inputColor } });
-      onCardCreated();
-      closeDialog();
-      // eslint-disable-next-line no-console
-      console.log('ggg');
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-    }
   };
 
   return (
@@ -84,12 +84,12 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onCardCreated,
             <input
               key="color"
               type="color"
-              value={inputColor}
+              value={inputBackground}
               onChange={handleColor}
               className={homeStyle.home__dialog__input}
             />
           ) : (
-            <input key="image" type="file" accept="image/*" onChange={handleImage} />
+            <input key="image" ref={imageBackgroundRef} type="file" accept="image/*" onChange={handleImage} />
           )}
         </label>
         <div className={homeStyle.home__dialog__buttons}>

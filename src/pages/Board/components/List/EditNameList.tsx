@@ -3,37 +3,47 @@ import instance from '../../../../api/request';
 import listStyle from './list.module.scss';
 
 interface props {
-  defaultTitle: string;
   boardId: string | undefined;
-  idList: number;
-  onCardCreated: () => Promise<void>;
-  setNameList: React.Dispatch<React.SetStateAction<boolean>>;
+  listId: number;
+  onRefresh: () => Promise<void>;
+  setIsNameList: React.Dispatch<React.SetStateAction<boolean>>;
+  nameList: string;
+  setNameList: React.Dispatch<React.SetStateAction<string>>;
+  oldValue: string;
 }
 
-export function EditNameList({ defaultTitle, boardId, idList, onCardCreated, setNameList }: props): JSX.Element {
-  const [inputValue, setInputValue] = useState(defaultTitle || 'Default name');
-
+export function EditNameList({
+  boardId,
+  listId,
+  onRefresh,
+  setIsNameList,
+  nameList,
+  setNameList,
+  oldValue,
+}: props): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      setInputValue(event.target.value);
+      // setInputValue(event.target.value);
+      setNameList(event.target.value);
     }
   };
 
   const editName = async (): Promise<void> => {
-    if (inputValue.trim() === '') {
+    if (nameList.trim() === '') {
       return;
     }
     try {
-      await instance.put(`/board/${boardId}/list/${idList}`, { title: inputValue });
-      onCardCreated();
-      setNameList(true);
+      await instance.put(`/board/${boardId}/list/${listId}`, { title: nameList });
+      onRefresh();
+      setIsNameList(true);
     } catch (error) {
-      setNameList(true);
+      setIsNameList(true);
+      setNameList(oldValue);
     }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter' && inputValue.trim()) {
+    if (event.key === 'Enter') {
       editName();
     }
   };
@@ -41,7 +51,7 @@ export function EditNameList({ defaultTitle, boardId, idList, onCardCreated, set
   return (
     <input
       type="text"
-      value={inputValue}
+      value={nameList}
       className={listStyle.list__input}
       onChange={handleChange}
       onBlur={editName}

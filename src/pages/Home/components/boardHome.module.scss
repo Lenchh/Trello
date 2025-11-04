@@ -16,7 +16,7 @@
      }
 
     .textHead {
-          @include theme-header($padding-head: 5px, $color-head: black, $font-size-header: $font-size-head-list, 
+          @include theme-header($padding-head: 5px, $color-head: $color-primary, $font-size-header: $font-size-head-list, 
                             $font-family-head: $font-primary);
     }
 }

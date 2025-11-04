@@ -1,48 +1,25 @@
-import { ChangeEvent, JSX, useState } from 'react';
+import { ChangeEvent, JSX, useRef, useState } from 'react';
 import instance from '../../../api/request';
 import homeStyle from '../home.module.scss';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  onCardCreated: () => Promise<void>;
+  onRefresh: () => Promise<void>;
 }
 
-export function BoardCreation({ dialogRef, onCardCreated }: props): JSX.Element {
+export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   const [inputValue, setInputValue] = useState<string>('');
-  const [inputColor, setInputColor] = useState<string>('#136CF1');
+  const [inputBackground, setInputBackground] = useState<string>('#136CF1');
   const [selectedOption, setSelectedOption] = useState('color');
   const [errorCreateBoard, setErrorCreateBoard] = useState('');
+  const imageBackgroundRef = useRef<HTMLInputElement>(null);
 
   const closeDialog = (): void => {
+    if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
     setErrorCreateBoard('');
     setInputValue('');
-    setInputColor('#136CF1');
+    setInputBackground('#136CF1');
     dialogRef.current?.close();
-  };
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      setInputValue(event.target.value);
-    }
-  };
-
-  const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
-    setInputColor(event.target.value);
-  };
-
-  const handleImage = (event: ChangeEvent<HTMLInputElement>): void => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (): void => {
-      setInputColor(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const changeOption = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSelectedOption(event.target.value);
   };
 
   const createBoard = async (event: React.FormEvent): Promise<void> => {
@@ -52,12 +29,37 @@ export function BoardCreation({ dialogRef, onCardCreated }: props): JSX.Element 
       return;
     }
     try {
-      await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: inputColor } });
-      onCardCreated();
+      await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: inputBackground } });
+      onRefresh();
       closeDialog();
     } catch (error) {
       setErrorCreateBoard('Помилка при створенні дошки.');
     }
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
+      setInputValue(event.target.value);
+    }
+  };
+
+  const changeOption = (event: ChangeEvent<HTMLInputElement>): void => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleColor = (event: ChangeEvent<HTMLInputElement>): void => {
+    setInputBackground(event.target.value);
+  };
+
+  const handleImage = (event: ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (): void => {
+      setInputBackground(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -101,12 +103,12 @@ export function BoardCreation({ dialogRef, onCardCreated }: props): JSX.Element 
             <input
               key="color"
               type="color"
-              value={inputColor}
+              value={inputBackground}
               onChange={handleColor}
               className={homeStyle.home__dialog__input}
             />
           ) : (
-            <input key="image" type="file" accept="image/*" onChange={handleImage} />
+            <input key="image" ref={imageBackgroundRef} type="file" accept="image/*" onChange={handleImage} />
           )}
         </div>
         <div className={homeStyle.home__dialog__buttons}>

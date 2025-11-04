@@ -1,5 +1,8 @@
 import axios from 'axios';
+import NProgress from 'nprogress';
 import { api } from '../common/constants';
+import 'nprogress/nprogress.css';
+import '../styles/nprogress-custom.css';
 
 const instance = axios.create({
   baseURL: api.baseURL,
@@ -9,6 +12,31 @@ const instance = axios.create({
   },
 });
 
-// instance.interceptors.response.use((res) => res.data);
+let activeRequests = 0;
+
+instance.interceptors.request.use(
+  (config) => {
+    activeRequests++;
+    if (activeRequests === 1) {
+      NProgress.start();
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+instance.interceptors.response.use(
+  (response) => {
+    activeRequests--;
+    if (activeRequests === 0) {
+      NProgress.done();
+    }
+    return response;
+  },
+  (error) => {
+    NProgress.done();
+    Promise.reject(error);
+  }
+);
 
 export default instance;

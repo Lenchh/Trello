@@ -2,7 +2,7 @@
 @import "/src/styles/mixins.scss";
 
 .card {
-    @include theme-container($width-container: 90%, $margin-container: 15px auto,
+    @include theme-container($width-container: 90%, $margin-container: 7.5px auto,
         $background-container: $color-primary,
         $border-container: 1px solid $color-primary,
         $border-radius: $border-radius);

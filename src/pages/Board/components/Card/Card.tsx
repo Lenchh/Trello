@@ -4,30 +4,33 @@ import { ICard } from '../../../../common/interfaces/ICard';
 import { EditNameCard } from './EditNameCard';
 
 interface ICardProps {
-  props: ICard;
+  card: ICard;
   listId: number;
-  idBoard: string | undefined;
-  onCardCreated: () => Promise<void>;
+  boardId: string | undefined;
+  onRefresh: () => Promise<void>;
 }
 
-export function Card({ props, listId, idBoard, onCardCreated }: ICardProps): JSX.Element {
-  const [nameCard, setNameCard] = useState(true);
+export function Card({ card, listId, boardId, onRefresh }: ICardProps): JSX.Element {
+  const [isNameCard, setIsNameCard] = useState(true);
+  const [nameCard, setNameCard] = useState(card.title);
   return (
-    <div className={cardStyle.card}>
-      {nameCard && props.title ? (
-        <li className={cardStyle.card__textCard} onClick={(): void => setNameCard(false)}>
-          {props.title}
-        </li>
+    <li className={cardStyle.card}>
+      {isNameCard && card.title ? (
+        <div className={cardStyle.card__textCard} onClick={(): void => setIsNameCard(false)}>
+          {nameCard}
+        </div>
       ) : (
         <EditNameCard
           idList={listId}
-          defaultTitle={props.title}
-          boardId={idBoard}
-          idCard={props.id}
-          onCardCreated={onCardCreated}
+          idBoard={boardId}
+          idCard={card.id}
+          onRefresh={onRefresh}
+          setIsNameCard={setIsNameCard}
+          nameCard={nameCard}
           setNameCard={setNameCard}
+          oldValue={card.title}
         />
       )}
-    </div>
+    </li>
   );
 }

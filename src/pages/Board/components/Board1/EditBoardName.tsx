@@ -3,36 +3,44 @@ import instance from '../../../../api/request';
 import editBoardName from './editBoardName.module.scss';
 
 interface props {
-  defaultValue: string;
-  onCardCreated: () => Promise<void>;
+  onRefresh: () => Promise<void>;
   idBoard: string | undefined;
   setInput: React.Dispatch<React.SetStateAction<boolean>>;
   setInputError: React.Dispatch<React.SetStateAction<string>>;
+  nameBoard: string;
+  setNameBoard: React.Dispatch<React.SetStateAction<string>>;
+  oldValue: string;
 }
 
-export function EditBoardName({ defaultValue, onCardCreated, idBoard, setInput, setInputError }: props): JSX.Element {
-  const [inputValue, setInputValue] = useState(defaultValue);
-  const [errorInput, setErrorInput] = useState('');
-
+export function EditBoardName({
+  onRefresh,
+  idBoard,
+  setInput,
+  setInputError,
+  nameBoard,
+  setNameBoard,
+  oldValue,
+}: props): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      setInputValue(event.target.value);
+      setNameBoard(event.target.value);
     }
   };
 
   const editName = async (): Promise<void> => {
-    if (inputValue.trim() === '') {
+    if (nameBoard.trim() === '') {
       setInputError('Ім`я дошки не повинно бути пустим.');
       return;
     }
     try {
-      await instance.put(`/board/${idBoard}`, { title: inputValue });
-      onCardCreated();
+      await instance.put(`/board/${idBoard}`, { title: nameBoard });
+      onRefresh();
       setInput(false);
       setInputError('');
     } catch (error) {
       setInput(false);
       setInputError('Помилка при спробі зміни назви дошки.');
+      setNameBoard(oldValue);
     }
   };
 
@@ -45,7 +53,7 @@ export function EditBoardName({ defaultValue, onCardCreated, idBoard, setInput, 
   return (
     <input
       type="text"
-      value={inputValue}
+      value={nameBoard}
       onChange={handleChange}
       className={editBoardName.input}
       onBlur={editName}

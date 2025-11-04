@@ -13,20 +13,17 @@ export function Board(): JSX.Element {
   const [background, setBackground] = useState('#ffffff');
   const [lists, setLists] = useState<IList[]>([]);
   const [errorText, setErrorText] = useState('');
-  const [inputName, setInputName] = useState(false);
+  const [inputNameBoard, setInputNameBoard] = useState(false);
   const [action, setAction] = useState('');
   const { boardId } = useParams();
-
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
-  const openDialog = (): void => {
-    dialogRef.current?.showModal();
-  };
+  let oldValue = '';
 
   const fetchData = async (): Promise<void> => {
     try {
       const { data } = await instance.get(`/board/${boardId}`);
       setLists(data.lists);
       setTitle(data.title);
+      oldValue = data.title;
       setBackground(data.custom.background);
     } catch (error) {
       setErrorText('Помилка при завантаженні даних');
@@ -35,7 +32,7 @@ export function Board(): JSX.Element {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [boardId]);
 
   const deleteBoard = async (): Promise<void> => {
     try {
@@ -44,6 +41,11 @@ export function Board(): JSX.Element {
     } catch (error) {
       setErrorText('Помилка при видаленні дошки');
     }
+  };
+
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const openDialog = (): void => {
+    dialogRef.current?.showModal();
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -57,9 +59,8 @@ export function Board(): JSX.Element {
     }
   };
 
-  const arrayList = lists?.map((list) => (
-    <List props={list} key={list.id} boardId={boardId} onCardCreated={fetchData} />
-  ));
+  const arrayList = lists?.map((list) => <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} />);
+
   return (
     <div
       style={
@@ -73,16 +74,18 @@ export function Board(): JSX.Element {
       className={boardStyle.board}
     >
       <div className={boardStyle.board__header}>
-        {inputName ? (
+        {inputNameBoard ? (
           <EditBoardName
-            defaultValue={title}
-            onCardCreated={fetchData}
+            onRefresh={fetchData}
             idBoard={boardId}
-            setInput={setInputName}
+            setInput={setInputNameBoard}
             setInputError={setErrorText}
+            nameBoard={title}
+            setNameBoard={setTitle}
+            oldValue={oldValue}
           />
         ) : (
-          <h1 className={boardStyle.board__textHeader} onClick={(): void => setInputName(true)}>
+          <h1 className={boardStyle.board__textHeader} onClick={(): void => setInputNameBoard(true)}>
             {title}
           </h1>
         )}
@@ -92,11 +95,7 @@ export function Board(): JSX.Element {
           <option value="changeBg">Змінити фон дошки</option>
         </select>
       </div>
-      {errorText && (
-        <h2 className={boardStyle.board__textHeader} style={{ color: 'brown' }}>
-          {errorText}
-        </h2>
-      )}
+      {errorText && <h2 className={boardStyle.board__textError}>{errorText}</h2>}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
         <button
@@ -111,7 +110,7 @@ export function Board(): JSX.Element {
         dialogRef={dialogRef}
         boardId={boardId}
         defaultValue={background}
-        onCardCreated={fetchData}
+        onRefresh={fetchData}
         setAction={setAction}
       />
     </div>

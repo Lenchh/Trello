@@ -3,45 +3,48 @@ import instance from '../../../../api/request';
 import cardStyle from './card.module.scss';
 
 interface props {
-  defaultTitle: string;
-  boardId: string | undefined;
-  idCard: number;
   idList: number;
-  onCardCreated: () => Promise<void>;
-  setNameCard: React.Dispatch<React.SetStateAction<boolean>>;
+  idBoard: string | undefined;
+  idCard: number;
+  onRefresh: () => Promise<void>;
+  setIsNameCard: React.Dispatch<React.SetStateAction<boolean>>;
+  nameCard: string;
+  setNameCard: React.Dispatch<React.SetStateAction<string>>;
+  oldValue: string;
 }
 
 export function EditNameCard({
-  defaultTitle,
-  boardId,
+  idBoard,
   idCard,
   idList,
-  onCardCreated,
+  onRefresh,
+  setIsNameCard,
+  nameCard,
   setNameCard,
+  oldValue,
 }: props): JSX.Element {
-  const [inputValue, setInputValue] = useState(defaultTitle || 'Default name');
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      setInputValue(event.target.value);
+      setNameCard(event.target.value);
     }
   };
 
   const editName = async (): Promise<void> => {
-    if (inputValue.trim() === '') {
+    if (nameCard.trim() === '') {
       return;
     }
     try {
-      await instance.put(`/board/${boardId}/card/${idCard}`, { title: inputValue, list_id: idList });
-      onCardCreated();
-      setNameCard(true);
+      await instance.put(`/board/${idBoard}/card/${idCard}`, { title: nameCard, list_id: idList });
+      onRefresh();
+      setIsNameCard(true);
     } catch (error) {
-      setNameCard(true);
+      setIsNameCard(true);
+      setNameCard(oldValue);
     }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (event.key === 'Enter' && inputValue.trim()) {
+    if (event.key === 'Enter') {
       editName();
     }
   };
@@ -49,7 +52,7 @@ export function EditNameCard({
   return (
     <input
       type="text"
-      value={inputValue}
+      value={nameCard}
       className={cardStyle.card__input}
       onChange={handleChange}
       onBlur={editName}

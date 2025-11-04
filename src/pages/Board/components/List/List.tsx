@@ -7,22 +7,23 @@ import { EditNameList } from './EditNameList';
 import listStyle from './list.module.scss';
 
 interface IListProps {
-  props: IList;
+  list: IList;
   boardId: string | undefined;
-  onCardCreated: () => Promise<void>;
+  onRefresh: () => Promise<void>;
 }
 
-export function List({ props, boardId, onCardCreated }: IListProps): JSX.Element {
-  const [nameList, setNameList] = useState(true);
+export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
+  const [isNameList, setIsNameList] = useState(true);
+  const [nameList, setNameList] = useState(list.title);
 
-  const arrayCards = props.cards.map((card) => (
-    <Card props={card} listId={props.id} key={card.id} idBoard={boardId} onCardCreated={onCardCreated} />
+  const arrayCards = list.cards.map((card) => (
+    <Card card={card} listId={list.id} key={card.id} boardId={boardId} onRefresh={onRefresh} />
   ));
 
   const deleteList = async (): Promise<void> => {
     try {
-      await instance.delete(`/board/${boardId}/list/${props.id}`);
-      onCardCreated();
+      await instance.delete(`/board/${boardId}/list/${list.id}`);
+      onRefresh();
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -30,24 +31,26 @@ export function List({ props, boardId, onCardCreated }: IListProps): JSX.Element
   };
   return (
     <div className={listStyle.list}>
-      {nameList && props.title ? (
-        <h2 className={listStyle.list__header} onClick={(): void => setNameList(false)}>
-          {props.title}
+      {isNameList && list.title ? (
+        <h2 className={listStyle.list__header} onClick={(): void => setIsNameList(false)}>
+          {nameList}
         </h2>
       ) : (
         <EditNameList
-          defaultTitle={props.title}
           boardId={boardId}
-          idList={props.id}
-          onCardCreated={onCardCreated}
+          listId={list.id}
+          onRefresh={onRefresh}
+          setIsNameList={setIsNameList}
+          nameList={nameList}
           setNameList={setNameList}
+          oldValue={list.title}
         />
       )}
       <ul className={listStyle.list__cards}>{arrayCards}</ul>
       <button
         type="button"
         className={listStyle.list__createButton}
-        onClick={(): Promise<void> => createCard(boardId, onCardCreated, props.id)}
+        onClick={(): Promise<void> => createCard(boardId, onRefresh, list.id)}
       >
         Створити карточку
       </button>

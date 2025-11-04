@@ -8,13 +8,13 @@ body {
 
 
 .board {
-    @include theme-container($width-container: 90%, $margin-container: 20px auto, 
-                             $background-container: var(--bg-color), 
-                             $border-container: 2px solid $color-secondary, 
-                             $border-radius: $border-radius);
+    @include theme-container($width-container: 90%, $margin-container: 20px auto,
+        $background-container: var(--bg-color),
+        $border-container: 2px solid $color-secondary,
+        $border-radius: $border-radius);
     max-width: 2440px;
     box-shadow: $shadow-background;
-    
+
 
     &__header {
         display: flex;
@@ -26,11 +26,11 @@ body {
     }
 
     &__textHeader {
-        @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head, 
-                            $font-family-head: $font-primary);
-                            cursor: pointer;
-                            border: 1px solid var(--bg-color);
-                            border-radius: $border-radius;
+        @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head,
+            $font-family-head: $font-primary);
+        cursor: pointer;
+        border: 1px solid var(--bg-color);
+        border-radius: $border-radius;
 
         &:hover {
             background-color: var(--bg-color);
@@ -38,11 +38,22 @@ body {
         }
     }
 
+    &__textError {
+        @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head,
+            $font-family-head: $font-primary);
+        cursor: pointer;
+        border: 1px solid var(--bg-color);
+        border-radius: $border-radius;
+        background-color: var(--bg-color);
+        border-color: $color-text-list;
+    }
+
     &__lists {
         margin: 10px auto 0 auto;
         padding: 10px;
         display: flex;
         overflow-x: auto;
+
         div {
             display: flex;
         }
@@ -50,10 +61,10 @@ body {
 
     &__createButton {
         @include theme-button;
-        align-self:flex-start;
+        align-self: flex-start;
         margin: 10px 5px;
-        flex-shrink: 0; 
-        height: 100px; 
+        flex-shrink: 0;
+        height: 100px;
         width: 120px;
         font-size: 18px;
     }
@@ -63,10 +74,10 @@ body {
         margin: 10px;
 
         &:hover {
-        background-color: $color-primary;
-        color: var(--bg-color);
-        border: 1px solid black;
-        box-shadow: $shadow-background-list; 
+            background-color: $color-primary;
+            color: var(--bg-color);
+            border: 1px solid black;
+            box-shadow: $shadow-background-list;
         }
     }
 }

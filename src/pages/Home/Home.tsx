@@ -50,7 +50,7 @@ export function Home(): JSX.Element {
           + Створити дошку
         </button>
       </div>
-      <BoardCreation dialogRef={dialogRef} onCardCreated={fetchData} />
+      <BoardCreation dialogRef={dialogRef} onRefresh={fetchData} />
     </div>
   );
 }
