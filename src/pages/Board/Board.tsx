@@ -7,26 +7,27 @@ import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
 import { createList } from './components/List/CreateList';
 import { EditBackBoard } from './components/Board1/EditBackBoard';
+import { toastrError } from '../../common/toastr/error/toastr-options-error';
+import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 
 export function Board(): JSX.Element {
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('#ffffff');
   const [lists, setLists] = useState<IList[]>([]);
-  const [errorText, setErrorText] = useState('');
   const [inputNameBoard, setInputNameBoard] = useState(false);
   const [action, setAction] = useState('');
   const { boardId } = useParams();
-  let oldValue = '';
+  const [oldValue, setOldValue] = useState('');
 
   const fetchData = async (): Promise<void> => {
     try {
       const { data } = await instance.get(`/board/${boardId}`);
       setLists(data.lists);
       setTitle(data.title);
-      oldValue = data.title;
+      setOldValue(data.title);
       setBackground(data.custom.background);
     } catch (error) {
-      setErrorText('Помилка при завантаженні даних');
+      toastrError('Помилка при завантаженні даних', 'Помилка');
     }
   };
 
@@ -37,9 +38,9 @@ export function Board(): JSX.Element {
   const deleteBoard = async (): Promise<void> => {
     try {
       await instance.delete(`/board/${boardId}`);
-      setErrorText('Дошку успішно видалено.');
+      toastrSuccess('Дошку успішно видалено.', 'Успіх');
     } catch (error) {
-      setErrorText('Помилка при видаленні дошки');
+      toastrError('Помилка при видаленні дошки', 'Помилка');
     }
   };
 
@@ -79,7 +80,6 @@ export function Board(): JSX.Element {
             onRefresh={fetchData}
             idBoard={boardId}
             setInput={setInputNameBoard}
-            setInputError={setErrorText}
             nameBoard={title}
             setNameBoard={setTitle}
             oldValue={oldValue}
@@ -95,13 +95,12 @@ export function Board(): JSX.Element {
           <option value="changeBg">Змінити фон дошки</option>
         </select>
       </div>
-      {errorText && <h2 className={boardStyle.board__textError}>{errorText}</h2>}
       <div className={boardStyle.board__lists}>
         <div>{arrayList}</div>
         <button
           type="button"
           className={boardStyle.board__createButton}
-          onClick={(): Promise<void> => createList(boardId, fetchData, setErrorText)}
+          onClick={(): Promise<void> => createList(boardId, fetchData)}
         >
           Створити список
         </button>

@@ -1,4 +1,5 @@
 import instance from '../../../../api/request';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 export async function createCard(
   boardId: string | undefined,
@@ -9,7 +10,6 @@ export async function createCard(
     await instance.post(`/board/${boardId}/card`, { title: '', list_id: listId, position: 1 });
     onRefresh();
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('Помилка при створенні картки.');
+    toastrError('Помилка при створенні картки', 'Помилка');
   }
 }

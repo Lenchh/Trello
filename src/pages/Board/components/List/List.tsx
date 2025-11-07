@@ -5,6 +5,8 @@ import instance from '../../../../api/request';
 import { createCard } from '../Card/CreateCard';
 import { EditNameList } from './EditNameList';
 import listStyle from './list.module.scss';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface IListProps {
   list: IList;
@@ -24,9 +26,9 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
     try {
       await instance.delete(`/board/${boardId}/list/${list.id}`);
       onRefresh();
+      toastrSuccess('Список успішно видалений', 'Успіх');
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      toastrError('Помилка при видаленні списку', 'Помилка');
     }
   };
   return (

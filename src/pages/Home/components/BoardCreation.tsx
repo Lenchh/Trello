@@ -1,6 +1,9 @@
 import { ChangeEvent, JSX, useRef, useState } from 'react';
 import instance from '../../../api/request';
 import homeStyle from '../home.module.scss';
+import { toastrInfo } from '../../../common/toastr/info/toastr-options-info';
+import { toastrSuccess } from '../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../common/toastr/error/toastr-options-error';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -11,12 +14,10 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   const [inputValue, setInputValue] = useState<string>('');
   const [inputBackground, setInputBackground] = useState<string>('#136CF1');
   const [selectedOption, setSelectedOption] = useState('color');
-  const [errorCreateBoard, setErrorCreateBoard] = useState('');
   const imageBackgroundRef = useRef<HTMLInputElement>(null);
 
   const closeDialog = (): void => {
     if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
-    setErrorCreateBoard('');
     setInputValue('');
     setInputBackground('#136CF1');
     dialogRef.current?.close();
@@ -25,15 +26,16 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   const createBoard = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     if (inputValue.trim() === '') {
-      setErrorCreateBoard("Ім'я дошки не повинно бути пустим.");
+      toastrInfo("Ім'я дошки не повинно бути пустим", 'Інформація');
       return;
     }
     try {
       await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: inputBackground } });
       onRefresh();
       closeDialog();
+      toastrSuccess('Дошка успішно створена', 'Успіх');
     } catch (error) {
-      setErrorCreateBoard('Помилка при створенні дошки.');
+      toastrError('Помилка при створенні дошки', 'Помилка');
     }
   };
 
@@ -65,11 +67,6 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   return (
     <dialog ref={dialogRef} className={homeStyle.home__dialog}>
       <h2 className={homeStyle.home__dialog__header}>Створення дошки</h2>
-      {errorCreateBoard && (
-        <div className={homeStyle.home__header} style={{ color: 'red' }}>
-          {errorCreateBoard}
-        </div>
-      )}
       <form onSubmit={createBoard}>
         <label className={homeStyle.home__dialog__form}>
           Ім'я дошки:

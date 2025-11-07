@@ -1,6 +1,8 @@
 import { ChangeEvent, JSX, useRef, useState } from 'react';
 import instance from '../../../../api/request';
 import homeStyle from '../../../Home/home.module.scss';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -27,9 +29,9 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
       await instance.put(`/board/${boardId}`, { custom: { background: inputBackground } });
       onRefresh();
       closeDialog();
+      toastrSuccess('Фон дошки успішно змінений', 'Успіх');
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      toastrError('Помилка при спробі змінити фону дошки', 'Помилка');
     }
   };
 

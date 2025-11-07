@@ -1,26 +1,20 @@
-import { ChangeEvent, JSX, useState } from 'react';
+import { ChangeEvent, JSX } from 'react';
 import instance from '../../../../api/request';
 import editBoardName from './editBoardName.module.scss';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
 
 interface props {
   onRefresh: () => Promise<void>;
   idBoard: string | undefined;
   setInput: React.Dispatch<React.SetStateAction<boolean>>;
-  setInputError: React.Dispatch<React.SetStateAction<string>>;
   nameBoard: string;
   setNameBoard: React.Dispatch<React.SetStateAction<string>>;
   oldValue: string;
 }
 
-export function EditBoardName({
-  onRefresh,
-  idBoard,
-  setInput,
-  setInputError,
-  nameBoard,
-  setNameBoard,
-  oldValue,
-}: props): JSX.Element {
+export function EditBoardName({ onRefresh, idBoard, setInput, nameBoard, setNameBoard, oldValue }: props): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameBoard(event.target.value);
@@ -29,18 +23,18 @@ export function EditBoardName({
 
   const editName = async (): Promise<void> => {
     if (nameBoard.trim() === '') {
-      setInputError('Ім`я дошки не повинно бути пустим.');
+      toastrInfo('Ім`я дошки не повинно бути пустим', 'Інформація');
       return;
     }
     try {
       await instance.put(`/board/${idBoard}`, { title: nameBoard });
       onRefresh();
       setInput(false);
-      setInputError('');
+      toastrSuccess('Дані успішно змінені', 'Успіх');
     } catch (error) {
       setInput(false);
-      setInputError('Помилка при спробі зміни назви дошки.');
       setNameBoard(oldValue);
+      toastrError('Помилка при спробі змінити дані', 'Помилка');
     }
   };
 

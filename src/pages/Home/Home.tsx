@@ -5,10 +5,10 @@ import { BoardCreation } from './components/BoardCreation';
 import instance from '../../api/request';
 import homeStyle from './home.module.scss';
 import { IBoard } from '../../common/interfaces/IBoard';
+import { toastrError } from '../../common/toastr/error/toastr-options-error';
 
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
-  const [errorText, setErrorText] = useState<string>('');
 
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const openDialog = (): void => {
@@ -20,9 +20,7 @@ export function Home(): JSX.Element {
       const res = await instance.get('/board');
       setBoards(res.data.boards);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
-      setErrorText('Помилка при завантаженні дошок');
+      toastrError('Помилка при завантаженні дошок', 'Помилка');
     }
   };
 
@@ -39,11 +37,6 @@ export function Home(): JSX.Element {
   return (
     <div className={homeStyle.home}>
       <h1 className={homeStyle.home__header}>Мої дошки</h1>
-      {errorText && (
-        <div className={homeStyle.home__header} style={{ color: 'red' }}>
-          {errorText}
-        </div>
-      )}
       <div className={homeStyle.home__boards}>
         {arrayBoards}
         <button type="button" className={homeStyle.home__button} onClick={openDialog}>

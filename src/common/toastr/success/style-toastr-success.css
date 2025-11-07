@@ -1,0 +1,26 @@
+#toast-container>.toast-success {
+  background-image: url('../../images/success.svg') !important;
+  padding-left: 60px !important;
+}
+
+.style-toast-success {
+    width: 400px !important;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.80rem;
+    border-radius: 1rem !important;
+    background-color: #edf1fd;
+    color: #01081e !important;
+    border: 2px solid #62f136 !important;
+}
+
+.closebtn{
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  background-color:#ccd7fc !important;
+}
+
+.closebtn>i{
+  color:#000617;
+  font-weight:500;
+}

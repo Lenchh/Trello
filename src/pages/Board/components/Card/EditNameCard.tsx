@@ -1,6 +1,9 @@
-import { ChangeEvent, JSX, useState } from 'react';
+import { ChangeEvent, JSX } from 'react';
 import instance from '../../../../api/request';
 import cardStyle from './card.module.scss';
+import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface props {
   idList: number;
@@ -31,15 +34,18 @@ export function EditNameCard({
 
   const editName = async (): Promise<void> => {
     if (nameCard.trim() === '') {
+      toastrInfo("Ім'я картки не повинно бути пустим", 'Інформація');
       return;
     }
     try {
       await instance.put(`/board/${idBoard}/card/${idCard}`, { title: nameCard, list_id: idList });
       onRefresh();
       setIsNameCard(true);
+      toastrSuccess('Дані збережено', 'Успіх');
     } catch (error) {
       setIsNameCard(true);
       setNameCard(oldValue);
+      toastrError('Помилка при спробі змінити дані', 'Помилка');
     }
   };
 

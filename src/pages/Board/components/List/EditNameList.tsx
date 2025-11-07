@@ -1,6 +1,9 @@
-import { ChangeEvent, JSX, useState } from 'react';
+import { ChangeEvent, JSX } from 'react';
 import instance from '../../../../api/request';
 import listStyle from './list.module.scss';
+import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface props {
   boardId: string | undefined;
@@ -23,22 +26,24 @@ export function EditNameList({
 }: props): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
-      // setInputValue(event.target.value);
       setNameList(event.target.value);
     }
   };
 
   const editName = async (): Promise<void> => {
     if (nameList.trim() === '') {
+      toastrInfo("Ім'я списку не може бути пустим", 'Інформація');
       return;
     }
     try {
       await instance.put(`/board/${boardId}/list/${listId}`, { title: nameList });
       onRefresh();
       setIsNameList(true);
+      toastrSuccess('Дані збережено', 'Успіх');
     } catch (error) {
       setIsNameList(true);
       setNameList(oldValue);
+      toastrError('Помилка при спробі змінити дані', 'Помилка');
     }
   };
 
