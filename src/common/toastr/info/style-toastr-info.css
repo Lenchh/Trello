@@ -25,3 +25,11 @@
   color:#000617;
   font-weight:500;
 }
+
+@media screen and (max-width:568px) {
+  #toast-container>.toast-info {
+    max-width: 70%;
+    position: fixed;
+    right: 10px !important;
+  }
+}

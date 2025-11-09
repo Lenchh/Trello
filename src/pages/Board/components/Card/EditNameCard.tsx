@@ -26,7 +26,7 @@ export function EditNameCard({
   setNameCard,
   oldValue,
 }: props): JSX.Element {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameCard(event.target.value);
     }
@@ -35,6 +35,10 @@ export function EditNameCard({
   const editName = async (): Promise<void> => {
     if (nameCard.trim() === '') {
       toastrInfo("Ім'я картки не повинно бути пустим", 'Інформація');
+      return;
+    }
+    if (nameCard.trim() === oldValue) {
+      setIsNameCard(true);
       return;
     }
     try {
@@ -49,15 +53,14 @@ export function EditNameCard({
     }
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>): void => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>): void => {
     if (event.key === 'Enter') {
       editName();
     }
   };
 
   return (
-    <input
-      type="text"
+    <textarea
       value={nameCard}
       className={cardStyle.card__input}
       onChange={handleChange}

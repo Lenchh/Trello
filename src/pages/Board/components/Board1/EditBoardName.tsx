@@ -26,6 +26,10 @@ export function EditBoardName({ onRefresh, idBoard, setInput, nameBoard, setName
       toastrInfo('Ім`я дошки не повинно бути пустим', 'Інформація');
       return;
     }
+    if (nameBoard.trim() === oldValue) {
+      setInput(false);
+      return;
+    }
     try {
       await instance.put(`/board/${idBoard}`, { title: nameBoard });
       onRefresh();

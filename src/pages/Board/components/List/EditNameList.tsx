@@ -35,6 +35,10 @@ export function EditNameList({
       toastrInfo("Ім'я списку не може бути пустим", 'Інформація');
       return;
     }
+    if (nameList.trim() === oldValue) {
+      setIsNameList(true);
+      return;
+    }
     try {
       await instance.put(`/board/${boardId}/list/${listId}`, { title: nameList });
       onRefresh();
