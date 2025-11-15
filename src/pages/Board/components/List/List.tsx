@@ -7,6 +7,7 @@ import { EditNameList } from './EditNameList';
 import listStyle from './list.module.scss';
 import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
 import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import cardStyle from '../Card/card.module.scss';
 
 interface IListProps {
   list: IList;
@@ -16,10 +17,19 @@ interface IListProps {
 
 export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
   const [isNameList, setIsNameList] = useState(true);
-  const [nameList, setNameList] = useState(list.title);
+  const [nameList, setNameList] = useState(list.title || 'Default name');
+  const [isDragging, setIsDragging] = useState<number | null>(null);
 
   const arrayCards = list.cards.map((card) => (
-    <Card card={card} listId={list.id} key={card.id} boardId={boardId} onRefresh={onRefresh} />
+    <Card
+      card={card}
+      listId={list.id}
+      key={card.id}
+      boardId={boardId}
+      onRefresh={onRefresh}
+      isDragging={isDragging}
+      setIsDragging={setIsDragging}
+    />
   ));
 
   const deleteList = async (): Promise<void> => {
@@ -31,6 +41,25 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
       toastrError('Помилка при видаленні списку', 'Помилка');
     }
   };
+
+  function handleDragOver(e: React.DragEvent<HTMLUListElement>): void {
+    e.preventDefault();
+  }
+
+  function handleDragEnter(e: React.DragEvent<HTMLUListElement>): void {
+    const elementUnder = e.target as HTMLDivElement;
+    if (elementUnder.classList.contains(cardStyle.card__textCard)) {
+      const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
+      oldSlot?.classList.add(cardStyle.hidden);
+      const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
+      greySlot?.classList.remove(cardStyle.hidden);
+    }
+  }
+
+  function handleDragLeave(e: React.DragEvent<HTMLUListElement>): void {
+    const elementUnder = e.target as HTMLDivElement;
+    const elementUnder2 = e.relatedTarget as HTMLDivElement;
+  }
   return (
     <div className={listStyle.list}>
       {isNameList && list.title ? (
@@ -48,11 +77,18 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
           oldValue={list.title}
         />
       )}
-      <ul className={listStyle.list__cards}>{arrayCards}</ul>
+      <ul
+        onDragOver={handleDragOver}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        className={listStyle.list__cards}
+      >
+        {arrayCards}
+      </ul>
       <button
         type="button"
         className={listStyle.list__createButton}
-        onClick={(): Promise<void> => createCard(boardId, onRefresh, list.id)}
+        onClick={(): Promise<void> => createCard(boardId, onRefresh, list.id, list.cards.length + 1)}
       >
         Створити карточку
       </button>
