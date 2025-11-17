@@ -10,6 +10,7 @@
     display: flex;
     flex-direction: column;
     align-self: flex-start;
+    
 
     &__header {
         @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
@@ -44,6 +45,9 @@
 
     &__createButton {
         @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
+        margin-bottom: 10px;
+        width: 90%;
+        margin: 0 auto;
         margin-bottom: 10px;
     }
 }

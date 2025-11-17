@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+.home {
+  border: 2px solid #136CF1;
+  border-radius: 12px;
+  color: #136CF1;
+  padding: 5px;
+  margin: 5px 0 0 5px;
+  margin-top: 5px;
+  font-size: 18px;
+  background-image: url('./common/images/home.svg');
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  background-position: left;
+
+}
+
+.home:hover {
+  background-color: #136CF1;
+  color: #ffffff;
+  background-image: url('./common/images/homeHover.svg');
+}

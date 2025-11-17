@@ -74,9 +74,9 @@ export function Card({ card, listId, boardId, onRefresh, isDragging, setIsDraggi
       </li>
       {/* {isSlot && ( */}
       <div className={`${cardStyle.card__greySlot} ${cardStyle.hidden}`} data-id={card.id}>
-        {nameCard}
+        {card.title}
       </div>
-      {/* // )} */}
+      {/* // */}
     </>
   );
 }

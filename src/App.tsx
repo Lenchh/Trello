@@ -8,8 +8,9 @@ function App(): JSX.Element {
   return (
     <BrowserRouter basename="/Trello">
       <nav>
-        <Link to="/">Home</Link>
-        <Link to="/board">Board</Link>
+        <Link to="/" className="home">
+          Home
+        </Link>
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />

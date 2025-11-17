@@ -14,6 +14,7 @@ body {
         $border-radius: $border-radius);
     max-width: 2440px;
     box-shadow: $shadow-background;
+    min-height: 85vh;
 
 
     &__header {

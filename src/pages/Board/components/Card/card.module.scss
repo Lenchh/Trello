@@ -16,8 +16,7 @@
         $background-container: $color-primary,
         $border-container: 1px solid $color-primary,
         $border-radius: $border-radius);
-    box-shadow: $shadow-primary;
-   
+   background-color: rgb(255, 255, 255);
 
     &__textCard {
         @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text,
@@ -49,6 +48,7 @@
         @extend .card;
         background-color: rgba(128, 128, 128, 0.475);
         color: rgba(128, 128, 128, 0);
+        min-height: 30px;
         max-height: 50px;
         overflow-y: auto;  
         overflow-x: hidden;

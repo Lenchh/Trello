@@ -15,10 +15,12 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   const [inputBackground, setInputBackground] = useState<string>('#136CF1');
   const [selectedOption, setSelectedOption] = useState('color');
   const imageBackgroundRef = useRef<HTMLInputElement>(null);
+  const [nameFile, setNameFile] = useState('');
 
   const closeDialog = (): void => {
     if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
     setInputValue('');
+    setNameFile('');
     setInputBackground('#136CF1');
     dialogRef.current?.close();
   };
@@ -60,6 +62,7 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
     const reader = new FileReader();
     reader.onload = (): void => {
       setInputBackground(reader.result as string);
+      setNameFile(reader.result as string);
     };
     reader.readAsDataURL(file);
   };
@@ -105,7 +108,17 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
               className={homeStyle.home__dialog__input}
             />
           ) : (
-            <input key="image" ref={imageBackgroundRef} type="file" accept="image/*" onChange={handleImage} />
+            <>
+              <input
+                key="image"
+                ref={imageBackgroundRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                className={homeStyle.custom_file_input}
+              />
+              {nameFile && <img src={nameFile} alt="" className={homeStyle.imgBack} />}
+            </>
           )}
         </div>
         <div className={homeStyle.home__dialog__buttons}>

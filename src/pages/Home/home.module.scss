@@ -50,18 +50,18 @@ a {
         border-radius: $border-radius;
 
         &__header {
-            @include theme-header($padding-head: 15px, $color-head: $color-dark, $font-size-header: $font-size-head,
+            @include theme-header($padding-head: 10px, $color-head: $color-dark, $font-size-header: $font-size-head,
                 $font-family-head: $font-primary);
-            padding-bottom: 5px;
             padding-right: 0;
         }
 
         &__form {
-            @include theme-header($padding-head: 8px, $color-head: black, $font-size-header: $font-size-head-list,
+            @include theme-header($padding-head: 0, $color-head: black, $font-size-header: $font-size-head-list,
                 $font-family-head: $font-primary);
             font-weight: bold;
             padding-right: 0;
             display: block;
+            padding-left: 10px;
         }
 
         &__input {
@@ -91,8 +91,56 @@ a {
     }
 
     @media screen and (max-width:768px) {
-    &__dialog {
-       width: 60%;
+        &__dialog {
+            width: 60%;
+        }
     }
 }
+
+.custom_file_input {
+    color: transparent;
+}
+
+.custom_file_input::-webkit-file-upload-button {
+    visibility: hidden;
+}
+
+.custom_file_input::before {
+    content: 'Select some files';
+    color: #136CF1;
+    display: inline-block;
+    background: #f9f9f9;
+    border: 2px solid #136CF1;
+    border-radius: 12px;
+    padding: 5px 8px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    text-shadow: 1px 1px #fff;
+    font-weight: 700;
+    font-size: 10pt;
+}
+
+.custom_file_input:hover::before {
+    border-color: black;
+    background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+    color: black;
+}
+
+.custom_file_input:active {
+    outline: 0;
+}
+
+.custom_file_input:active::before {
+    background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.imgBack {
+    width: 100px;
+    height: 80px;
+    border: 2px solid #136CF1;
+    border-radius: 12px;
+    display: block;
+    margin: 10px;
 }

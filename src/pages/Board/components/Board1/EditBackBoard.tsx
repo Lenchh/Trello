@@ -16,10 +16,12 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
   const [inputBackground, setInputBackground] = useState(defaultValue);
   const [selectedOption, setSelectedOption] = useState('color');
   const imageBackgroundRef = useRef<HTMLInputElement>(null);
+  const [nameFile, setNameFile] = useState('');
 
   const closeDialog = (): void => {
     if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
     dialogRef.current?.close();
+    setNameFile('');
     setAction('');
   };
 
@@ -50,6 +52,7 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
     const reader = new FileReader();
     reader.onload = (): void => {
       setInputBackground(reader.result as string);
+      setNameFile(reader.result as string);
     };
     reader.readAsDataURL(file);
   };
@@ -58,7 +61,7 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
     <dialog ref={dialogRef} className={homeStyle.home__dialog}>
       <h2 className={homeStyle.home__dialog__header}>Редагування фону дошки</h2>
       <form onSubmit={editBackground}>
-        <label className={homeStyle.home__dialog__form}>
+        <div className={homeStyle.home__dialog__form}>
           Колір Фону:
           <br />
           <label>
@@ -91,9 +94,19 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
               className={homeStyle.home__dialog__input}
             />
           ) : (
-            <input key="image" ref={imageBackgroundRef} type="file" accept="image/*" onChange={handleImage} />
+            <>
+              <input
+                key="image"
+                ref={imageBackgroundRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImage}
+                className={homeStyle.custom_file_input}
+              />
+              {nameFile && <img src={nameFile} alt="" className={homeStyle.imgBack} />}
+            </>
           )}
-        </label>
+        </div>
         <div className={homeStyle.home__dialog__buttons}>
           <button type="submit" className={homeStyle.home__dialog__button}>
             Надіслати
