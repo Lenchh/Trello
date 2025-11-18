@@ -1,4 +1,4 @@
-import { JSX, useState, useEffect, useRef } from 'react';
+import { JSX, useState, useEffect, useRef, CSSProperties } from 'react';
 import { useParams } from 'react-router-dom';
 import instance from '../../api/request';
 import { EditBoardName } from './components/Board1/EditBoardName';
@@ -60,20 +60,19 @@ export function Board(): JSX.Element {
     }
   };
 
+  function selectBackground(back: string): CSSProperties {
+    return back.startsWith('data')
+      ? { backgroundImage: `url(${back})`, backgroundSize: 'cover', backgroundPosition: 'center center' }
+      : ({
+          backgroundColor: back,
+          '--bg-color': back,
+        } as React.CSSProperties);
+  }
+
   const arrayList = lists?.map((list) => <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} />);
 
   return (
-    <div
-      style={
-        background.startsWith('data')
-          ? { backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center center' }
-          : ({
-              backgroundColor: background,
-              '--bg-color': background,
-            } as React.CSSProperties)
-      }
-      className={boardStyle.board}
-    >
+    <div style={selectBackground(background)} className={boardStyle.board}>
       <div className={boardStyle.board__header}>
         {inputNameBoard ? (
           <EditBoardName

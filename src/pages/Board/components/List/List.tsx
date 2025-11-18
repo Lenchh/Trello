@@ -42,18 +42,57 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
     }
   };
 
+  function selectGreySlot(
+    cursorPosition: number,
+    draggingItem: HTMLLIElement,
+    targetElement: HTMLElement,
+    elementList: HTMLUListElement
+  ): void {
+    // const parent1 = currentElement.parentElement;
+    // const parent = parent1?.parentElement;
+    // if (!parent) return;
+    const currentElementCoord = targetElement.getBoundingClientRect();
+    const currentElementCenter = currentElementCoord.top + currentElementCoord.height / 2;
+    if (cursorPosition <= currentElementCenter) {
+      if (targetElement.previousElementSibling !== draggingItem) {
+        elementList.insertBefore(draggingItem, targetElement);
+      }
+    } else if (cursorPosition > currentElementCenter) {
+      if (targetElement.nextElementSibling !== draggingItem) {
+        elementList.insertBefore(draggingItem, targetElement.nextElementSibling);
+      }
+    }
+    // greySlot?.classList.remove(cardStyle.hidden);
+  }
+
   function handleDragOver(e: React.DragEvent<HTMLUListElement>): void {
     e.preventDefault();
+    const elementList = e.currentTarget;
+    const draggingItem = document.querySelector(`.${cardStyle.card__dragging}`) as HTMLLIElement;
+    // toastrSuccess(`${elementList}`, 'elementList');
+    // toastrSuccess(`${draggingItem}`, 'draggingItem');
+    const targetElement = (e.target as HTMLElement).closest('li');
+    if (!draggingItem || !targetElement || draggingItem === targetElement) {
+      return;
+    }
+    selectGreySlot(e.clientY, draggingItem, targetElement, elementList);
+    // // if (elementUnder.classList.contains(listStyle.list__cards) && !elementUnder.hasChildNodes()) {
+    // if (elementUnder.classList.contains(cardStyle.card__textCard)) {
+    //   const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
+    //   oldSlot?.classList.add(cardStyle.hidden);
+    //   const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
+    //   selectGreySlot(e.clientY, elementUnder, greySlot!);
+    // }
   }
 
   function handleDragEnter(e: React.DragEvent<HTMLUListElement>): void {
     const elementUnder = e.target as HTMLDivElement;
-    if (elementUnder.classList.contains(cardStyle.card__textCard)) {
-      const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
-      oldSlot?.classList.add(cardStyle.hidden);
-      const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
-      greySlot?.classList.remove(cardStyle.hidden);
-    }
+    // if (elementUnder.classList.contains(cardStyle.card__textCard)) {
+    //   const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
+    //   oldSlot?.classList.add(cardStyle.hidden);
+    //   const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
+    //   selectGreySlot(e.clientY, elementUnder, greySlot!);
+    // }
   }
 
   function handleDragLeave(e: React.DragEvent<HTMLUListElement>): void {

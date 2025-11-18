@@ -2,13 +2,13 @@
 @import "/src/styles/mixins.scss";
 
 .hidden {
-  opacity: 0;
-  position: absolute;
-  left: -9999px;
+    opacity: 0;
+    position: absolute;
+    left: -9999px;
 }
 
 .selected {
-  opacity: 1;
+    opacity: 1;
 }
 
 .card {
@@ -16,21 +16,21 @@
         $background-container: $color-primary,
         $border-container: 1px solid $color-primary,
         $border-radius: $border-radius);
-   background-color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
 
     &__textCard {
         @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text,
             $font-family-head: $font-primary);
-            display: block;
-            width: 95%;
-            max-height: 50px;
-            overflow-y: auto;  
-            overflow-x: hidden;
-            border: 1px solid $color-primary;
-            border-radius: $border-radius;
-            word-break: break-all;
+        display: block;
+        width: 95%;
+        max-height: 50px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        border: 1px solid $color-primary;
+        border-radius: $border-radius;
+        word-break: break-all;
 
-         &:active {
+        &:active {
             background-color: rgba(128, 128, 128, 0.475);
             border: 1px solid $color-primary;
             border-radius: $border-radius;
@@ -44,13 +44,13 @@
         cursor: pointer;
     }
 
-     &__greySlot {
+    &__greySlot {
         @extend .card;
         background-color: rgba(128, 128, 128, 0.475);
         color: rgba(128, 128, 128, 0);
         min-height: 30px;
         max-height: 50px;
-        overflow-y: auto;  
+        overflow-y: auto;
         overflow-x: hidden;
         word-break: break-all;
     }
@@ -59,7 +59,7 @@
         @extend .card;
         background-color: rgba(128, 128, 128, 0.475);
         max-height: 50px;
-        overflow-y: auto;  
+        overflow-y: auto;
         overflow-x: hidden;
         word-break: break-all;
         color: black;
@@ -76,5 +76,26 @@
         border-radius: $border-radius;
         width: 100%;
         resize: vertical;
+    }
+
+    &__dragging {
+        background-color: #929396;
+        /* Цвет слота */
+        border: 2px dashed #c1c7d0;
+        /* Пунктир (как у слота) */
+        box-shadow: none;
+        color: transparent;
+        /* Скрываем текст */
+
+        /* Важно: */
+        opacity: 1;
+        /* НЕ 0! Мы хотим видеть этот серый блок */
+        cursor: grabbing;
+    }
+
+    /* Скрываем все дочерние элементы внутри слота, чтобы не мешались */
+    &__dragging>* {
+        opacity: 0;
+        pointer-events: none;
     }
 }

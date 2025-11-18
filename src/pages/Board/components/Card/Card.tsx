@@ -21,20 +21,19 @@ export function Card({ card, listId, boardId, onRefresh, isDragging, setIsDraggi
   const thisIsDragging = isDragging === card.id;
 
   function handleDragStart(e: React.DragEvent<HTMLLIElement>): void {
-    // e.dataTransfer.setData('text/plain', card.title);
-    // e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.effectAllowed = 'move';
     const target = e.currentTarget;
-    target.classList.add(cardStyle.selected);
+    // target.classList.add(cardStyle.selected);
     const slot = document.createElement('div');
     slot.classList.add(cardStyle.card__ghost);
     slot.textContent = card.title;
     document.body.appendChild(slot);
     e.dataTransfer.setDragImage(slot, slot.offsetWidth / 2, slot.offsetHeight / 2);
-    const greySlot = document.querySelector(`[data-id="${card.id}"].${cardStyle.card__greySlot}`);
-    greySlot?.classList.remove(cardStyle.hidden);
+    // const greySlot = document.querySelector(`[data-id="${card.id}"].${cardStyle.card__greySlot}`);
+    // greySlot?.classList.remove(cardStyle.hidden);
     setTimeout(() => {
       document.body.removeChild(slot);
-      setSlot(true);
+      // setSlot(true);
       setIsDragging(card.id);
     }, 0);
   }
@@ -42,19 +41,21 @@ export function Card({ card, listId, boardId, onRefresh, isDragging, setIsDraggi
   function handleDragEnd(e: React.DragEvent<HTMLLIElement>): void {
     // eslint-disable-next-line no-console
     console.log('Что-то проверяем');
-    const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
-    oldSlot?.classList.add(cardStyle.hidden);
+    // const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
+    // oldSlot?.classList.add(cardStyle.hidden);
     setIsDragging(null);
-    setSlot(false);
+    // setSlot(false);
   }
   return (
     <>
       <li
-        className={`${cardStyle.card} ${thisIsDragging ? cardStyle.hidden : ''}`}
+        className={`${cardStyle.card} ${thisIsDragging ? cardStyle.card__dragging : ''}`}
         draggable="true"
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        data-id={card.id}
       >
+        {}
         {isNameCard && card.title ? (
           <div className={cardStyle.card__textCard} onClick={(): void => setIsNameCard(false)} data-id={card.id}>
             {nameCard}
@@ -73,9 +74,9 @@ export function Card({ card, listId, boardId, onRefresh, isDragging, setIsDraggi
         )}
       </li>
       {/* {isSlot && ( */}
-      <div className={`${cardStyle.card__greySlot} ${cardStyle.hidden}`} data-id={card.id}>
+      {/* <div className={`${cardStyle.card__greySlot} ${cardStyle.hidden}`} data-id={card.id}>
         {card.title}
-      </div>
+      </div> */}
       {/* // */}
     </>
   );
