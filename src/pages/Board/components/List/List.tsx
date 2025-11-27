@@ -1,4 +1,4 @@
-import { JSX, useState } from 'react';
+import React, { JSX, useRef, useState } from 'react';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import instance from '../../../../api/request';
@@ -18,18 +18,17 @@ interface IListProps {
 export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
   const [isNameList, setIsNameList] = useState(true);
   const [nameList, setNameList] = useState(list.title || 'Default name');
-  const [isDragging, setIsDragging] = useState<number | null>(null);
+  const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
 
-  const arrayCards = list.cards.map((card) => (
-    <Card
-      card={card}
-      listId={list.id}
-      key={card.id}
-      boardId={boardId}
-      onRefresh={onRefresh}
-      isDragging={isDragging}
-      setIsDragging={setIsDragging}
-    />
+  const arrayCards = list.cards.map((card, index) => (
+    <React.Fragment key={card.id}>
+      {placeholderIndex === index && (
+        <div className={cardStyle.card__greySlot} data-id={card.id}>
+          {card.title}
+        </div>
+      )}
+      <Card card={card} listId={list.id} key={card.id} boardId={boardId} onRefresh={onRefresh} index={index} />
+    </React.Fragment>
   ));
 
   const deleteList = async (): Promise<void> => {
@@ -42,63 +41,75 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
     }
   };
 
-  function selectGreySlot(
-    cursorPosition: number,
-    draggingItem: HTMLLIElement,
-    targetElement: HTMLElement,
-    elementList: HTMLUListElement
-  ): void {
-    // const parent1 = currentElement.parentElement;
-    // const parent = parent1?.parentElement;
-    // if (!parent) return;
-    const currentElementCoord = targetElement.getBoundingClientRect();
-    const currentElementCenter = currentElementCoord.top + currentElementCoord.height / 2;
-    if (cursorPosition <= currentElementCenter) {
-      if (targetElement.previousElementSibling !== draggingItem) {
-        elementList.insertBefore(draggingItem, targetElement);
-      }
-    } else if (cursorPosition > currentElementCenter) {
-      if (targetElement.nextElementSibling !== draggingItem) {
-        elementList.insertBefore(draggingItem, targetElement.nextElementSibling);
-      }
-    }
-    // greySlot?.classList.remove(cardStyle.hidden);
-  }
-
   function handleDragOver(e: React.DragEvent<HTMLUListElement>): void {
     e.preventDefault();
-    const elementList = e.currentTarget;
-    const draggingItem = document.querySelector(`.${cardStyle.card__dragging}`) as HTMLLIElement;
-    // toastrSuccess(`${elementList}`, 'elementList');
-    // toastrSuccess(`${draggingItem}`, 'draggingItem');
-    const targetElement = (e.target as HTMLElement).closest('li');
-    if (!draggingItem || !targetElement || draggingItem === targetElement) {
+    if (list.cards.length === 0) {
+      setPlaceholderIndex(list.cards.length);
+    }
+    const targetElement = (e.target as HTMLElement).closest('li') as HTMLLIElement;
+    if (!targetElement) {
       return;
     }
-    selectGreySlot(e.clientY, draggingItem, targetElement, elementList);
-    // // if (elementUnder.classList.contains(listStyle.list__cards) && !elementUnder.hasChildNodes()) {
-    // if (elementUnder.classList.contains(cardStyle.card__textCard)) {
-    //   const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
-    //   oldSlot?.classList.add(cardStyle.hidden);
-    //   const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
-    //   selectGreySlot(e.clientY, elementUnder, greySlot!);
-    // }
-  }
-
-  function handleDragEnter(e: React.DragEvent<HTMLUListElement>): void {
-    const elementUnder = e.target as HTMLDivElement;
-    // if (elementUnder.classList.contains(cardStyle.card__textCard)) {
-    //   const oldSlot = document.querySelector(`.${cardStyle.card__greySlot}:not(.${cardStyle.hidden})`);
-    //   oldSlot?.classList.add(cardStyle.hidden);
-    //   const greySlot = document.querySelector(`[data-id="${elementUnder.dataset.id}"].${cardStyle.card__greySlot}`);
-    //   selectGreySlot(e.clientY, elementUnder, greySlot!);
-    // }
+    const currentIndex = Number(targetElement?.dataset.index);
+    const currentElementCoord = targetElement.getBoundingClientRect();
+    const currentElementCenter = currentElementCoord.top + currentElementCoord.height / 2;
+    if (e.clientY <= currentElementCenter) {
+      setPlaceholderIndex(currentIndex);
+    } else if (e.clientY > currentElementCenter) {
+      setPlaceholderIndex(currentIndex + 1);
+    }
   }
 
   function handleDragLeave(e: React.DragEvent<HTMLUListElement>): void {
-    const elementUnder = e.target as HTMLDivElement;
-    const elementUnder2 = e.relatedTarget as HTMLDivElement;
+    if (e.currentTarget.contains(e.relatedTarget as Node)) {
+      return;
+    }
+    setPlaceholderIndex(null);
   }
+
+  async function handleDrop(e: React.DragEvent<HTMLUListElement>): Promise<void> {
+    if (placeholderIndex === null) return;
+    const cardId = Number(e.dataTransfer.getData('cardId'));
+    const listId = Number(e.dataTransfer.getData('sourceListId'));
+    try {
+      const currentCards = [...list.cards];
+      let cardsForUpdate = currentCards;
+      let finalIndex = placeholderIndex;
+      if (listId === list.id) {
+        const originalIndex = currentCards.findIndex((c) => c.id === cardId);
+        if (originalIndex < placeholderIndex) {
+          finalIndex = placeholderIndex - 1;
+        }
+        cardsForUpdate = currentCards.filter((c) => c.id !== cardId);
+      }
+      const moveCard = { id: cardId, title: list.title };
+      cardsForUpdate.splice(finalIndex, 0, moveCard);
+      const updateList = cardsForUpdate.map((card, index) => ({
+        id: card.id,
+        position: index + 1,
+        list_id: list.id,
+      }));
+      await instance.put(`/board/${boardId}/card`, updateList);
+      if (listId !== list.id) {
+        const oldList = document.querySelector(`[data-id="${listId}"]`) as HTMLUListElement;
+        const oldCards = Array.from(oldList?.querySelectorAll('li'));
+        const oldListPos = oldCards
+          .map((li) => Number(li.dataset.id))
+          .filter((id) => id !== cardId)
+          .map((id, index) => ({
+            id,
+            position: index + 1,
+            list_id: listId,
+          }));
+        await instance.put(`/board/${boardId}/card`, oldListPos);
+      }
+      onRefresh();
+    } catch (error) {
+      toastrError('Помилка при спробі змінити дані', 'Помилка');
+    }
+    setPlaceholderIndex(null);
+  }
+
   return (
     <div className={listStyle.list}>
       {isNameList && list.title ? (
@@ -117,12 +128,14 @@ export function List({ list, boardId, onRefresh }: IListProps): JSX.Element {
         />
       )}
       <ul
+        data-id={list.id}
         onDragOver={handleDragOver}
-        onDragEnter={handleDragEnter}
+        onDrop={handleDrop}
         onDragLeave={handleDragLeave}
         className={listStyle.list__cards}
       >
         {arrayCards}
+        {placeholderIndex === list.cards.length && <div className={cardStyle.card__greySlot}>{list.title}</div>}
       </ul>
       <button
         type="button"

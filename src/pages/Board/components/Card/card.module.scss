@@ -53,6 +53,7 @@
         overflow-y: auto;
         overflow-x: hidden;
         word-break: break-all;
+        pointer-events:none;
     }
 
     &__ghost {
@@ -66,6 +67,7 @@
         position: absolute;
         left: -9999px;
         width: 217px;
+        border: 2px dashed #c1c7d0;
     }
 
     &__input {
@@ -79,21 +81,19 @@
     }
 
     &__dragging {
-        background-color: #929396;
-        /* Цвет слота */
-        border: 2px dashed #c1c7d0;
-        /* Пунктир (как у слота) */
+        background-color: #92939600;
+        border: none;
+        // border: 2px dashed #c1c7d0;
         box-shadow: none;
         color: transparent;
-        /* Скрываем текст */
-
-        /* Важно: */
         opacity: 1;
-        /* НЕ 0! Мы хотим видеть этот серый блок */
         cursor: grabbing;
+        padding: 0;
+        margin: 0 auto;
+        height: 0px;
+        overflow: hidden;
     }
 
-    /* Скрываем все дочерние элементы внутри слота, чтобы не мешались */
     &__dragging>* {
         opacity: 0;
         pointer-events: none;
