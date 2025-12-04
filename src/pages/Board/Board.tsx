@@ -69,7 +69,9 @@ export function Board(): JSX.Element {
         } as React.CSSProperties);
   }
 
-  const arrayList = lists?.map((list) => <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} />);
+  const arrayList = lists?.map((list) => (
+    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} />
+  ));
 
   return (
     <div style={selectBackground(background)} className={boardStyle.board}>
