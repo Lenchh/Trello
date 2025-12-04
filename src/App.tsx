@@ -1,12 +1,12 @@
 import { JSX } from 'react';
-import { Routes, Route, Link, BrowserRouter } from 'react-router-dom';
+import { Routes, Route, Link, HashRouter } from 'react-router-dom';
 import './App.css';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';
 
 function App(): JSX.Element {
   return (
-    <BrowserRouter basename="/Trello">
+    <HashRouter>
       <nav>
         <Link to="/" className="home">
           Home
@@ -16,7 +16,7 @@ function App(): JSX.Element {
         <Route path="/" element={<Home />} />
         <Route path="/board/:boardId" element={<Board />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
