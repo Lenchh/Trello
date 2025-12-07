@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/Trello/static/css/main.e128dfae.css",
+    "main.css": "/Trello/static/css/main.766f6188.css",
     "main.js": "/Trello/static/js/main.e27b1547.js",
     "static/js/453.96453769.chunk.js": "/Trello/static/js/453.96453769.chunk.js",
     "index.html": "/Trello/index.html",
-    "static/media/error.svg": "/Trello/static/media/error.cb0245199a6a40965325.svg",
-    "static/media/success.svg": "/Trello/static/media/success.90984d18e893f24e9cbb.svg",
-    "static/media/info.svg": "/Trello/static/media/info.671c4a1f056e2d3b793d.svg",
-    "static/media/home.svg": "/Trello/static/media/home.50b8477fa7e6b84237de.svg",
-    "static/media/homeHover.svg": "/Trello/static/media/homeHover.466d1ba74b456c3e5ef8.svg",
-    "main.e128dfae.css.map": "/Trello/static/css/main.e128dfae.css.map",
+    "static/media/icon-error.svg": "/Trello/static/media/icon-error.dd3eadb93335de1527ef.svg",
+    "static/media/icon-info.svg": "/Trello/static/media/icon-info.eeae10421f1bbe43970f.svg",
+    "static/media/icon-success.svg": "/Trello/static/media/icon-success.e5faa3ef39cf1b02097e.svg",
+    "static/media/home.svg": "/Trello/static/media/home.32a7c98214b4ed56095c.svg",
+    "static/media/homeHover.svg": "/Trello/static/media/homeHover.c9d0177691441bb7944d.svg",
+    "main.766f6188.css.map": "/Trello/static/css/main.766f6188.css.map",
     "main.e27b1547.js.map": "/Trello/static/js/main.e27b1547.js.map",
     "453.96453769.chunk.js.map": "/Trello/static/js/453.96453769.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e128dfae.css",
+    "static/css/main.766f6188.css",
     "static/js/main.e27b1547.js"
   ]
 }
