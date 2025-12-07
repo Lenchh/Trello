@@ -1,5 +1,5 @@
 #toast-container>.toast-warning {
-  background-image: url('../../images/error.svg') !important;
+  background-image: url('./icon-error.svg') !important;
   padding-left: 60px !important;
 }
 

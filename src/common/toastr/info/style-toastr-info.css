@@ -1,5 +1,5 @@
 #toast-container>.toast-info {
-  background-image: url('../../images/info.svg') !important;
+  background-image: url('./icon-info.svg') !important;
   padding-left: 60px !important;
 }
 
