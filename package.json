@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://lenchh.github.io/Trello/",
   "dependencies": {
-    "@reduxjs/toolkit": "^2.9.0",
+    "@reduxjs/toolkit": "^2.11.1",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.8.0",
     "@testing-library/react": "^16.3.0",
@@ -18,6 +18,7 @@
     "progress": "^2.0.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.3",
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",

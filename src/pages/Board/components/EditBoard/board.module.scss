@@ -1,0 +1,109 @@
+@import "/src/styles/variables.scss";
+@import "/src/styles/mixins.scss";
+
+body {
+    background-color: $color-secondary;
+    box-sizing: border-box;
+}
+
+.container {
+    width: 90%;
+    margin: 20px auto;
+    max-width: 2440px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__button_home {
+        border: 2px solid #136CF1;
+        border-radius: 12px;
+        color: #136CF1;
+        padding: 5px;
+        margin: 5px;
+        font-size: 18px;
+        background-image: url('../../../../common/images/home.svg');
+        background-repeat: no-repeat;
+        padding-left: 25px;
+        background-position: left;
+
+        &:hover {
+            background-color: #136CF1;
+            color: #ffffff;
+            background-image: url('../../../../common/images/homeHover.svg');
+        }
+    }
+
+    &__board {
+        @include theme-container($width-container: 100%, $margin-container: 5px auto,
+            $background-container: var(--bg-color),
+            $border-container: 2px solid $color-secondary,
+            $border-radius: $border-radius);
+        box-shadow: $shadow-background;
+        min-height: 85vh;
+
+        &__header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid $color-text-card;
+            border-radius: $border-radius;
+            box-shadow: $shadow-secondary;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        &__textHeader {
+            @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head,
+                $font-family-head: $font-primary);
+            cursor: pointer;
+            border: 1px solid var(--bg-color);
+            border-radius: $border-radius;
+
+            &:hover {
+                background-color: var(--bg-color);
+                border-color: $color-text-list;
+            }
+        }
+
+        &__textError {
+            @include theme-header($padding-head: 15px, $color-head: $color-primary, $font-size-header: $font-size-head,
+                $font-family-head: $font-primary);
+            cursor: pointer;
+            border: 1px solid var(--bg-color);
+            border-radius: $border-radius;
+            background-color: var(--bg-color);
+            border-color: $color-text-list;
+        }
+
+        &__lists {
+            margin: 10px auto 0 auto;
+            padding: 10px;
+            display: flex;
+            overflow-x: auto;
+
+            div {
+                display: flex;
+            }
+        }
+
+        &__createButton {
+            @include theme-button;
+            align-self: flex-start;
+            margin: 10px 5px;
+            flex-shrink: 0;
+            height: 100px;
+            width: 120px;
+            font-size: 18px;
+        }
+
+        &__selectMenu {
+            @include theme-button;
+            margin: 10px;
+
+            &:hover {
+                background-color: $color-primary;
+                color: var(--bg-color);
+                border: 1px solid black;
+                box-shadow: $shadow-background-list;
+            }
+        }
+    }
+}

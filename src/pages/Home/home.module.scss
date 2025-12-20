@@ -18,7 +18,6 @@ a {
     max-width: 2440px;
     box-shadow: $shadow-background;
 
-
     &__header {
         @include theme-header($padding-head: 15px, $color-head: $color-dark, $font-size-header: $font-size-head,
             $font-family-head: $font-primary);

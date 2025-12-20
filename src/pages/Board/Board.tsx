@@ -1,14 +1,15 @@
 import { JSX, useState, useEffect, useRef, CSSProperties } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import instance from '../../api/request';
-import { EditBoardName } from './components/Board1/EditBoardName';
-import boardStyle from './components/Board1/board.module.scss';
+import { EditBoardName } from './components/EditBoard/EditBoardName';
+import boardStyle from './components/EditBoard/board.module.scss';
 import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
 import { createList } from './components/List/CreateList';
-import { EditBackBoard } from './components/Board1/EditBackBoard';
+import { EditBackBoard } from './components/EditBoard/EditBackBoard';
 import { toastrError } from '../../common/toastr/error/toastr-options-error';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
+import { CardModal } from './components/CardModal/CardModal';
 
 export function Board(): JSX.Element {
   const [title, setTitle] = useState('');
@@ -18,6 +19,7 @@ export function Board(): JSX.Element {
   const [action, setAction] = useState('');
   const { boardId } = useParams();
   const [oldValue, setOldValue] = useState('');
+  const [modal, openModal] = useState(false);
 
   const fetchData = async (): Promise<void> => {
     try {
@@ -74,45 +76,60 @@ export function Board(): JSX.Element {
   ));
 
   return (
-    <div style={selectBackground(background)} className={boardStyle.board}>
-      <div className={boardStyle.board__header}>
-        {inputNameBoard ? (
-          <EditBoardName
-            onRefresh={fetchData}
-            idBoard={boardId}
-            setInput={setInputNameBoard}
-            nameBoard={title}
-            setNameBoard={setTitle}
-            oldValue={oldValue}
-          />
-        ) : (
-          <h1 className={boardStyle.board__textHeader} onClick={(): void => setInputNameBoard(true)}>
-            {title}
-          </h1>
-        )}
-        <select value={action} onChange={handleChange} className={boardStyle.board__selectMenu}>
-          <option value="">...</option>
-          <option value="delete">Видалити дошку</option>
-          <option value="changeBg">Змінити фон дошки</option>
-        </select>
-      </div>
-      <div className={boardStyle.board__lists}>
-        <div>{arrayList}</div>
-        <button
-          type="button"
-          className={boardStyle.board__createButton}
-          onClick={(): Promise<void> => createList(boardId, fetchData)}
+    <div className={boardStyle.container}>
+      <nav>
+        <Link
+          to="/"
+          className={boardStyle.container__button_home}
+          style={{ '--bg-color': background } as React.CSSProperties}
         >
-          Створити список
+          Home
+        </Link>
+      </nav>
+      <div style={selectBackground(background)} className={boardStyle.container__board}>
+        <div className={boardStyle.container__board__header}>
+          {inputNameBoard ? (
+            <EditBoardName
+              onRefresh={fetchData}
+              idBoard={boardId}
+              setInput={setInputNameBoard}
+              nameBoard={title}
+              setNameBoard={setTitle}
+              oldValue={oldValue}
+            />
+          ) : (
+            <h1 className={boardStyle.container__board__textHeader} onClick={(): void => setInputNameBoard(true)}>
+              {title}
+            </h1>
+          )}
+          <select value={action} onChange={handleChange} className={boardStyle.container__board__selectMenu}>
+            <option value="">...</option>
+            <option value="delete">Видалити дошку</option>
+            <option value="changeBg">Змінити фон дошки</option>
+          </select>
+        </div>
+        <div className={boardStyle.container__board__lists}>
+          <div>{arrayList}</div>
+          <button
+            type="button"
+            className={boardStyle.container__board__createButton}
+            onClick={(): Promise<void> => createList(boardId, fetchData)}
+          >
+            Створити список
+          </button>
+        </div>
+        <EditBackBoard
+          dialogRef={dialogRef}
+          boardId={boardId}
+          defaultValue={background}
+          onRefresh={fetchData}
+          setAction={setAction}
+        />
+        <button id="myBtn" onClick={(): void => openModal(!modal)}>
+          Open Modal
         </button>
+        {modal && <CardModal openModal={openModal} />}
       </div>
-      <EditBackBoard
-        dialogRef={dialogRef}
-        boardId={boardId}
-        defaultValue={background}
-        onRefresh={fetchData}
-        setAction={setAction}
-      />
     </div>
   );
 }
