@@ -105,13 +105,13 @@ h3 {
             .members {
                 display: flex;
                 flex-direction: column;
+                padding-top: 20px;
 
                 &__header {
                     @include theme-header($padding-head: 0x, $color-head: $color-text-list, $font-size-header: $font-size-card-text,
                         $font-family-head: $font-primary);
                     font-weight: bold;
                     padding-left: 0;
-                    padding-top: 20px;
                 }
 
                 ul {
