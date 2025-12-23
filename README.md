@@ -1,11 +1,11 @@
 # Getting Started with Create React App
-This is my educational pet project, which is a simplified clone of the popular Trello service - (https://trello.com/uk).\
+This is my educational pet project, which is a simplified clone of the popular Trello service - https://trello.com/uk
 Trello is a visual tool for managing projects and tasks using the Kanban system. It helps organize workflows using boards, lists, and cards, providing a clear view of task progress.\
-Boards for individual projects.\
-Lists for stages of completion (e.g., “To Do,” “In Progress,” “Done”).\
-Cards for describing specific tasks.\
-At this stage, it is possible to create/edit boards/lists/cards, delete boards/lists, and drag and drop cards between lists.
-In development: a modal window for editing cards.
+**1.**Boards for individual projects.\
+**2.**Lists for stages of completion (e.g., “To Do,” “In Progress,” “Done”).\
+**3.**Cards for describing specific tasks.\
+**At this stage, it is possible to create/edit boards/lists/cards, delete boards/lists, and drag and drop cards between lists.
+In development: a modal window for editing cards.**
 
 visit the website - https://lenchh.github.io/Trello
 
