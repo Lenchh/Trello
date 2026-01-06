@@ -83,6 +83,10 @@ h3 {
                     align-self: flex-start;
                     padding-bottom: 0;
                     padding-left: 0;
+                    word-wrap:break-word;
+                    word-break: break-all;
+                    max-height: 40px;
+                    overflow-y: auto;
 
                     &:hover {
                         background-color: var(--bg-color);
@@ -263,6 +267,7 @@ h3 {
                 &:hover {
                     color: white;
                     background-color: red;
+                    border: 2px solid red;
                 }
             }
         }

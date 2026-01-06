@@ -1,4 +1,5 @@
 import React, { JSX, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
 import instance from '../../../../api/request';
@@ -15,9 +16,10 @@ interface IListProps {
   boardId: string | undefined;
   onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
+  cardId: string | undefined;
 }
 
-export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.Element {
+export function List({ list, boardId, onRefresh, setLists, cardId }: IListProps): JSX.Element {
   const [isNameList, setIsNameList] = useState(true);
   const [nameList, setNameList] = useState(list.title || 'Default name');
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
@@ -29,15 +31,19 @@ export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.El
           {card.title}
         </div>
       )}
-      <Card
-        card={card}
-        listId={list.id}
-        key={card.id}
-        boardId={boardId}
-        onRefresh={onRefresh}
-        index={index}
-        setPlaceholderIndex={setPlaceholderIndex}
-      />
+      <Link to={`/board/${boardId}/card/${card.id}`} key={card.id}>
+        <Card
+          card={card}
+          listId={list.id}
+          key={card.id}
+          boardId={boardId}
+          onRefresh={onRefresh}
+          index={index}
+          setPlaceholderIndex={setPlaceholderIndex}
+          listTitle={list.title}
+          cardIdURL={cardId}
+        />
+      </Link>
     </React.Fragment>
   ));
 

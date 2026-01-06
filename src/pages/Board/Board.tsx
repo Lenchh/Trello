@@ -1,5 +1,5 @@
 import { JSX, useState, useEffect, useRef, CSSProperties } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import instance from '../../api/request';
 import { EditBoardName } from './components/EditBoard/EditBoardName';
 import boardStyle from './components/EditBoard/board.module.scss';
@@ -10,6 +10,9 @@ import { EditBackBoard } from './components/EditBoard/EditBackBoard';
 import { toastrError } from '../../common/toastr/error/toastr-options-error';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 import { CardModal } from './components/CardModal/CardModal';
+import { useAppDispatch, useAppSelector } from '../../featchers/hooks';
+import { openModal } from '../../featchers/slices/modalSlice';
+import { ICard } from '../../common/interfaces/ICard';
 
 export function Board(): JSX.Element {
   const [title, setTitle] = useState('');
@@ -18,8 +21,9 @@ export function Board(): JSX.Element {
   const [inputNameBoard, setInputNameBoard] = useState(false);
   const [action, setAction] = useState('');
   const { boardId } = useParams();
+  const { cardId } = useParams();
   const [oldValue, setOldValue] = useState('');
-  const [modal, openModal] = useState(false);
+  const navigate = useNavigate();
 
   const fetchData = async (): Promise<void> => {
     try {
@@ -41,6 +45,7 @@ export function Board(): JSX.Element {
     try {
       await instance.delete(`/board/${boardId}`);
       toastrSuccess('Дошку успішно видалено.', 'Успіх');
+      navigate('/');
     } catch (error) {
       toastrError('Помилка при видаленні дошки', 'Помилка');
     }
@@ -72,8 +77,28 @@ export function Board(): JSX.Element {
   }
 
   const arrayList = lists?.map((list) => (
-    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} />
+    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} cardId={cardId} />
   ));
+
+  const isOpen = useAppSelector((state) => state.modal.isOpen);
+  const currentCard = useAppSelector((state) => state.modal.card);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (cardId) {
+      lists.forEach((list) => {
+        const foundCard: ICard | undefined = list.cards.find((card) => String(card.id) === cardId);
+        if (foundCard) {
+          dispatch(
+            openModal({
+              ...foundCard,
+              listTitle: list.title,
+            })
+          );
+        }
+      });
+    }
+  }, [lists, cardId]);
 
   return (
     <div className={boardStyle.container}>
@@ -125,10 +150,7 @@ export function Board(): JSX.Element {
           onRefresh={fetchData}
           setAction={setAction}
         />
-        <button id="myBtn" onClick={(): void => openModal(!modal)}>
-          Open Modal
-        </button>
-        {modal && <CardModal openModal={openModal} />}
+        {isOpen && <CardModal />}
       </div>
     </div>
   );

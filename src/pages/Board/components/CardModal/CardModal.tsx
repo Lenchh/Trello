@@ -1,22 +1,33 @@
 import { JSX, useEffect, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import cardModalStyle from './cardModal.module.scss';
+import { useAppDispatch, useAppSelector } from '../../../../featchers/hooks';
+import { closeModal } from '../../../../featchers/slices/modalSlice';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
-interface cardModal {
-  openModal: React.Dispatch<React.SetStateAction<boolean>>;
-}
+export function CardModal(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { boardId } = useParams();
 
-export function CardModal({ openModal }: cardModal): JSX.Element {
-  function closeModal(): void {
-    openModal(false);
+  function closeWindow(): void {
+    dispatch(closeModal());
+    navigate(`/board/${boardId}`);
   }
 
   function clickToClose(event: React.MouseEvent<HTMLDivElement>): void {
-    if (event.target === event.currentTarget) openModal(false);
+    if (event.target === event.currentTarget) {
+      dispatch(closeModal());
+      navigate(`/board/${boardId}`);
+    }
   }
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') openModal(false);
+      if (event.key === 'Escape') {
+        dispatch(closeModal());
+        navigate(`/board/${boardId}`);
+      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
@@ -26,7 +37,7 @@ export function CardModal({ openModal }: cardModal): JSX.Element {
     };
   }, []);
 
-  const example = {
+  const exampleCard = {
     id: 1,
     title: 'Example',
     listTitle: 'List',
@@ -34,10 +45,18 @@ export function CardModal({ openModal }: cardModal): JSX.Element {
     description: '',
   };
 
-  const listMembers = example.members.map((el) => {
+  const isOpen = useAppSelector((state) => state.modal.isOpen);
+  const currentCard = useAppSelector((state) => state.modal.card);
+
+  if (!isOpen || !currentCard) {
+    closeWindow();
+    toastrError('Помилка при завантаженні даних', 'Помилка');
+  }
+
+  const listMembers = currentCard?.users?.map((el) => {
     const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
     return (
-      <li title={`${el}`} key={example.id} style={{ backgroundColor: color }}>
+      <li title={`${el}`} key={exampleCard.id} style={{ backgroundColor: color }}>
         {' '}
       </li>
     );
@@ -46,14 +65,14 @@ export function CardModal({ openModal }: cardModal): JSX.Element {
   return (
     <div className={cardModalStyle.modal} onClick={clickToClose}>
       <div className={cardModalStyle.modal__content}>
-        <button className={cardModalStyle.modal__content__close} onClick={closeModal}>
+        <button className={cardModalStyle.modal__content__close} onClick={closeWindow}>
           &times;
         </button>
         <section className={cardModalStyle.modal__content__block_info}>
           <header className={cardModalStyle.header}>
-            <h2>{example.title}</h2>
+            <h2>{currentCard?.title}</h2>
             <p>
-              У списку <span>{example.listTitle}</span>
+              У списку <span>{currentCard?.listTitle}</span>
             </p>
           </header>
           <div className={cardModalStyle.members}>
@@ -71,7 +90,7 @@ export function CardModal({ openModal }: cardModal): JSX.Element {
               <button>Змінити</button>
             </div>
             <p className={cardModalStyle.description__content}>
-              {example.description || 'Тут може бути опис карточки...'}
+              {currentCard?.description || 'Тут може бути опис карточки...'}
             </p>
           </div>
         </section>
