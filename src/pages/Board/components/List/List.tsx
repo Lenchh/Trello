@@ -10,6 +10,7 @@ import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-
 import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 import cardStyle from '../Card/card.module.scss';
 import { handleDragLeave, handleDragOver, handleDrop } from '../../../../common/d-n-d/DragAndDrop';
+import { ICard } from '../../../../common/interfaces/ICard';
 
 interface IListProps {
   list: IList;
@@ -41,7 +42,6 @@ export function List({ list, boardId, onRefresh, setLists, cardId }: IListProps)
           index={index}
           setPlaceholderIndex={setPlaceholderIndex}
           listTitle={list.title}
-          cardIdURL={cardId}
         />
       </Link>
     </React.Fragment>

@@ -1,4 +1,4 @@
-import { JSX, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import cardStyle from './card.module.scss';
 import { ICard } from '../../../../common/interfaces/ICard';
@@ -6,6 +6,7 @@ import { EditNameCard } from './EditNameCard';
 import { handleDragEnd, handleDragStart } from '../../../../common/d-n-d/DragAndDrop';
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { openModal } from '../../../../featchers/slices/modalSlice';
+import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
 
 interface ICardProps {
   card: ICard;
@@ -15,7 +16,6 @@ interface ICardProps {
   index: number;
   setPlaceholderIndex: React.Dispatch<React.SetStateAction<number | null>>;
   listTitle: string;
-  cardIdURL: string | undefined;
 }
 
 export function Card({
@@ -26,16 +26,20 @@ export function Card({
   index,
   setPlaceholderIndex,
   listTitle,
-  cardIdURL,
 }: ICardProps): JSX.Element {
   const [isNameCard, setIsNameCard] = useState(true);
   const [nameCard, setNameCard] = useState(card.title || 'Default name');
+
+  useEffect(() => {
+    setNameCard(card.title);
+  }, [card.title]);
 
   const dispatch = useAppDispatch();
 
   const cardForModal: ICard = {
     ...card,
     listTitle,
+    idList: listId,
   };
   const handleClick = (): void => {
     dispatch(openModal(cardForModal));
@@ -55,7 +59,14 @@ export function Card({
       {isNameCard && card.title ? (
         <div className={cardStyle.card__textCard}>
           <p onClick={handleClick}>{nameCard}</p>
-          <button className={cardStyle.card__textCard__editButton} onClick={(): void => setIsNameCard(false)}>
+          <button
+            className={cardStyle.card__textCard__editButton}
+            onClick={(e): void => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsNameCard(false);
+            }}
+          >
             {' '}
           </button>
         </div>
@@ -69,6 +80,7 @@ export function Card({
           nameCard={nameCard}
           setNameCard={setNameCard}
           oldValue={card.title}
+          infoCard="title"
         />
       )}
     </li>

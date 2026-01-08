@@ -93,6 +93,7 @@ export function Board(): JSX.Element {
             openModal({
               ...foundCard,
               listTitle: list.title,
+              idList: list.id,
             })
           );
         }
@@ -150,7 +151,7 @@ export function Board(): JSX.Element {
           onRefresh={fetchData}
           setAction={setAction}
         />
-        {isOpen && <CardModal />}
+        {isOpen && <CardModal onRefresh={fetchData} />}
       </div>
     </div>
   );

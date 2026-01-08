@@ -16,7 +16,7 @@ a {
         $border-container: 4px solid var(--bg-color),
         $border-radius: $border-radius);
     max-width: 2440px;
-    box-shadow: $shadow-background;
+    box-shadow: 0px 0px 20px var(--bg-color);
 
     &__header {
         @include theme-header($padding-head: 15px, $color-head: $color-dark, $font-size-header: $font-size-head,

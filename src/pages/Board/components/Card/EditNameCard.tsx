@@ -6,14 +6,15 @@ import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-
 import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface props {
-  idList: number;
+  idList: number | undefined;
   idBoard: string | undefined;
-  idCard: number;
+  idCard: number | undefined;
   onRefresh: () => Promise<void>;
   setIsNameCard: React.Dispatch<React.SetStateAction<boolean>>;
   nameCard: string;
   setNameCard: React.Dispatch<React.SetStateAction<string>>;
-  oldValue: string;
+  oldValue: string | undefined;
+  infoCard: string;
 }
 
 export function EditNameCard({
@@ -25,15 +26,18 @@ export function EditNameCard({
   nameCard,
   setNameCard,
   oldValue,
+  infoCard,
 }: props): JSX.Element {
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
-    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
+    if (infoCard === 'description') {
+      setNameCard(event.target.value);
+    } else if (infoCard === 'title' && /^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameCard(event.target.value);
     }
   };
 
   const editName = async (): Promise<void> => {
-    if (nameCard.trim() === '') {
+    if (nameCard.trim() === '' && infoCard === 'title') {
       toastrInfo("Ім'я картки не повинно бути пустим", 'Інформація');
       return;
     }
@@ -42,13 +46,17 @@ export function EditNameCard({
       return;
     }
     try {
-      await instance.put(`/board/${idBoard}/card/${idCard}`, { title: nameCard, list_id: idList });
+      if (infoCard === 'description') {
+        await instance.put(`/board/${idBoard}/card/${idCard}`, { description: nameCard, list_id: idList });
+      } else if (infoCard === 'title') {
+        await instance.put(`/board/${idBoard}/card/${idCard}`, { title: nameCard, list_id: idList });
+      }
       onRefresh();
       setIsNameCard(true);
       toastrSuccess('Дані збережено', 'Успіх');
     } catch (error) {
       setIsNameCard(true);
-      setNameCard(oldValue);
+      setNameCard(oldValue!);
       toastrError('Помилка при спробі змінити дані', 'Помилка');
     }
   };
@@ -66,6 +74,10 @@ export function EditNameCard({
       onChange={handleChange}
       onBlur={editName}
       onKeyDown={handleKeyDown}
+      onClick={(e): void => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
     />
