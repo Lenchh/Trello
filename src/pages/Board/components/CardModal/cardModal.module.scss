@@ -99,6 +99,10 @@ h3 {
                 p {
                     @include theme-header($padding-head: 0, $color-head: #616060, $font-size-header: $font-size-card-text,
                         $font-family-head: $font-primary);
+                        word-wrap: break-word;
+                    word-break: break-all;
+                    max-height: 40px;
+                    overflow-y: auto;
                 }
 
                 span {
@@ -113,10 +117,10 @@ h3 {
                 padding-top: 20px;
 
                 &__header {
-                    @include theme-header($padding-head: 0x, $color-head: #616060, $font-size-header: $font-size-card-text,
+                    @include theme-header($padding-head: 0, $color-head: #616060, $font-size-header: $font-size-card-text,
                         $font-family-head: $font-primary);
                     font-weight: bold;
-                    padding-left: 0;
+                    // padding-left: 0;
                 }
 
                 ul {
@@ -261,6 +265,7 @@ h3 {
                 text-align: left;
                 border: 0;
                 border-radius: 8px;
+                cursor: pointer;
 
                 &:hover {
                     box-shadow: 0px 2px 5px rgb(98, 101, 101);

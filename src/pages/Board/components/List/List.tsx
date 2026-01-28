@@ -17,10 +17,9 @@ interface IListProps {
   boardId: string | undefined;
   onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
-  cardId: string | undefined;
 }
 
-export function List({ list, boardId, onRefresh, setLists, cardId }: IListProps): JSX.Element {
+export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.Element {
   const [isNameList, setIsNameList] = useState(true);
   const [nameList, setNameList] = useState(list.title || 'Default name');
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);

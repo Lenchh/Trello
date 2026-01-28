@@ -6,7 +6,9 @@ import { EditNameCard } from './EditNameCard';
 import { handleDragEnd, handleDragStart } from '../../../../common/d-n-d/DragAndDrop';
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { openModal } from '../../../../featchers/slices/modalSlice';
-import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
+import instance from '../../../../api/request';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
+import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 
 interface ICardProps {
   card: ICard;
@@ -45,6 +47,16 @@ export function Card({
     dispatch(openModal(cardForModal));
   };
 
+  const deleteCard = async (): Promise<void> => {
+    try {
+      await instance.delete(`/board/${boardId}/card/${card.id}`);
+      onRefresh();
+      toastrSuccess('Карточка успішно видалена', 'Успіх');
+    } catch (error) {
+      toastrError('Помилка при видаленні карточки', 'Помилка');
+    }
+  };
+
   return (
     <li
       className={cardStyle.card}
@@ -59,16 +71,28 @@ export function Card({
       {isNameCard && card.title ? (
         <div className={cardStyle.card__textCard}>
           <p onClick={handleClick}>{nameCard}</p>
-          <button
-            className={cardStyle.card__textCard__editButton}
-            onClick={(e): void => {
-              e.preventDefault();
-              e.stopPropagation();
-              setIsNameCard(false);
-            }}
-          >
-            {' '}
-          </button>
+          <div className={cardStyle.card__textCard__containerButton}>
+            <button
+              className={cardStyle.card__textCard__editButton}
+              onClick={(e): void => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsNameCard(false);
+              }}
+            >
+              {' '}
+            </button>
+            <button
+              className={`${cardStyle.card__textCard__editButton} ${cardStyle.card__textCard__deleteButton}`}
+              onClick={(e): void => {
+                e.preventDefault();
+                e.stopPropagation();
+                deleteCard();
+              }}
+            >
+              {' '}
+            </button>
+          </div>
         </div>
       ) : (
         <EditNameCard

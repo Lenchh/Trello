@@ -11,7 +11,7 @@ import { toastrError } from '../../common/toastr/error/toastr-options-error';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 import { CardModal } from './components/CardModal/CardModal';
 import { useAppDispatch, useAppSelector } from '../../featchers/hooks';
-import { openModal } from '../../featchers/slices/modalSlice';
+import { openModal, saveLists } from '../../featchers/slices/modalSlice';
 import { ICard } from '../../common/interfaces/ICard';
 
 export function Board(): JSX.Element {
@@ -24,10 +24,12 @@ export function Board(): JSX.Element {
   const { cardId } = useParams();
   const [oldValue, setOldValue] = useState('');
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const fetchData = async (): Promise<void> => {
     try {
       const { data } = await instance.get(`/board/${boardId}`);
+      dispatch(saveLists(data.lists));
       setLists(data.lists);
       setTitle(data.title);
       setOldValue(data.title);
@@ -77,12 +79,11 @@ export function Board(): JSX.Element {
   }
 
   const arrayList = lists?.map((list) => (
-    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} cardId={cardId} />
+    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} />
   ));
 
   const isOpen = useAppSelector((state) => state.modal.isOpen);
   const currentCard = useAppSelector((state) => state.modal.card);
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (cardId) {
@@ -151,7 +152,7 @@ export function Board(): JSX.Element {
           onRefresh={fetchData}
           setAction={setAction}
         />
-        {isOpen && <CardModal onRefresh={fetchData} />}
+        {isOpen && <CardModal onRefresh={fetchData} setLists={setLists} />}
       </div>
     </div>
   );

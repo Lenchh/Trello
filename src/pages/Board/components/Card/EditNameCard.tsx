@@ -41,7 +41,7 @@ export function EditNameCard({
       toastrInfo("Ім'я картки не повинно бути пустим", 'Інформація');
       return;
     }
-    if (nameCard.trim() === oldValue) {
+    if (nameCard.trim() === oldValue?.trim()) {
       setIsNameCard(true);
       return;
     }
@@ -69,6 +69,7 @@ export function EditNameCard({
 
   return (
     <textarea
+      placeholder={infoCard === 'description' ? 'Тут може бути опис карточки...' : ' '}
       value={nameCard}
       className={cardStyle.card__input}
       onChange={handleChange}

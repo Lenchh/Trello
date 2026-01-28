@@ -16,6 +16,9 @@
         @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
             $font-family-head: $font-primary);
             cursor: pointer;
+        max-height: 50px;
+        overflow-y: auto;
+        word-break: break-all;
 
         &:hover {
             background-color: rgb(185, 185, 185);

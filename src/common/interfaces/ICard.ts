@@ -5,4 +5,5 @@ export interface ICard {
     listTitle?: string;
     users?: number[];
     idList?: number;
+    position?: number;
 }

@@ -33,7 +33,7 @@
         justify-content: space-between;
 
         p {
-            width: 90%;
+            width: 85%;
         }
 
         &:active {
@@ -42,6 +42,12 @@
             border-radius: $border-radius;
             width: 95%;
             transform: rotate(0deg);
+        }
+
+        &__containerButton {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
         }
 
         &__editButton {
@@ -54,6 +60,10 @@
             border: 0;
             border-radius: $border-radius;
             cursor: pointer;
+        }
+
+        &__deleteButton {
+            background-image: url("../../../../common/images/delete_icon.svg");
         }
     }
 
@@ -91,11 +101,16 @@
     &__input {
         @include theme-header($padding-head: 5px, $color-head: $color-text-card, $font-size-header: $font-size-card-text,
             $font-family-head: $font-primary);
-        background-color: rgb(205, 205, 205);
+        background-color: rgb(255, 255, 255);
         border: 1px solid $color-primary;
         border-radius: $border-radius;
-        width: 100%;
+        max-width: 100%;
+        width: 95%;
         resize: vertical;
+
+        &__CardModal {
+            width: 100%;
+        }
     }
 
     &__dragging {

@@ -10,15 +10,29 @@ import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-
 import deleteIcon from '../../../../common/images/delete_icon.svg';
 import arrowIcon from '../../../../common/images/arrow_icon.svg';
 import copyIcon from '../../../../common/images/copy_icon.svg';
+import { WindowOfChangePosition } from './WindowOfChangePosition';
+import { IList } from '../../../../common/interfaces/IList';
 
 interface props {
   onRefresh: () => Promise<void>;
+  setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function CardModal({ onRefresh }: props): JSX.Element {
+export function CardModal({ onRefresh, setLists }: props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { boardId, cardId } = useParams();
+
+  const isOpen = useAppSelector((state) => state.modal.isOpen);
+  const currentCard = useAppSelector((state) => state.modal.card);
+
+  const [isNameCard, setIsNameCard] = useState(true);
+  const [nameCard, setNameCard] = useState(currentCard?.title || 'Default name');
+
+  const [isDescriptionCard, setIsDescription] = useState(true);
+  const [descriptionCard, setDescription] = useState(currentCard?.description || '');
+
+  const [isChangePosition, setIsChangePosition] = useState(false);
 
   function closeWindow(): void {
     dispatch(closeModal());
@@ -34,9 +48,18 @@ export function CardModal({ onRefresh }: props): JSX.Element {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && isNameCard && isDescriptionCard) {
         dispatch(closeModal());
         navigate(`/board/${boardId}`);
+      }
+      if (event.key === 'Escape' && (!isNameCard || !isDescriptionCard)) {
+        if (!isNameCard) {
+          setNameCard(currentCard?.title || 'Default name');
+          setIsNameCard(true);
+        } else {
+          setDescription(currentCard?.description || '');
+          setIsDescription(true);
+        }
       }
     };
 
@@ -45,10 +68,7 @@ export function CardModal({ onRefresh }: props): JSX.Element {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
-
-  const isOpen = useAppSelector((state) => state.modal.isOpen);
-  const currentCard = useAppSelector((state) => state.modal.card);
+  }, [isNameCard, isDescriptionCard]);
 
   if (!isOpen || !currentCard) {
     closeWindow();
@@ -63,12 +83,6 @@ export function CardModal({ onRefresh }: props): JSX.Element {
       </li>
     );
   });
-
-  const [isNameCard, setIsNameCard] = useState(true);
-  const [nameCard, setNameCard] = useState(currentCard?.title || 'Default name');
-
-  const [isDescriptionCard, setIsDescription] = useState(true);
-  const [descriptionCard, setDescription] = useState(currentCard?.description || 'Тут може бути опис карточки...');
 
   const deleteCard = async (): Promise<void> => {
     try {
@@ -153,7 +167,7 @@ export function CardModal({ onRefresh }: props): JSX.Element {
                 </button>
               </li>
               <li>
-                <button className={cardModalStyle.action}>
+                <button className={cardModalStyle.action} onClick={(): void => setIsChangePosition(true)}>
                   <img src={arrowIcon} alt="copy icon" />
                   <span>Перемістити</span>
                 </button>
@@ -168,6 +182,14 @@ export function CardModal({ onRefresh }: props): JSX.Element {
           </div>
         </section>
       </div>
+      {isChangePosition && (
+        <WindowOfChangePosition
+          setIsChangePosition={setIsChangePosition}
+          currentCard={currentCard!}
+          onRefresh={onRefresh}
+          setLists={setLists}
+        />
+      )}
     </div>
   );
 }
