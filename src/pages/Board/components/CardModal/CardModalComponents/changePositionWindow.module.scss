@@ -1,5 +1,5 @@
-@import "../../../../../src/styles/variables.scss";
-@import "../../../../../src/styles/mixins.scss";
+@import "../../../../../../src/styles/variables.scss";
+@import "../../../../../../src/styles/mixins.scss";
 
 p,
 h3 {
@@ -84,12 +84,20 @@ h3 {
                 flex-direction: column;
             }
 
-            select {
+            textarea {
                 @include theme-header($padding-head: 5px, $color-head: var(--bg-color), $font-size-header: $font-size-card-text,
                     $font-family-head: $font-primary);
                 border: 1px solid var(--bg-color);
                 border-radius: $border-radius;
                 // width: 120%;
+                resize: vertical;
+            }
+
+            select {
+                @include theme-header($padding-head: 5px, $color-head: var(--bg-color), $font-size-header: $font-size-card-text,
+                    $font-family-head: $font-primary);
+                border: 1px solid var(--bg-color);
+                border-radius: $border-radius;
                 cursor: pointer;
 
                 &:hover {

@@ -10,8 +10,9 @@ import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-
 import deleteIcon from '../../../../common/images/delete_icon.svg';
 import arrowIcon from '../../../../common/images/arrow_icon.svg';
 import copyIcon from '../../../../common/images/copy_icon.svg';
-import { WindowOfChangePosition } from './WindowOfChangePosition';
+import { WindowOfChangePosition } from './CardModalComponents/WindowOfChangePosition';
 import { IList } from '../../../../common/interfaces/IList';
+import { WindowOfCopyCard } from './CardModalComponents/WindowOfCopyCard';
 
 interface props {
   onRefresh: () => Promise<void>;
@@ -25,6 +26,7 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
 
   const isOpen = useAppSelector((state) => state.modal.isOpen);
   const currentCard = useAppSelector((state) => state.modal.card);
+  const currentLists = useAppSelector((state) => state.modal.lists);
 
   const [isNameCard, setIsNameCard] = useState(true);
   const [nameCard, setNameCard] = useState(currentCard?.title || 'Default name');
@@ -32,6 +34,7 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
   const [isDescriptionCard, setIsDescription] = useState(true);
   const [descriptionCard, setDescription] = useState(currentCard?.description || '');
 
+  const [CopyCard, setCopyCard] = useState(false);
   const [isChangePosition, setIsChangePosition] = useState(false);
 
   function closeWindow(): void {
@@ -87,8 +90,18 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
   const deleteCard = async (): Promise<void> => {
     try {
       await instance.delete(`/board/${boardId}/card/${cardId}`);
+      const oldList = currentLists?.find((list) => list.id === currentCard?.idList);
+      const cardsOldPositions = oldList ? [...oldList.cards] : [];
+      const oldListPos = cardsOldPositions
+        ?.filter((card) => card.id !== Number(cardId))
+        .map((card, index) => ({
+          id: card.id,
+          position: index + 1,
+          list_id: oldList?.id,
+        }));
+      await instance.put(`/board/${boardId}/card`, oldListPos);
       onRefresh();
-      toastrSuccess('Карточка успішно видалена', 'Успіх');
+      toastrSuccess('Картка успішно видалена', 'Успіх');
       closeWindow();
     } catch (error) {
       toastrError('Помилка при видаленні карточки', 'Помилка');
@@ -161,7 +174,7 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
             <h3>ДІЇ</h3>
             <ul>
               <li>
-                <button className={cardModalStyle.action}>
+                <button className={cardModalStyle.action} onClick={(): void => setCopyCard(true)}>
                   <img src={copyIcon} alt="copy icon" />
                   <span>Копіювати</span>
                 </button>
@@ -185,6 +198,14 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
       {isChangePosition && (
         <WindowOfChangePosition
           setIsChangePosition={setIsChangePosition}
+          currentCard={currentCard!}
+          onRefresh={onRefresh}
+          setLists={setLists}
+        />
+      )}
+      {CopyCard && (
+        <WindowOfCopyCard
+          setCopyCard={setCopyCard}
           currentCard={currentCard!}
           onRefresh={onRefresh}
           setLists={setLists}

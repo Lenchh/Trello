@@ -41,6 +41,7 @@ export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.El
           index={index}
           setPlaceholderIndex={setPlaceholderIndex}
           listTitle={list.title}
+          currentList={list}
         />
       </Link>
     </React.Fragment>

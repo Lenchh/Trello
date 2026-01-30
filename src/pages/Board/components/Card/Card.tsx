@@ -9,6 +9,7 @@ import { openModal } from '../../../../featchers/slices/modalSlice';
 import instance from '../../../../api/request';
 import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
 import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import { IList } from '../../../../common/interfaces/IList';
 
 interface ICardProps {
   card: ICard;
@@ -18,6 +19,7 @@ interface ICardProps {
   index: number;
   setPlaceholderIndex: React.Dispatch<React.SetStateAction<number | null>>;
   listTitle: string;
+  currentList: IList;
 }
 
 export function Card({
@@ -28,6 +30,7 @@ export function Card({
   index,
   setPlaceholderIndex,
   listTitle,
+  currentList,
 }: ICardProps): JSX.Element {
   const [isNameCard, setIsNameCard] = useState(true);
   const [nameCard, setNameCard] = useState(card.title || 'Default name');
@@ -49,9 +52,19 @@ export function Card({
 
   const deleteCard = async (): Promise<void> => {
     try {
+      const deleteId = card.id;
       await instance.delete(`/board/${boardId}/card/${card.id}`);
+      const cardsOldPositions = [...currentList.cards];
+      const oldListPos = cardsOldPositions
+        ?.filter((c) => c.id !== deleteId)
+        .map((c, i) => ({
+          id: c.id,
+          position: i + 1,
+          list_id: currentList.id,
+        }));
+      await instance.put(`/board/${boardId}/card`, oldListPos);
       onRefresh();
-      toastrSuccess('Карточка успішно видалена', 'Успіх');
+      toastrSuccess('Картка успішно видалена', 'Успіх');
     } catch (error) {
       toastrError('Помилка при видаленні карточки', 'Помилка');
     }

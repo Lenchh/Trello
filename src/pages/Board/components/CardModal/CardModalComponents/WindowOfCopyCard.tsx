@@ -1,25 +1,25 @@
-import { JSX, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, JSX, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import positionModalStyle from './changePositionWindow.module.scss';
-import { useAppSelector } from '../../../../featchers/hooks';
-import { ICard } from '../../../../common/interfaces/ICard';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import instance from '../../../../api/request';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
-import { IList } from '../../../../common/interfaces/IList';
+import { useAppSelector } from '../../../../../featchers/hooks';
+import { ICard } from '../../../../../common/interfaces/ICard';
+import { toastrSuccess } from '../../../../../common/toastr/success/toastr-options-success';
+import instance from '../../../../../api/request';
+import { toastrError } from '../../../../../common/toastr/error/toastr-options-error';
+import { IList } from '../../../../../common/interfaces/IList';
 
 interface props {
-  setIsChangePosition: React.Dispatch<React.SetStateAction<boolean>>;
+  setCopyCard: React.Dispatch<React.SetStateAction<boolean>>;
   currentCard: ICard;
   onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRefresh, setLists }: props): JSX.Element {
+export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists }: props): JSX.Element {
   const { boardId } = useParams();
-  const oldListId = currentCard.idList;
   const [selectedList, setSelectedList] = useState(currentCard.idList);
   const [selectedPosition, setSelectedPosition] = useState(currentCard.position || 0);
+  const [newNameCard, setNewNameCard] = useState(currentCard.title);
 
   const currentLists = useAppSelector((state) => state.modal.lists);
 
@@ -39,7 +39,7 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
     const isSameList = currentCard.idList === selectedList;
     const cardsCount = targetList.cards ? targetList.cards.length : 0;
 
-    const availablePositions = isSameList ? cardsCount : cardsCount + 1;
+    const availablePositions = cardsCount + 1;
 
     const positionsArray = Array.from({ length: availablePositions }, (_, i) => i + 1);
 
@@ -51,12 +51,12 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
   }, [targetList]);
 
   function closeWindow(): void {
-    setIsChangePosition(false);
+    setCopyCard(false);
   }
 
   function clickToClose(event: React.MouseEvent<HTMLDivElement>): void {
     if (event.target === event.currentTarget) {
-      setIsChangePosition(false);
+      setCopyCard(false);
     }
   }
 
@@ -71,26 +71,13 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
     setSelectedPosition(Number(selected));
   };
 
-  const moveCard = async (): Promise<void> => {
+  const copyCard = async (): Promise<void> => {
     try {
       const currentGroupCards = targetList?.cards;
-      let cardsNewPositions = currentGroupCards ? [...currentGroupCards] : [];
-      const oldList = currentLists?.find((list) => list.id === oldListId)?.cards;
-      let cardsOldPositions = oldList ? [...oldList] : [];
-      if (currentCard.idList === selectedList) {
-        cardsNewPositions = cardsNewPositions.filter((c) => c.id !== currentCard.id);
-      } else {
-        cardsOldPositions = cardsOldPositions.filter((c) => c.id !== currentCard.id);
-        setLists((prevList) =>
-          prevList.map((l) => {
-            if (l.id === oldListId) {
-              return { ...l, cards: cardsOldPositions! };
-            }
-            return l;
-          })
-        );
-      }
-      cardsNewPositions?.splice(selectedPosition - 1, 0, { ...currentCard });
+      const cardsNewPositions = currentGroupCards ? [...currentGroupCards] : [];
+      const finalName = newNameCard || currentCard.title;
+      const newId = Date.now();
+      cardsNewPositions?.splice(selectedPosition - 1, 0, { ...currentCard, title: finalName, id: newId });
       setLists((prevList) =>
         prevList.map((l) => {
           if (l.id === selectedList) {
@@ -99,26 +86,39 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
           return l;
         })
       );
-      const updateCards = cardsNewPositions?.map((card, index) => ({
-        id: card.id,
-        position: index + 1,
+      const responce = await instance.post(`/board/${boardId}/card`, {
+        title: finalName,
         list_id: selectedList,
-      }));
-      await instance.put(`/board/${boardId}/card`, updateCards);
-      if (currentCard.idList !== selectedList) {
-        const oldListPos = oldList
-          ?.filter((card) => card.id !== currentCard.id)
-          .map((card, index) => ({
-            id: card.id,
+        position: selectedPosition,
+        description: currentCard.description,
+      });
+      const realId = responce.data.id;
+      const updateCards = cardsNewPositions?.map((card, index) => {
+        if (card.id === newId) {
+          return {
+            id: realId,
             position: index + 1,
-            list_id: oldListId,
-          }));
-        await instance.put(`/board/${boardId}/card`, oldListPos);
-      }
+            list_id: selectedList,
+          };
+        }
+        return {
+          id: card.id,
+          position: index + 1,
+          list_id: selectedList,
+        };
+      });
+      await instance.put(`/board/${boardId}/card`, updateCards);
       onRefresh();
-      toastrSuccess('Позиція картки успішно змінена', 'Успіх');
+      console.log(cardsNewPositions);
+      toastrSuccess('Картка успішно скопійована', 'Успіх');
     } catch (error) {
-      toastrError('Помилка при зміні позиції картки', 'Помилка');
+      toastrError('Помилка при спробі скопіювати картку', 'Помилка');
+    }
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
+    if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
+      setNewNameCard(event.target.value);
     }
   };
 
@@ -129,7 +129,18 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
           &times;
         </button>
         <div className={positionModalStyle.modal__content__form}>
-          <h2>Перемістити картку</h2>
+          <h2>Копіювати картку</h2>
+          <label>
+            ІМ'Я КАРТКИ
+            <textarea
+              placeholder={currentCard.title}
+              value={newNameCard}
+              onChange={handleChange}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus
+            />
+          </label>
+          {/* <label>копіювати...</label> */}
           <label>
             СПИСОК
             <select value={selectedList} onChange={handleChangeList}>
@@ -142,8 +153,8 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
               {positionOptions}
             </select>
           </label>
-          <button type="button" className={positionModalStyle.modal__content__form__buttonMove} onClick={moveCard}>
-            Перемістити
+          <button type="button" className={positionModalStyle.modal__content__form__buttonMove} onClick={copyCard}>
+            Копіювати
           </button>
         </div>
       </div>
