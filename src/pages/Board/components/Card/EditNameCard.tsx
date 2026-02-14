@@ -1,15 +1,13 @@
 import { ChangeEvent, JSX } from 'react';
-import instance from '../../../../api/request';
+import { useParams } from 'react-router-dom';
 import cardStyle from './card.module.scss';
 import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import { useAppDispatch } from '../../../../featchers/hooks';
+import { editCard } from '../../../../featchers/slices/boardSlice';
 
 interface props {
-  idList: number | undefined;
-  idBoard: string | undefined;
-  idCard: number | undefined;
-  onRefresh: () => Promise<void>;
+  listId: number | undefined;
+  cardId: number | undefined;
   setIsNameCard: React.Dispatch<React.SetStateAction<boolean>>;
   nameCard: string;
   setNameCard: React.Dispatch<React.SetStateAction<string>>;
@@ -18,16 +16,17 @@ interface props {
 }
 
 export function EditNameCard({
-  idBoard,
-  idCard,
-  idList,
-  onRefresh,
+  cardId,
+  listId,
   setIsNameCard,
   nameCard,
   setNameCard,
   oldValue,
   infoCard,
 }: props): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
+
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     if (infoCard === 'description') {
       setNameCard(event.target.value);
@@ -46,18 +45,12 @@ export function EditNameCard({
       return;
     }
     try {
-      if (infoCard === 'description') {
-        await instance.put(`/board/${idBoard}/card/${idCard}`, { description: nameCard, list_id: idList });
-      } else if (infoCard === 'title') {
-        await instance.put(`/board/${idBoard}/card/${idCard}`, { title: nameCard, list_id: idList });
-      }
-      onRefresh();
-      setIsNameCard(true);
-      toastrSuccess('Дані збережено', 'Успіх');
+      if (boardId && cardId && listId)
+        await dispatch(editCard({ boardId, cardId, listId, nameCard, infoCard })).unwrap();
     } catch (error) {
-      setIsNameCard(true);
       setNameCard(oldValue!);
-      toastrError('Помилка при спробі змінити дані', 'Помилка');
+    } finally {
+      setIsNameCard(true);
     }
   };
 
@@ -69,7 +62,7 @@ export function EditNameCard({
 
   return (
     <textarea
-      placeholder={infoCard === 'description' ? 'Тут може бути опис карточки...' : ' '}
+      placeholder={infoCard === 'description' ? 'Тут може бути опис карточки, який підтримує markdown...' : ' '}
       value={nameCard}
       className={cardStyle.card__input}
       onChange={handleChange}

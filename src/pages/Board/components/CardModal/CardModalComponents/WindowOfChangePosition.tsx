@@ -22,7 +22,7 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
   const [selectedList, setSelectedList] = useState(currentCard.idList);
   const [selectedPosition, setSelectedPosition] = useState(currentCard.position || 0);
 
-  const currentLists = useAppSelector((state) => state.modal.lists);
+  const currentLists = useAppSelector((state) => state.board.board?.lists);
 
   const listsOptions = currentLists?.map((list) => (
     <option value={list.id} key={list.id}>

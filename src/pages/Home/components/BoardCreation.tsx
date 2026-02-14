@@ -1,9 +1,8 @@
 import { ChangeEvent, JSX, useRef, useState } from 'react';
-import instance from '../../../api/request';
 import homeStyle from '../home.module.scss';
 import { toastrInfo } from '../../../common/toastr/info/toastr-options-info';
-import { toastrSuccess } from '../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../common/toastr/error/toastr-options-error';
+import { useAppDispatch } from '../../../featchers/hooks';
+import { createBoard } from '../../../featchers/slices/boardSlice';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
@@ -11,6 +10,7 @@ interface props {
 }
 
 export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
+  const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState<string>('');
   const [inputBackground, setInputBackground] = useState<string>('#136CF1');
   const [selectedOption, setSelectedOption] = useState('color');
@@ -25,19 +25,18 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
     dialogRef.current?.close();
   };
 
-  const createBoard = async (event: React.FormEvent): Promise<void> => {
+  const createBoardData = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     if (inputValue.trim() === '') {
       toastrInfo("Ім'я дошки не повинно бути пустим", 'Інформація');
       return;
     }
     try {
-      await instance.post('/board', { id: Date.now(), title: inputValue, custom: { background: inputBackground } });
+      await dispatch(createBoard({ inputValue, inputBackground })).unwrap();
       onRefresh();
       closeDialog();
-      toastrSuccess('Дошка успішно створена', 'Успіх');
     } catch (error) {
-      toastrError('Помилка при створенні дошки', 'Помилка');
+      console.log('error with creation board.');
     }
   };
 
@@ -70,7 +69,7 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   return (
     <dialog ref={dialogRef} className={homeStyle.home__dialog}>
       <h2 className={homeStyle.home__dialog__header}>Створення дошки</h2>
-      <form onSubmit={createBoard}>
+      <form onSubmit={createBoardData}>
         <label className={homeStyle.home__dialog__form}>
           Ім'я дошки:
           <input type="text" value={inputValue} onChange={handleChange} className={homeStyle.home__dialog__input} />

@@ -1,37 +1,25 @@
 import { JSX, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import cardStyle from './card.module.scss';
 import { ICard } from '../../../../common/interfaces/ICard';
 import { EditNameCard } from './EditNameCard';
 import { handleDragEnd, handleDragStart } from '../../../../common/d-n-d/DragAndDrop';
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { openModal } from '../../../../featchers/slices/modalSlice';
-import instance from '../../../../api/request';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 import { IList } from '../../../../common/interfaces/IList';
+import { deleteCard, updatePosCards } from '../../../../featchers/slices/boardSlice';
 
 interface ICardProps {
   card: ICard;
-  listId: number;
-  boardId: string | undefined;
-  onRefresh: () => Promise<void>;
   index: number;
   setPlaceholderIndex: React.Dispatch<React.SetStateAction<number | null>>;
-  listTitle: string;
   currentList: IList;
 }
 
-export function Card({
-  card,
-  listId,
-  boardId,
-  onRefresh,
-  index,
-  setPlaceholderIndex,
-  listTitle,
-  currentList,
-}: ICardProps): JSX.Element {
+export function Card({ card, index, setPlaceholderIndex, currentList }: ICardProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
+
   const [isNameCard, setIsNameCard] = useState(true);
   const [nameCard, setNameCard] = useState(card.title || 'Default name');
 
@@ -39,34 +27,30 @@ export function Card({
     setNameCard(card.title);
   }, [card.title]);
 
-  const dispatch = useAppDispatch();
-
   const cardForModal: ICard = {
     ...card,
-    listTitle,
-    idList: listId,
+    listTitle: currentList.title,
+    idList: currentList.id,
   };
   const handleClick = (): void => {
     dispatch(openModal(cardForModal));
   };
 
-  const deleteCard = async (): Promise<void> => {
+  const deleteCardData = async (): Promise<void> => {
     try {
-      const deleteId = card.id;
-      await instance.delete(`/board/${boardId}/card/${card.id}`);
+      const cardId = card.id;
+      if (boardId) await dispatch(deleteCard({ boardId, cardId })).unwrap();
       const cardsOldPositions = [...currentList.cards];
-      const oldListPos = cardsOldPositions
-        ?.filter((c) => c.id !== deleteId)
+      const oldPosCards = cardsOldPositions
+        ?.filter((c) => c.id !== cardId)
         .map((c, i) => ({
           id: c.id,
           position: i + 1,
           list_id: currentList.id,
         }));
-      await instance.put(`/board/${boardId}/card`, oldListPos);
-      onRefresh();
-      toastrSuccess('Картка успішно видалена', 'Успіх');
+      if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards })).unwrap();
     } catch (error) {
-      toastrError('Помилка при видаленні карточки', 'Помилка');
+      console.log('error with deletion card.');
     }
   };
 
@@ -74,10 +58,10 @@ export function Card({
     <li
       className={cardStyle.card}
       draggable="true"
-      onDragStart={(e): void => handleDragStart(e, card, listId, index, setPlaceholderIndex)}
+      onDragStart={(e): void => handleDragStart(e, card, currentList.id, index, setPlaceholderIndex)}
       onDragEnd={(e): void => handleDragEnd(e)}
       data-id={card.id}
-      data-list-id={listId}
+      data-list-id={currentList.id}
       data-index={index}
     >
       {}
@@ -100,7 +84,7 @@ export function Card({
               onClick={(e): void => {
                 e.preventDefault();
                 e.stopPropagation();
-                deleteCard();
+                deleteCardData();
               }}
             >
               {' '}
@@ -109,10 +93,8 @@ export function Card({
         </div>
       ) : (
         <EditNameCard
-          idList={listId}
-          idBoard={boardId}
-          idCard={card.id}
-          onRefresh={onRefresh}
+          listId={currentList.id}
+          cardId={card.id}
           setIsNameCard={setIsNameCard}
           nameCard={nameCard}
           setNameCard={setNameCard}

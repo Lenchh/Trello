@@ -21,7 +21,7 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists
   const [selectedPosition, setSelectedPosition] = useState(currentCard.position || 0);
   const [newNameCard, setNewNameCard] = useState(currentCard.title);
 
-  const currentLists = useAppSelector((state) => state.modal.lists);
+  const currentLists = useAppSelector((state) => state.board.board?.lists);
 
   const listsOptions = currentLists?.map((list) => (
     <option value={list.id} key={list.id}>

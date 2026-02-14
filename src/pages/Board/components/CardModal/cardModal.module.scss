@@ -201,7 +201,7 @@ h3 {
                     @include theme-header($padding-head: 0x, $color-head: black, $font-size-header: $font-size-card-text,
                         $font-family-head: $font-primary);
                     padding-left: 10px;
-                    max-height: 100px;
+                    max-height: 200px;
                     overflow-y: auto;
                     overflow-x: hidden;
                     word-break: break-all;
@@ -210,6 +210,11 @@ h3 {
                     &:hover {
                         background-color: rgb(204, 210, 210);
                         border-radius: $border-radius;
+                    }
+
+                    img {
+                        max-width: 60%;
+                        object-fit: cover;
                     }
                 }
             }

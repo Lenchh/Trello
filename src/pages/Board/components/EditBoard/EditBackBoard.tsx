@@ -1,18 +1,18 @@
 import { ChangeEvent, JSX, useRef, useState } from 'react';
-import instance from '../../../../api/request';
+import { useParams } from 'react-router-dom';
 import homeStyle from '../../../Home/home.module.scss';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import { useAppDispatch } from '../../../../featchers/hooks';
+import { editBackgroundBoard } from '../../../../featchers/slices/boardSlice';
 
 interface props {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  boardId: string | undefined;
   defaultValue: string;
-  onRefresh: () => Promise<void>;
   setAction: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, setAction }: props): JSX.Element {
+export function EditBackBoard({ dialogRef, defaultValue, setAction }: props): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
   const [inputBackground, setInputBackground] = useState(defaultValue);
   const [selectedOption, setSelectedOption] = useState('color');
   const imageBackgroundRef = useRef<HTMLInputElement>(null);
@@ -28,12 +28,12 @@ export function EditBackBoard({ dialogRef, boardId, defaultValue, onRefresh, set
   const editBackground = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
     try {
-      await instance.put(`/board/${boardId}`, { custom: { background: inputBackground } });
-      onRefresh();
-      closeDialog();
-      toastrSuccess('Фон дошки успішно змінений', 'Успіх');
-    } catch (error) {
-      toastrError('Помилка при спробі змінити фону дошки', 'Помилка');
+      if (boardId) {
+        await dispatch(editBackgroundBoard({ boardId, inputBackground })).unwrap();
+        closeDialog();
+      }
+    } catch (er) {
+      console.log('error with editing background of board.');
     }
   };
 

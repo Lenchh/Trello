@@ -1,29 +1,22 @@
 import { ChangeEvent, JSX } from 'react';
-import instance from '../../../../api/request';
+import { useParams } from 'react-router-dom';
 import listStyle from './list.module.scss';
 import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
+import { useAppDispatch } from '../../../../featchers/hooks';
+import { editTitleList } from '../../../../featchers/slices/boardSlice';
 
 interface props {
-  boardId: string | undefined;
   listId: number;
-  onRefresh: () => Promise<void>;
   setIsNameList: React.Dispatch<React.SetStateAction<boolean>>;
   nameList: string;
   setNameList: React.Dispatch<React.SetStateAction<string>>;
   oldValue: string;
 }
 
-export function EditNameList({
-  boardId,
-  listId,
-  onRefresh,
-  setIsNameList,
-  nameList,
-  setNameList,
-  oldValue,
-}: props): JSX.Element {
+export function EditNameList({ listId, setIsNameList, nameList, setNameList, oldValue }: props): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameList(event.target.value);
@@ -40,14 +33,11 @@ export function EditNameList({
       return;
     }
     try {
-      await instance.put(`/board/${boardId}/list/${listId}`, { title: nameList });
-      onRefresh();
-      setIsNameList(true);
-      toastrSuccess('Дані збережено', 'Успіх');
+      if (boardId) await dispatch(editTitleList({ boardId, listId, nameList })).unwrap();
     } catch (error) {
+      setNameList(oldValue || 'Default name');
+    } finally {
       setIsNameList(true);
-      setNameList(oldValue);
-      toastrError('Помилка при спробі змінити дані', 'Помилка');
     }
   };
 

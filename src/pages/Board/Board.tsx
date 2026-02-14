@@ -5,7 +5,6 @@ import { EditBoardName } from './components/EditBoard/EditBoardName';
 import boardStyle from './components/EditBoard/board.module.scss';
 import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
-import { createList } from './components/List/CreateList';
 import { EditBackBoard } from './components/EditBoard/EditBackBoard';
 import { toastrError } from '../../common/toastr/error/toastr-options-error';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
@@ -13,16 +12,18 @@ import { CardModal } from './components/CardModal/CardModal';
 import { useAppDispatch, useAppSelector } from '../../featchers/hooks';
 import { openModal, saveLists } from '../../featchers/slices/modalSlice';
 import { ICard } from '../../common/interfaces/ICard';
+import { clearBoardData, createList, deleteBoard, fetchBoard } from '../../featchers/slices/boardSlice';
 
 export function Board(): JSX.Element {
+  const boardData = useAppSelector((state) => state.board.board);
+  const isLoading = useAppSelector((state) => state.board.isLoading);
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('#ffffff');
   const [lists, setLists] = useState<IList[]>([]);
   const [inputNameBoard, setInputNameBoard] = useState(false);
   const [action, setAction] = useState('');
-  const { boardId } = useParams();
-  const { cardId } = useParams();
   const [oldValue, setOldValue] = useState('');
+  const { boardId, cardId } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -34,22 +35,36 @@ export function Board(): JSX.Element {
       setTitle(data.title);
       setOldValue(data.title);
       setBackground(data.custom.background);
-    } catch (error) {
+    } catch (er) {
       toastrError('Помилка при завантаженні даних', 'Помилка');
     }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [boardId]);
+    if (boardId) dispatch(fetchBoard(boardId));
 
-  const deleteBoard = async (): Promise<void> => {
+    return () => {
+      dispatch(clearBoardData());
+    };
+  }, [boardId, dispatch]);
+
+  useEffect(() => {
+    if (boardData) {
+      setBackground(boardData.custom.background);
+      setLists(boardData.lists!);
+      setTitle(boardData.title);
+      setOldValue(boardData.title);
+    }
+  }, [boardData]);
+
+  const deleteBoardData = async (): Promise<void> => {
     try {
-      await instance.delete(`/board/${boardId}`);
-      toastrSuccess('Дошку успішно видалено.', 'Успіх');
-      navigate('/');
-    } catch (error) {
-      toastrError('Помилка при видаленні дошки', 'Помилка');
+      if (boardId) {
+        await dispatch(deleteBoard(boardId)).unwrap();
+        navigate('/');
+      }
+    } catch (er) {
+      setAction('');
     }
   };
 
@@ -63,7 +78,7 @@ export function Board(): JSX.Element {
     setAction(selected);
 
     if (selected === 'delete') {
-      deleteBoard();
+      deleteBoardData();
     } else if (selected === 'changeBg') {
       openDialog();
     }
@@ -78,12 +93,13 @@ export function Board(): JSX.Element {
         } as React.CSSProperties);
   }
 
-  const arrayList = lists?.map((list) => (
-    <List list={list} key={list.id} boardId={boardId} onRefresh={fetchData} setLists={setLists} />
-  ));
+  const arrayList = lists?.map((list) => <List list={list} key={list.id} onRefresh={fetchData} setLists={setLists} />);
+
+  const handleCreateList = (): void => {
+    if (boardId) dispatch(createList(boardId));
+  };
 
   const isOpen = useAppSelector((state) => state.modal.isOpen);
-  const currentCard = useAppSelector((state) => state.modal.card);
 
   useEffect(() => {
     if (cardId) {
@@ -102,6 +118,8 @@ export function Board(): JSX.Element {
     }
   }, [lists, cardId]);
 
+  // if (isLoading) return <div>Loading...</div>;
+
   return (
     <div className={boardStyle.container}>
       <nav>
@@ -116,14 +134,7 @@ export function Board(): JSX.Element {
       <div style={selectBackground(background)} className={boardStyle.container__board}>
         <div className={boardStyle.container__board__header}>
           {inputNameBoard ? (
-            <EditBoardName
-              onRefresh={fetchData}
-              idBoard={boardId}
-              setInput={setInputNameBoard}
-              nameBoard={title}
-              setNameBoard={setTitle}
-              oldValue={oldValue}
-            />
+            <EditBoardName setInput={setInputNameBoard} nameBoard={title} setNameBoard={setTitle} oldValue={oldValue} />
           ) : (
             <h1 className={boardStyle.container__board__textHeader} onClick={(): void => setInputNameBoard(true)}>
               {title}
@@ -137,21 +148,11 @@ export function Board(): JSX.Element {
         </div>
         <div className={boardStyle.container__board__lists}>
           <div>{arrayList}</div>
-          <button
-            type="button"
-            className={boardStyle.container__board__createButton}
-            onClick={(): Promise<void> => createList(boardId, fetchData)}
-          >
+          <button type="button" className={boardStyle.container__board__createButton} onClick={handleCreateList}>
             Створити список
           </button>
         </div>
-        <EditBackBoard
-          dialogRef={dialogRef}
-          boardId={boardId}
-          defaultValue={background}
-          onRefresh={fetchData}
-          setAction={setAction}
-        />
+        <EditBackBoard dialogRef={dialogRef} defaultValue={background} setAction={setAction} />
         {isOpen && <CardModal onRefresh={fetchData} setLists={setLists} />}
       </div>
     </div>

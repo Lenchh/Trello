@@ -1,25 +1,23 @@
-import React, { JSX, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { JSX, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import { IList } from '../../../../common/interfaces/IList';
 import { Card } from '../Card/Card';
-import instance from '../../../../api/request';
-import { createCard } from '../Card/CreateCard';
 import { EditNameList } from './EditNameList';
 import listStyle from './list.module.scss';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 import cardStyle from '../Card/card.module.scss';
 import { handleDragLeave, handleDragOver, handleDrop } from '../../../../common/d-n-d/DragAndDrop';
-import { ICard } from '../../../../common/interfaces/ICard';
+import { useAppDispatch } from '../../../../featchers/hooks';
+import { createCard, deleteList } from '../../../../featchers/slices/boardSlice';
 
 interface IListProps {
   list: IList;
-  boardId: string | undefined;
   onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.Element {
+export function List({ list, onRefresh, setLists }: IListProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
   const [isNameList, setIsNameList] = useState(true);
   const [nameList, setNameList] = useState(list.title || 'Default name');
   const [placeholderIndex, setPlaceholderIndex] = useState<number | null>(null);
@@ -32,29 +30,17 @@ export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.El
         </div>
       )}
       <Link to={`/board/${boardId}/card/${card.id}`} key={card.id}>
-        <Card
-          card={card}
-          listId={list.id}
-          key={card.id}
-          boardId={boardId}
-          onRefresh={onRefresh}
-          index={index}
-          setPlaceholderIndex={setPlaceholderIndex}
-          listTitle={list.title}
-          currentList={list}
-        />
+        <Card card={card} key={card.id} index={index} setPlaceholderIndex={setPlaceholderIndex} currentList={list} />
       </Link>
     </React.Fragment>
   ));
 
-  const deleteList = async (): Promise<void> => {
-    try {
-      await instance.delete(`/board/${boardId}/list/${list.id}`);
-      onRefresh();
-      toastrSuccess('Список успішно видалений', 'Успіх');
-    } catch (error) {
-      toastrError('Помилка при видаленні списку', 'Помилка');
-    }
+  const handleCreateCard = (): void => {
+    if (boardId) dispatch(createCard({ boardId, listId: list.id, newPosition: list.cards.length + 1 }));
+  };
+
+  const deleteListData = (): void => {
+    if (boardId) dispatch(deleteList({ boardId, listId: list.id }));
   };
 
   return (
@@ -65,9 +51,7 @@ export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.El
         </h2>
       ) : (
         <EditNameList
-          boardId={boardId}
           listId={list.id}
-          onRefresh={onRefresh}
           setIsNameList={setIsNameList}
           nameList={nameList}
           setNameList={setNameList}
@@ -86,14 +70,10 @@ export function List({ list, boardId, onRefresh, setLists }: IListProps): JSX.El
         {arrayCards}
         {placeholderIndex === list.cards.length && <div className={cardStyle.card__greySlot}>{list.title}</div>}
       </ul>
-      <button
-        type="button"
-        className={listStyle.list__createButton}
-        onClick={(): Promise<void> => createCard(boardId, onRefresh, list.id, list.cards.length + 1)}
-      >
+      <button type="button" className={listStyle.list__createButton} onClick={handleCreateCard}>
         Створити карточку
       </button>
-      <button type="button" className={listStyle.list__createButton} onClick={deleteList}>
+      <button type="button" className={listStyle.list__createButton} onClick={deleteListData}>
         Видалити список
       </button>
     </div>

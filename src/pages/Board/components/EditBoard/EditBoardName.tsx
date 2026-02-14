@@ -1,20 +1,20 @@
 import { ChangeEvent, JSX } from 'react';
-import instance from '../../../../api/request';
+import { useParams } from 'react-router-dom';
+import { useAppDispatch } from '../../../../featchers/hooks';
 import editBoardName from './editBoardName.module.scss';
-import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
 import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
+import { editTitleBoard } from '../../../../featchers/slices/boardSlice';
 
 interface props {
-  onRefresh: () => Promise<void>;
-  idBoard: string | undefined;
   setInput: React.Dispatch<React.SetStateAction<boolean>>;
   nameBoard: string;
   setNameBoard: React.Dispatch<React.SetStateAction<string>>;
   oldValue: string;
 }
 
-export function EditBoardName({ onRefresh, idBoard, setInput, nameBoard, setNameBoard, oldValue }: props): JSX.Element {
+export function EditBoardName({ setInput, nameBoard, setNameBoard, oldValue }: props): JSX.Element {
+  const dispatch = useAppDispatch();
+  const { boardId } = useParams();
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     if (/^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameBoard(event.target.value);
@@ -31,14 +31,13 @@ export function EditBoardName({ onRefresh, idBoard, setInput, nameBoard, setName
       return;
     }
     try {
-      await instance.put(`/board/${idBoard}`, { title: nameBoard });
-      onRefresh();
-      setInput(false);
-      toastrSuccess('Дані успішно змінені', 'Успіх');
+      if (boardId) {
+        await dispatch(editTitleBoard({ boardId, nameBoard })).unwrap();
+      }
     } catch (error) {
-      setInput(false);
       setNameBoard(oldValue);
-      toastrError('Помилка при спробі змінити дані', 'Помилка');
+    } finally {
+      setInput(false);
     }
   };
 

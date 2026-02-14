@@ -1,4 +1,7 @@
 import { JSX, useEffect, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkGemoji from 'remark-gemoji';
 import { useNavigate, useParams } from 'react-router-dom';
 import cardModalStyle from './cardModal.module.scss';
 import { useAppDispatch, useAppSelector } from '../../../../featchers/hooks';
@@ -120,10 +123,8 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
               <h2 onClick={(): void => setIsNameCard(false)}>{nameCard}</h2>
             ) : (
               <EditNameCard
-                idList={currentCard?.idList}
-                idBoard={boardId}
-                idCard={currentCard?.id}
-                onRefresh={onRefresh}
+                listId={currentCard?.idList}
+                cardId={currentCard?.id}
                 setIsNameCard={setIsNameCard}
                 nameCard={nameCard}
                 setNameCard={setNameCard}
@@ -147,18 +148,18 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
           <div className={cardModalStyle.description}>
             <div className={cardModalStyle.description__header}>
               <h3>ОПИС</h3>
-              <button onClick={(): void => setIsDescription(false)}> </button>
+              <button onClick={(): void => setIsDescription(false)} aria-label="Description card">
+                {' '}
+              </button>
             </div>
             {isDescriptionCard ? (
-              <p className={cardModalStyle.description__content} onClick={(): void => setIsDescription(false)}>
-                {descriptionCard}
-              </p>
+              <div className={cardModalStyle.description__content} onClick={(): void => setIsDescription(false)}>
+                <ReactMarkdown remarkPlugins={[remarkGfm, remarkGemoji]}>{descriptionCard}</ReactMarkdown>
+              </div>
             ) : (
               <EditNameCard
-                idList={currentCard?.idList}
-                idBoard={boardId}
-                idCard={currentCard?.id}
-                onRefresh={onRefresh}
+                listId={currentCard?.idList}
+                cardId={currentCard?.id}
                 setIsNameCard={setIsDescription}
                 nameCard={descriptionCard}
                 setNameCard={setDescription}
