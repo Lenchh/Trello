@@ -8,28 +8,26 @@ import { useAppDispatch, useAppSelector } from '../../../../featchers/hooks';
 import { closeModal } from '../../../../featchers/slices/modalSlice';
 import { toastrError } from '../../../../common/toastr/error/toastr-options-error';
 import { EditNameCard } from '../Card/EditNameCard';
-import instance from '../../../../api/request';
-import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
 import deleteIcon from '../../../../common/images/delete_icon.svg';
 import arrowIcon from '../../../../common/images/arrow_icon.svg';
 import copyIcon from '../../../../common/images/copy_icon.svg';
 import { WindowOfChangePosition } from './CardModalComponents/WindowOfChangePosition';
 import { IList } from '../../../../common/interfaces/IList';
 import { WindowOfCopyCard } from './CardModalComponents/WindowOfCopyCard';
+import { deleteCard, updatePosCards } from '../../../../featchers/slices/boardSlice';
 
 interface props {
-  onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function CardModal({ onRefresh, setLists }: props): JSX.Element {
+export function CardModal({ setLists }: props): JSX.Element {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { boardId, cardId } = useParams();
 
   const isOpen = useAppSelector((state) => state.modal.isOpen);
   const currentCard = useAppSelector((state) => state.modal.card);
-  const currentLists = useAppSelector((state) => state.modal.lists);
+  const currentLists = useAppSelector((state) => state.board.board?.lists);
 
   const [isNameCard, setIsNameCard] = useState(true);
   const [nameCard, setNameCard] = useState(currentCard?.title || 'Default name');
@@ -90,24 +88,22 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
     );
   });
 
-  const deleteCard = async (): Promise<void> => {
+  const deleteCardData = async (): Promise<void> => {
     try {
-      await instance.delete(`/board/${boardId}/card/${cardId}`);
       const oldList = currentLists?.find((list) => list.id === currentCard?.idList);
+      if (boardId && cardId) await dispatch(deleteCard({ boardId, cardId })).unwrap();
       const cardsOldPositions = oldList ? [...oldList.cards] : [];
-      const oldListPos = cardsOldPositions
+      const oldPosCards = cardsOldPositions
         ?.filter((card) => card.id !== Number(cardId))
         .map((card, index) => ({
           id: card.id,
           position: index + 1,
-          list_id: oldList?.id,
+          list_id: oldList!.id,
         }));
-      await instance.put(`/board/${boardId}/card`, oldListPos);
-      onRefresh();
-      toastrSuccess('Картка успішно видалена', 'Успіх');
+      if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards })).unwrap();
       closeWindow();
     } catch (error) {
-      toastrError('Помилка при видаленні карточки', 'Помилка');
+      console.log('error with deletion card.');
     }
   };
 
@@ -187,7 +183,7 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
                 </button>
               </li>
               <li>
-                <button className={`${cardModalStyle.action} ${cardModalStyle.deleteButton}`} onClick={deleteCard}>
+                <button className={`${cardModalStyle.action} ${cardModalStyle.deleteButton}`} onClick={deleteCardData}>
                   <img src={deleteIcon} alt="copy icon" />
                   <span>Видалити</span>
                 </button>
@@ -200,18 +196,10 @@ export function CardModal({ onRefresh, setLists }: props): JSX.Element {
         <WindowOfChangePosition
           setIsChangePosition={setIsChangePosition}
           currentCard={currentCard!}
-          onRefresh={onRefresh}
           setLists={setLists}
         />
       )}
-      {CopyCard && (
-        <WindowOfCopyCard
-          setCopyCard={setCopyCard}
-          currentCard={currentCard!}
-          onRefresh={onRefresh}
-          setLists={setLists}
-        />
-      )}
+      {CopyCard && <WindowOfCopyCard setCopyCard={setCopyCard} currentCard={currentCard!} setLists={setLists} />}
     </div>
   );
 }

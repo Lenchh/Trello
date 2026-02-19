@@ -1,22 +1,22 @@
-import { JSX, useEffect, useMemo, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import positionModalStyle from './changePositionWindow.module.scss';
-import { useAppSelector } from '../../../../../featchers/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../../featchers/hooks';
 import { ICard } from '../../../../../common/interfaces/ICard';
 import { toastrSuccess } from '../../../../../common/toastr/success/toastr-options-success';
-import instance from '../../../../../api/request';
 import { toastrError } from '../../../../../common/toastr/error/toastr-options-error';
 import { IList } from '../../../../../common/interfaces/IList';
 import { toastrInfo } from '../../../../../common/toastr/info/toastr-options-info';
+import { updatePosCards } from '../../../../../featchers/slices/boardSlice';
 
 interface props {
   setIsChangePosition: React.Dispatch<React.SetStateAction<boolean>>;
   currentCard: ICard;
-  onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRefresh, setLists }: props): JSX.Element {
+export function WindowOfChangePosition({ setIsChangePosition, currentCard, setLists }: props): JSX.Element {
+  const dispatch = useAppDispatch();
   const { boardId } = useParams();
   const oldListId = currentCard.idList;
   const [selectedList, setSelectedList] = useState(currentCard.idList);
@@ -107,10 +107,10 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
       const updateCards = cardsNewPositions?.map((card, index) => ({
         id: card.id,
         position: index + 1,
-        list_id: selectedList,
+        list_id: selectedList!,
       }));
-      await instance.put(`/board/${boardId}/card`, updateCards);
-      if (currentCard.idList !== selectedList) {
+      if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards: updateCards })).unwrap();
+      if (oldListId !== selectedList && oldListId) {
         const oldListPos = oldList
           ?.filter((card) => card.id !== currentCard.id)
           .map((card, index) => ({
@@ -118,9 +118,8 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, onRef
             position: index + 1,
             list_id: oldListId,
           }));
-        await instance.put(`/board/${boardId}/card`, oldListPos);
+        if (boardId && oldListPos) await dispatch(updatePosCards({ boardId, oldPosCards: oldListPos })).unwrap();
       }
-      onRefresh();
       toastrSuccess('Позиція картки успішно змінена', 'Успіх');
     } catch (error) {
       toastrError('Помилка при зміні позиції картки', 'Помилка');

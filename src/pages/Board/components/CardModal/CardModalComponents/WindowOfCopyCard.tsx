@@ -1,21 +1,22 @@
-import { ChangeEvent, JSX, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, JSX, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import positionModalStyle from './changePositionWindow.module.scss';
-import { useAppSelector } from '../../../../../featchers/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../../featchers/hooks';
 import { ICard } from '../../../../../common/interfaces/ICard';
 import { toastrSuccess } from '../../../../../common/toastr/success/toastr-options-success';
 import instance from '../../../../../api/request';
 import { toastrError } from '../../../../../common/toastr/error/toastr-options-error';
 import { IList } from '../../../../../common/interfaces/IList';
+import { updatePosCards } from '../../../../../featchers/slices/boardSlice';
 
 interface props {
   setCopyCard: React.Dispatch<React.SetStateAction<boolean>>;
   currentCard: ICard;
-  onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists }: props): JSX.Element {
+export function WindowOfCopyCard({ setCopyCard, currentCard, setLists }: props): JSX.Element {
+  const dispatch = useAppDispatch();
   const { boardId } = useParams();
   const [selectedList, setSelectedList] = useState(currentCard.idList);
   const [selectedPosition, setSelectedPosition] = useState(currentCard.position || 0);
@@ -36,7 +37,6 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists
 
   const positionOptions = useMemo(() => {
     if (!targetList) return [];
-    const isSameList = currentCard.idList === selectedList;
     const cardsCount = targetList.cards ? targetList.cards.length : 0;
 
     const availablePositions = cardsCount + 1;
@@ -98,18 +98,16 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists
           return {
             id: realId,
             position: index + 1,
-            list_id: selectedList,
+            list_id: selectedList!,
           };
         }
         return {
           id: card.id,
           position: index + 1,
-          list_id: selectedList,
+          list_id: selectedList!,
         };
       });
-      await instance.put(`/board/${boardId}/card`, updateCards);
-      onRefresh();
-      console.log(cardsNewPositions);
+      if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards: updateCards })).unwrap();
       toastrSuccess('Картка успішно скопійована', 'Успіх');
     } catch (error) {
       toastrError('Помилка при спробі скопіювати картку', 'Помилка');
@@ -140,7 +138,6 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, onRefresh, setLists
               autoFocus
             />
           </label>
-          {/* <label>копіювати...</label> */}
           <label>
             СПИСОК
             <select value={selectedList} onChange={handleChangeList}>

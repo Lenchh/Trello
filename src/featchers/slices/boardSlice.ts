@@ -155,7 +155,7 @@ export const editCard = createAsyncThunk<
   }
 });
 
-export const deleteCard = createAsyncThunk<void, { boardId: string; cardId: number }, { rejectValue: string }>(
+export const deleteCard = createAsyncThunk<void, { boardId: string; cardId: number | string }, { rejectValue: string }>(
   'board/deleteCard',
   async ({ boardId, cardId }, { dispatch, rejectWithValue }) => {
     try {

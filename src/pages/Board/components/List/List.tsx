@@ -11,11 +11,10 @@ import { createCard, deleteList } from '../../../../featchers/slices/boardSlice'
 
 interface IListProps {
   list: IList;
-  onRefresh: () => Promise<void>;
   setLists: React.Dispatch<React.SetStateAction<IList[]>>;
 }
 
-export function List({ list, onRefresh, setLists }: IListProps): JSX.Element {
+export function List({ list, setLists }: IListProps): JSX.Element {
   const dispatch = useAppDispatch();
   const { boardId } = useParams();
   const [isNameList, setIsNameList] = useState(true);
@@ -62,7 +61,7 @@ export function List({ list, onRefresh, setLists }: IListProps): JSX.Element {
         data-id={list.id}
         onDragOver={(e): void => handleDragOver(e, list, setPlaceholderIndex)}
         onDrop={(e): Promise<void> =>
-          handleDrop(e, placeholderIndex, list, boardId, onRefresh, setPlaceholderIndex, setLists)
+          handleDrop(e, placeholderIndex, list, boardId, setPlaceholderIndex, setLists, dispatch)
         }
         onDragLeave={(e): void => handleDragLeave(e, setPlaceholderIndex)}
         className={listStyle.list__cards}

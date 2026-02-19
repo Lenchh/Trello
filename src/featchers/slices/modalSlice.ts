@@ -5,13 +5,11 @@ import { IList } from '../../common/interfaces/IList';
 interface modalState {
   isOpen: boolean;
   card: ICard | null;
-  lists: IList[] | null;
 }
 
 const initialState: modalState = {
   isOpen: false,
   card: null,
-  lists: null,
 };
 
 const modalSlice = createSlice({
@@ -27,12 +25,8 @@ const modalSlice = createSlice({
       state.isOpen = false;
       state.card = null;
     },
-
-    saveLists: (state, action: PayloadAction<IList[]>) => {
-      state.lists = action.payload;
-    },
   },
 });
 
-export const { openModal, closeModal, saveLists } = modalSlice.actions;
+export const { openModal, closeModal } = modalSlice.actions;
 export default modalSlice.reducer;

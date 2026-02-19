@@ -6,11 +6,9 @@ import boardStyle from './components/EditBoard/board.module.scss';
 import { List } from './components/List/List';
 import { IList } from '../../common/interfaces/IList';
 import { EditBackBoard } from './components/EditBoard/EditBackBoard';
-import { toastrError } from '../../common/toastr/error/toastr-options-error';
-import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 import { CardModal } from './components/CardModal/CardModal';
 import { useAppDispatch, useAppSelector } from '../../featchers/hooks';
-import { openModal, saveLists } from '../../featchers/slices/modalSlice';
+import { openModal } from '../../featchers/slices/modalSlice';
 import { ICard } from '../../common/interfaces/ICard';
 import { clearBoardData, createList, deleteBoard, fetchBoard } from '../../featchers/slices/boardSlice';
 
@@ -26,19 +24,6 @@ export function Board(): JSX.Element {
   const { boardId, cardId } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const fetchData = async (): Promise<void> => {
-    try {
-      const { data } = await instance.get(`/board/${boardId}`);
-      dispatch(saveLists(data.lists));
-      setLists(data.lists);
-      setTitle(data.title);
-      setOldValue(data.title);
-      setBackground(data.custom.background);
-    } catch (er) {
-      toastrError('Помилка при завантаженні даних', 'Помилка');
-    }
-  };
 
   useEffect(() => {
     if (boardId) dispatch(fetchBoard(boardId));
@@ -93,7 +78,7 @@ export function Board(): JSX.Element {
         } as React.CSSProperties);
   }
 
-  const arrayList = lists?.map((list) => <List list={list} key={list.id} onRefresh={fetchData} setLists={setLists} />);
+  const arrayList = lists?.map((list) => <List list={list} key={list.id} setLists={setLists} />);
 
   const handleCreateList = (): void => {
     if (boardId) dispatch(createList(boardId));
@@ -117,8 +102,6 @@ export function Board(): JSX.Element {
       });
     }
   }, [lists, cardId]);
-
-  // if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className={boardStyle.container}>
@@ -153,7 +136,7 @@ export function Board(): JSX.Element {
           </button>
         </div>
         <EditBackBoard dialogRef={dialogRef} defaultValue={background} setAction={setAction} />
-        {isOpen && <CardModal onRefresh={fetchData} setLists={setLists} />}
+        {isOpen && <CardModal setLists={setLists} />}
       </div>
     </div>
   );

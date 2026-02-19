@@ -2,7 +2,8 @@ import { ICard } from '../interfaces/ICard';
 import cardStyle from '../../pages/Board/components/Card/card.module.scss';
 import { IList } from '../interfaces/IList';
 import { toastrError } from '../toastr/error/toastr-options-error';
-import instance from '../../api/request';
+import { updatePosCards } from '../../featchers/slices/boardSlice';
+import { AppDispatch } from '../../featchers/store';
 
 export function handleDragStart(
   e: React.DragEvent<HTMLLIElement>,
@@ -77,9 +78,9 @@ export async function handleDrop(
   placeholderIndex: number | null,
   list: IList,
   boardId: string | undefined,
-  onRefresh: () => Promise<void>,
   setPlaceholderIndex: React.Dispatch<React.SetStateAction<number | null>>,
-  setLists: React.Dispatch<React.SetStateAction<IList[]>>
+  setLists: React.Dispatch<React.SetStateAction<IList[]>>,
+  dispatch: AppDispatch
 ): Promise<void> {
   if (placeholderIndex === null) return;
   const cardId = Number(e.dataTransfer.getData('cardId'));
@@ -120,7 +121,7 @@ export async function handleDrop(
       position: index + 1,
       list_id: list.id,
     }));
-    await instance.put(`/board/${boardId}/card`, updateList);
+    if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards: updateList })).unwrap();
     if (listId === list.id) {
       if (originalCard) {
         originalCard.classList.remove(cardStyle.card__dragging);
@@ -137,9 +138,8 @@ export async function handleDrop(
           position: index + 1,
           list_id: listId,
         }));
-      await instance.put(`/board/${boardId}/card`, oldListPos);
+      if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards: oldListPos })).unwrap();
     }
-    onRefresh();
   } catch (error) {
     toastrError('Помилка при спробі змінити дані', 'Помилка');
   }
