@@ -91,11 +91,17 @@ export async function handleDrop(
     const currentCards = [...list.cards];
     let cardsForUpdate = currentCards;
     let finalIndex = placeholderIndex;
+
+    // the logic of moving within the same list
     if (listId === list.id) {
       const originalIndex = currentCards.findIndex((c) => c.id === cardId);
+
+      // adjust the index, because when an element is deleted, the array shifts.
       if (originalIndex < placeholderIndex) {
         finalIndex = placeholderIndex - 1;
       }
+
+      // if the position has not changed, we interrupt execution.
       if (originalIndex === finalIndex) {
         if (originalCard) {
           originalCard.classList.remove(cardStyle.card__dragging);
@@ -103,19 +109,14 @@ export async function handleDrop(
         setPlaceholderIndex(null);
         return;
       }
+
+      // delete card from the old position
       cardsForUpdate = currentCards.filter((c) => c.id !== cardId);
     }
     const moveCard = { id: cardId, title: cardTitle };
     cardsForUpdate.splice(finalIndex, 0, moveCard);
-    setLists((prevLists) =>
-      prevLists.map((l) => {
-        if (l.id === list.id) {
-          return { ...l, cards: cardsForUpdate };
-        }
-        return l;
-      })
-    );
-    setPlaceholderIndex(null);
+
+    // we save the new order of cards in the target list via Redux.
     const updateList = cardsForUpdate.map((card, index) => ({
       id: card.id,
       position: index + 1,
@@ -127,6 +128,19 @@ export async function handleDrop(
         originalCard.classList.remove(cardStyle.card__dragging);
       }
     }
+
+    // updating local state (UI)
+    setLists((prevLists) =>
+      prevLists.map((l) => {
+        if (l.id === list.id) {
+          return { ...l, cards: cardsForUpdate };
+        }
+        return l;
+      })
+    );
+    setPlaceholderIndex(null);
+
+    // if the card was moved from another list, we recalculate the positions of the cards in the original list.
     if (listId !== list.id) {
       const oldList = document.querySelector(`[data-id="${listId}"]`) as HTMLUListElement;
       const oldCards = Array.from(oldList?.querySelectorAll('li'));

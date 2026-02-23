@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import cardStyle from './card.module.scss';
 import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
 import { useAppDispatch } from '../../../../featchers/hooks';
-import { editCard } from '../../../../featchers/slices/boardSlice';
+import { deleteCard, editCard } from '../../../../featchers/slices/boardSlice';
 
 interface props {
   listId: number | undefined;
@@ -38,6 +38,11 @@ export function EditNameCard({
   const editName = async (): Promise<void> => {
     if (nameCard.trim() === '' && infoCard === 'title') {
       toastrInfo("Ім'я картки не повинно бути пустим", 'Інформація');
+      if (!oldValue && boardId && cardId) dispatch(deleteCard({ boardId, cardId }));
+      if (oldValue) {
+        setNameCard(oldValue);
+        setIsNameCard(true);
+      }
       return;
     }
     if (nameCard.trim() === oldValue?.trim()) {
