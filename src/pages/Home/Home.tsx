@@ -36,7 +36,10 @@ export function Home(): JSX.Element {
 
   return (
     <div className={homeStyle.home}>
-      <h1 className={homeStyle.home__header}>Мої дошки</h1>
+      <div className={homeStyle.home__header}>
+        <h1>Мої дошки</h1>
+        <Link to="/login">Увійти</Link>
+      </div>
       <div className={homeStyle.home__boards}>
         {arrayBoards}
         <button type="button" className={homeStyle.home__button} onClick={openDialog}>

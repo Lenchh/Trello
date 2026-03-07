@@ -14,7 +14,7 @@
 .card {
   @include theme-container(
     $width-container: 90%,
-    $margin-container: 7.5px auto,
+    $margin-container: 0 auto,
     $background-container: $color-primary,
     $border-container: 1px solid $color-primary,
     $border-radius: $border-radius

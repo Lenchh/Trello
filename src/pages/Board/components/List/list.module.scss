@@ -1,56 +1,66 @@
-@import "/src/styles/variables.scss";
-@import "/src/styles/mixins.scss";
+@import '/src/styles/variables.scss';
+@import '/src/styles/mixins.scss';
 
 .list {
-    @include theme-container($width-container: 250px, $margin-container: 10px,
-        $background-container: $color-secondary,
-        $border-container: 2px solid $color-secondary,
-        $border-radius: $border-radius);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-self: flex-start;
-    
+  @include theme-container(
+    $width-container: 270px,
+    $margin-container: 10px,
+    $background-container: $color-secondary,
+    $border-container: 2px solid $color-secondary,
+    $border-radius: $border-radius
+  );
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
 
-    &__header {
-        @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
-            $font-family-head: $font-primary);
-            cursor: pointer;
-        max-height: 50px;
-        overflow-y: auto;
-        word-break: break-all;
-
-        &:hover {
-            background-color: rgb(185, 185, 185);
-            border-radius: $border-radius;
-        }
-    }
-
-    &__input {
-        @include theme-header($padding-head: 10px, $color-head: $color-text-list, $font-size-header: $font-size-head-list,
-            $font-family-head: $font-primary);
-        font-weight: bold;
-        border-radius: $border-radius;
-    }
+  &__header {
+    @include theme-header(
+      $padding-head: 10px,
+      $color-head: $color-text-list,
+      $font-size-header: $font-size-head-list,
+      $font-family-head: $font-primary
+    );
+    cursor: pointer;
+    max-height: 50px;
+    overflow-y: auto;
+    word-break: break-all;
 
     &:hover {
-        box-shadow: $shadow-background-list;
+      background-color: rgb(185, 185, 185);
+      border-radius: $border-radius;
     }
+  }
 
-    &__cards {
-        display: flex;
-        flex-direction: column;
-        padding: 5px;
-        list-style-type: none;
-        max-height: 340px;
-        overflow-y: auto;
-    }
+  &__input {
+    @include theme-header(
+      $padding-head: 10px,
+      $color-head: $color-text-list,
+      $font-size-header: $font-size-head-list,
+      $font-family-head: $font-primary
+    );
+    font-weight: bold;
+    border-radius: $border-radius;
+  }
 
-    &__createButton {
-        @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
-        margin-bottom: 10px;
-        width: 90%;
-        margin: 0 auto;
-        margin-bottom: 10px;
-    }
+  &:hover {
+    box-shadow: $shadow-background-list;
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    list-style-type: none;
+    max-height: 340px;
+    overflow-y: auto;
+    gap: 7.5px;
+  }
+
+  &__createButton {
+    @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
+    margin-bottom: 10px;
+    width: 90%;
+    margin: 0 auto;
+    margin-bottom: 10px;
+  }
 }
