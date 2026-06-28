@@ -9,10 +9,10 @@ import { toastrError } from '../../common/toastr/error/toastr-options-error';
 
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
+  const [creationForm, openCreationForm] = useState(false);
 
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const openDialog = (): void => {
-    dialogRef.current?.showModal();
+    openCreationForm(true);
   };
 
   const fetchData = async (): Promise<void> => {
@@ -36,17 +36,17 @@ export function Home(): JSX.Element {
 
   return (
     <div className={homeStyle.home}>
-      <div className={homeStyle.home__header}>
+      <div className={homeStyle.header}>
         <h1>Мої дошки</h1>
         <Link to="/login">Увійти</Link>
       </div>
-      <div className={homeStyle.home__boards}>
+      <div className={homeStyle.boards}>
         {arrayBoards}
-        <button type="button" className={homeStyle.home__button} onClick={openDialog}>
-          + Створити дошку
+        <button type="button" className={homeStyle.createBoardButton} onClick={openDialog}>
+          +<br /> Створити дошку
         </button>
       </div>
-      <BoardCreation dialogRef={dialogRef} onRefresh={fetchData} />
+      {creationForm && <BoardCreation onRefresh={fetchData} openCreationForm={openCreationForm} />}
     </div>
   );
 }

@@ -24,8 +24,8 @@ export function List({ list, setLists }: IListProps): JSX.Element {
   const arrayCards = list.cards.map((card, index) => (
     <React.Fragment key={card.id}>
       {placeholderIndex === index && (
-        <div className={cardStyle.card__greySlot} data-id={card.id}>
-          {card.title}
+        <div className={cardStyle.greySlot} data-id={card.id}>
+          {card.title.replace('|DONE|', '')}
         </div>
       )}
       <Link to={`/board/${boardId}/card/${card.id}`} key={card.id}>
@@ -45,7 +45,7 @@ export function List({ list, setLists }: IListProps): JSX.Element {
   return (
     <div className={listStyle.list}>
       {isNameList && list.title ? (
-        <h2 className={listStyle.list__header} onClick={(): void => setIsNameList(false)}>
+        <h2 className={listStyle.header} onClick={(): void => setIsNameList(false)}>
           {nameList}
         </h2>
       ) : (
@@ -64,15 +64,15 @@ export function List({ list, setLists }: IListProps): JSX.Element {
           handleDrop(e, placeholderIndex, list, boardId, setPlaceholderIndex, setLists, dispatch)
         }
         onDragLeave={(e): void => handleDragLeave(e, setPlaceholderIndex)}
-        className={listStyle.list__cards}
+        className={listStyle.cards}
       >
         {arrayCards}
-        {placeholderIndex === list.cards.length && <div className={cardStyle.card__greySlot}>{list.title}</div>}
+        {placeholderIndex === list.cards.length && <div className={cardStyle.greySlot}>{list.title}</div>}
       </ul>
-      <button type="button" className={listStyle.list__createButton} onClick={handleCreateCard}>
+      <button type="button" className={listStyle.buttonActions} onClick={handleCreateCard}>
         Створити карточку
       </button>
-      <button type="button" className={listStyle.list__createButton} onClick={deleteListData}>
+      <button type="button" className={listStyle.buttonActions} onClick={deleteListData}>
         Видалити список
       </button>
     </div>

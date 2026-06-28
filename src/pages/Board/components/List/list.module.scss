@@ -3,7 +3,7 @@
 
 .list {
   @include theme-container(
-    $width-container: 270px,
+    $width-container: 300px,
     $margin-container: 10px,
     $background-container: $color-secondary,
     $border-container: 2px solid $color-secondary,
@@ -12,55 +12,55 @@
   display: flex;
   flex-direction: column;
   align-self: flex-start;
+}
 
-  &__header {
-    @include theme-header(
-      $padding-head: 10px,
-      $color-head: $color-text-list,
-      $font-size-header: $font-size-head-list,
-      $font-family-head: $font-primary
-    );
-    cursor: pointer;
-    max-height: 50px;
-    overflow-y: auto;
-    word-break: break-all;
+.header {
+  @include theme-header(
+    $padding-head: 10px,
+    $color-head: $color-text-list,
+    $font-size-header: $font-size-head-list,
+    $font-family-head: $font-primary
+  );
+  cursor: pointer;
+  max-height: 50px;
+  overflow-y: auto;
+  word-break: normal;
 
-    &:hover {
-      background-color: rgb(185, 185, 185);
-      border-radius: $border-radius;
-    }
-  }
-
-  &__input {
-    @include theme-header(
-      $padding-head: 10px,
-      $color-head: $color-text-list,
-      $font-size-header: $font-size-head-list,
-      $font-family-head: $font-primary
-    );
-    font-weight: bold;
+  &:hover {
+    background-color: rgb(185, 185, 185);
     border-radius: $border-radius;
   }
+}
+
+.input {
+  @include theme-header(
+    $padding-head: 10px,
+    $color-head: $color-text-list,
+    $font-size-header: $font-size-head-list,
+    $font-family-head: $font-primary
+  );
+  font-weight: bold;
+  border-radius: $border-radius;
 
   &:hover {
     box-shadow: $shadow-background-list;
   }
+}
 
-  &__cards {
-    display: flex;
-    flex-direction: column;
-    padding: 5px;
-    list-style-type: none;
-    max-height: 340px;
-    overflow-y: auto;
-    gap: 7.5px;
-  }
+.cards {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  list-style-type: none;
+  max-height: 340px;
+  overflow-y: auto;
+  gap: 7.5px;
+}
 
-  &__createButton {
-    @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
-    margin-bottom: 10px;
-    width: 90%;
-    margin: 0 auto;
-    margin-bottom: 10px;
-  }
+.buttonActions {
+  @include theme-button($background: var(--bg-color), $color-text: $color-primary, $background-hover: $color-primary);
+  margin-bottom: 10px;
+  width: 90%;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }

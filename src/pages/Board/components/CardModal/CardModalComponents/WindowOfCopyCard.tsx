@@ -20,7 +20,7 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, setLists }: props):
   const { boardId } = useParams();
   const [selectedList, setSelectedList] = useState(currentCard.idList);
   const [selectedPosition, setSelectedPosition] = useState(currentCard.position || 0);
-  const [newNameCard, setNewNameCard] = useState(currentCard.title);
+  const [newNameCard, setNewNameCard] = useState(currentCard.title.replace('|DONE|', ''));
 
   const currentLists = useAppSelector((state) => state.board.board?.lists);
 
@@ -75,7 +75,7 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, setLists }: props):
     try {
       const currentGroupCards = targetList?.cards;
       const cardsNewPositions = currentGroupCards ? [...currentGroupCards] : [];
-      const finalName = newNameCard || currentCard.title;
+      const finalName = newNameCard || currentCard?.title.replace('|DONE|', '');
       const newId = Date.now();
       cardsNewPositions?.splice(selectedPosition - 1, 0, { ...currentCard, title: finalName, id: newId });
       setLists((prevList) =>
@@ -122,16 +122,16 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, setLists }: props):
 
   return (
     <div className={positionModalStyle.modal} onClick={clickToClose}>
-      <div className={positionModalStyle.modal__content}>
-        <button className={positionModalStyle.modal__content__close} onClick={closeWindow}>
+      <div className={positionModalStyle.content}>
+        <button className={positionModalStyle.close} onClick={closeWindow}>
           &times;
         </button>
-        <div className={positionModalStyle.modal__content__form}>
+        <div className={positionModalStyle.form}>
           <h2>Копіювати картку</h2>
           <label>
             ІМ'Я КАРТКИ
             <textarea
-              placeholder={currentCard.title}
+              placeholder={newNameCard}
               value={newNameCard}
               onChange={handleChange}
               // eslint-disable-next-line jsx-a11y/no-autofocus
@@ -150,7 +150,7 @@ export function WindowOfCopyCard({ setCopyCard, currentCard, setLists }: props):
               {positionOptions}
             </select>
           </label>
-          <button type="button" className={positionModalStyle.modal__content__form__buttonMove} onClick={copyCard}>
+          <button type="button" className={positionModalStyle.buttonMove} onClick={copyCard}>
             Копіювати
           </button>
         </div>

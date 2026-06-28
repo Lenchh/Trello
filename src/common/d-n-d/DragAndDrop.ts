@@ -16,23 +16,23 @@ export function handleDragStart(
   const target = e.currentTarget;
   e.dataTransfer.setData('cardId', String(card.id));
   e.dataTransfer.setData('sourceListId', String(listId));
-  e.dataTransfer.setData('cardTitle', String(card.title));
+  e.dataTransfer.setData('cardTitle', String(card.title.replace('|DONE|', '')));
   const slot = document.createElement('div');
   slot.classList.add(cardStyle.card);
-  slot.classList.add(cardStyle.card__ghost);
-  slot.textContent = card.title;
+  slot.classList.add(cardStyle.ghost);
+  slot.textContent = card.title.replace('|DONE|', '');
   document.body.appendChild(slot);
   e.dataTransfer.setDragImage(slot, slot.offsetWidth / 2, slot.offsetHeight / 2);
   setTimeout(() => {
     slot.remove();
-    target.classList.add(cardStyle.card__dragging);
+    target.classList.add(cardStyle.dragging);
     setPlaceholderIndex(index);
   }, 0);
 }
 
 export function handleDragEnd(e: React.DragEvent<HTMLLIElement>): void {
   if (e.dataTransfer.dropEffect === 'none') {
-    e.currentTarget.classList.remove(cardStyle.card__dragging);
+    e.currentTarget.classList.remove(cardStyle.dragging);
   }
 }
 
@@ -47,7 +47,7 @@ export function handleDragOver(
   }
   const targetElement = (e.target as HTMLElement).closest('li') as HTMLLIElement;
   if (!targetElement) {
-    const isSourceList = e.currentTarget.querySelector(`.${cardStyle.card__dragging}`);
+    const isSourceList = e.currentTarget.querySelector(`.${cardStyle.dragging}`);
     if (list.cards.length === 1 && isSourceList) {
       setPlaceholderIndex(0);
     }
@@ -104,7 +104,7 @@ export async function handleDrop(
       // if the position has not changed, we interrupt execution.
       if (originalIndex === finalIndex) {
         if (originalCard) {
-          originalCard.classList.remove(cardStyle.card__dragging);
+          originalCard.classList.remove(cardStyle.dragging);
         }
         setPlaceholderIndex(null);
         return;
@@ -125,7 +125,7 @@ export async function handleDrop(
     if (boardId) await dispatch(updatePosCards({ boardId, oldPosCards: updateList })).unwrap();
     if (listId === list.id) {
       if (originalCard) {
-        originalCard.classList.remove(cardStyle.card__dragging);
+        originalCard.classList.remove(cardStyle.dragging);
       }
     }
 

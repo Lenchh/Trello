@@ -1,16 +1,16 @@
-import { ChangeEvent, JSX, useRef, useState } from 'react';
+import { ChangeEvent, Dispatch, JSX, SetStateAction, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import homeStyle from '../../../Home/home.module.scss';
+import editBackStyle from '../../../Home/components/boardCreation.module.scss';
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { editBackgroundBoard } from '../../../../featchers/slices/boardSlice';
 
 interface props {
-  dialogRef: React.RefObject<HTMLDialogElement | null>;
   defaultValue: string;
   setAction: React.Dispatch<React.SetStateAction<string>>;
+  openBackForm: Dispatch<SetStateAction<boolean>>;
 }
 
-export function EditBackBoard({ dialogRef, defaultValue, setAction }: props): JSX.Element {
+export function EditBackBoard({ defaultValue, setAction, openBackForm }: props): JSX.Element {
   const dispatch = useAppDispatch();
   const { boardId } = useParams();
   const [inputBackground, setInputBackground] = useState(defaultValue);
@@ -20,10 +20,16 @@ export function EditBackBoard({ dialogRef, defaultValue, setAction }: props): JS
 
   const closeDialog = (): void => {
     if (imageBackgroundRef.current) imageBackgroundRef.current.value = '';
-    dialogRef.current?.close();
+    openBackForm(false);
     setNameFile('');
     setAction('');
   };
+
+  function clickToClose(event: React.MouseEvent<HTMLDivElement>): void {
+    if (event.target === event.currentTarget) {
+      closeDialog();
+    }
+  }
 
   const editBackground = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
@@ -58,64 +64,66 @@ export function EditBackBoard({ dialogRef, defaultValue, setAction }: props): JS
   };
 
   return (
-    <dialog ref={dialogRef} className={homeStyle.home__dialog}>
-      <h2 className={homeStyle.home__dialog__header}>Редагування фону дошки</h2>
-      <form onSubmit={editBackground}>
-        <div className={homeStyle.home__dialog__form}>
-          Колір Фону:
-          <br />
-          <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="color"
-              checked={selectedOption === 'color'}
-              onChange={changeOption}
-            />
-            Колір
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="image"
-              checked={selectedOption === 'image'}
-              onChange={changeOption}
-            />
-            Зображення
-          </label>
-          <br />
-          {selectedOption === 'color' ? (
-            <input
-              key="color"
-              type="color"
-              value={inputBackground}
-              onChange={handleColor}
-              className={homeStyle.home__dialog__input}
-            />
-          ) : (
-            <>
+    <div className={editBackStyle.modal} onClick={clickToClose}>
+      <div className={editBackStyle.dialogWindow}>
+        <h2 className={editBackStyle.header}>Редагування фону дошки</h2>
+        <form onSubmit={editBackground}>
+          <div className={editBackStyle.form}>
+            Колір Фону:
+            <br />
+            <label>
               <input
-                key="image"
-                ref={imageBackgroundRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImage}
-                className={homeStyle.custom_file_input}
+                type="radio"
+                name="boardAction"
+                value="color"
+                checked={selectedOption === 'color'}
+                onChange={changeOption}
               />
-              {nameFile && <img src={nameFile} alt="" className={homeStyle.imgBack} />}
-            </>
-          )}
-        </div>
-        <div className={homeStyle.home__dialog__buttons}>
-          <button type="submit" className={homeStyle.home__dialog__button}>
-            Надіслати
-          </button>
-          <button type="button" onClick={closeDialog} className={homeStyle.home__dialog__button}>
-            Закрити
-          </button>
-        </div>
-      </form>
-    </dialog>
+              Колір
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="boardAction"
+                value="image"
+                checked={selectedOption === 'image'}
+                onChange={changeOption}
+              />
+              Зображення
+            </label>
+            <br />
+            {selectedOption === 'color' ? (
+              <input
+                key="color"
+                type="color"
+                value={inputBackground}
+                onChange={handleColor}
+                className={editBackStyle.input}
+              />
+            ) : (
+              <>
+                <input
+                  key="image"
+                  ref={imageBackgroundRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImage}
+                  className={editBackStyle.customFileInput}
+                />
+                {nameFile && <img src={nameFile} alt="" className={editBackStyle.previewBackground} />}
+              </>
+            )}
+          </div>
+          <div className={editBackStyle.dialogActions}>
+            <button type="submit" className={editBackStyle.action}>
+              Надіслати
+            </button>
+            <button type="button" onClick={closeDialog} className={editBackStyle.action}>
+              Закрити
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

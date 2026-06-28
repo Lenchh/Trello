@@ -148,7 +148,6 @@ export const editCard = createAsyncThunk<
       await instance.put(`/board/${boardId}/card/${cardId}`, { title: nameCard, list_id: listId });
     }
     dispatch(fetchBoard(boardId));
-    toastrSuccess('Дані збережено', 'Успіх');
   } catch (error: any) {
     toastrError(`Помилка при спробі змінити дані.</br>Помилка: ${error}`, 'Помилка');
     return rejectWithValue(error.response.data);

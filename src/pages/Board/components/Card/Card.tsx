@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import cardStyle from './card.module.scss';
 import { ICard } from '../../../../common/interfaces/ICard';
@@ -7,7 +7,7 @@ import { handleDragEnd, handleDragStart } from '../../../../common/d-n-d/DragAnd
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { openModal } from '../../../../featchers/slices/modalSlice';
 import { IList } from '../../../../common/interfaces/IList';
-import { deleteCard, updatePosCards } from '../../../../featchers/slices/boardSlice';
+import { deleteCard, updatePosCards, editCard } from '../../../../featchers/slices/boardSlice';
 
 interface ICardProps {
   card: ICard;
@@ -21,10 +21,32 @@ export function Card({ card, index, setPlaceholderIndex, currentList }: ICardPro
   const { boardId } = useParams();
 
   const [isNameCard, setIsNameCard] = useState(true);
-  const [nameCard, setNameCard] = useState(card.title || 'Default name');
+  const [isCompleted, setIsCompleted] = useState(card.title.includes('|DONE|'));
+  const cleanTitle = card.title.replace('|DONE|', '').trim();
+  const [nameCard, setNameCard] = useState(cleanTitle || 'Default name');
+
+  const cardClass = isCompleted
+    ? `${cardStyle.actionButton} ${cardStyle.checkFilled}`
+    : `${cardStyle.actionButton} ${cardStyle.checkEmpty}`;
+
+  const toggleComplete = async (e: React.MouseEvent): Promise<void> => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsCompleted(!isCompleted);
+    const newTitleForServer = isCompleted ? cleanTitle : `${cleanTitle}|DONE|`;
+    try {
+      if (boardId)
+        await dispatch(
+          editCard({ boardId, cardId: card.id, listId: currentList.id, nameCard: newTitleForServer, infoCard: 'title' })
+        ).unwrap();
+    } catch (error) {
+      setIsCompleted(card.title.includes('|DONE|'));
+    }
+  };
 
   useEffect(() => {
-    setNameCard(card.title);
+    setNameCard(card.title.replace('|DONE|', '').trim());
+    setIsCompleted(card.title.includes('|DONE|'));
   }, [card.title]);
 
   const cardForModal: ICard = {
@@ -66,11 +88,16 @@ export function Card({ card, index, setPlaceholderIndex, currentList }: ICardPro
     >
       {}
       {isNameCard && card.title ? (
-        <div className={cardStyle.card__textCard}>
-          <p onClick={handleClick}>{nameCard}</p>
-          <div className={cardStyle.card__textCard__containerButton}>
+        <div className={cardStyle.textCard}>
+          <button className={cardClass} onClick={toggleComplete}>
+            {' '}
+          </button>
+          <p onClick={handleClick} className={isCompleted ? cardStyle.taskCompleted : undefined}>
+            {nameCard}
+          </p>
+          <div className={cardStyle.containerButton}>
             <button
-              className={cardStyle.card__textCard__editButton}
+              className={cardStyle.actionButton}
               onClick={(e): void => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -80,7 +107,7 @@ export function Card({ card, index, setPlaceholderIndex, currentList }: ICardPro
               {' '}
             </button>
             <button
-              className={`${cardStyle.card__textCard__editButton} ${cardStyle.card__textCard__deleteButton}`}
+              className={`${cardStyle.actionButton} ${cardStyle.deleteButton}`}
               onClick={(e): void => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -98,8 +125,9 @@ export function Card({ card, index, setPlaceholderIndex, currentList }: ICardPro
           setIsNameCard={setIsNameCard}
           nameCard={nameCard}
           setNameCard={setNameCard}
-          oldValue={card.title}
+          oldValue={cleanTitle}
           infoCard="title"
+          isCompleted={isCompleted}
         />
       )}
     </li>

@@ -4,6 +4,7 @@ import cardStyle from './card.module.scss';
 import { toastrInfo } from '../../../../common/toastr/info/toastr-options-info';
 import { useAppDispatch } from '../../../../featchers/hooks';
 import { deleteCard, editCard } from '../../../../featchers/slices/boardSlice';
+import { toastrSuccess } from '../../../../common/toastr/success/toastr-options-success';
 
 interface props {
   listId: number | undefined;
@@ -13,6 +14,7 @@ interface props {
   setNameCard: React.Dispatch<React.SetStateAction<string>>;
   oldValue: string | undefined;
   infoCard: string;
+  isCompleted: boolean;
 }
 
 export function EditNameCard({
@@ -23,6 +25,7 @@ export function EditNameCard({
   setNameCard,
   oldValue,
   infoCard,
+  isCompleted,
 }: props): JSX.Element {
   const dispatch = useAppDispatch();
   const { boardId } = useParams();
@@ -30,7 +33,7 @@ export function EditNameCard({
   const handleChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     if (infoCard === 'description') {
       setNameCard(event.target.value);
-    } else if (infoCard === 'title' && /^[a-zA-Zа-щА-ЩіІїЇєЄґҐ0-9 `,._-]*$/.test(event.target.value)) {
+    } else if (infoCard === 'title' && /^[a-zA-Zа-щА-ЩіІїЇєЄЯяЫыґҐ0-9 `,._-]*$/.test(event.target.value)) {
       setNameCard(event.target.value);
     }
   };
@@ -49,9 +52,11 @@ export function EditNameCard({
       setIsNameCard(true);
       return;
     }
+    const newTitleForServer = isCompleted && infoCard === 'title' ? `${nameCard}|DONE|` : nameCard;
     try {
       if (boardId && cardId && listId)
-        await dispatch(editCard({ boardId, cardId, listId, nameCard, infoCard })).unwrap();
+        await dispatch(editCard({ boardId, cardId, listId, nameCard: newTitleForServer, infoCard })).unwrap();
+      toastrSuccess('Дані збережено', 'Успіх');
     } catch (error) {
       setNameCard(oldValue!);
     } finally {
@@ -69,7 +74,7 @@ export function EditNameCard({
     <textarea
       placeholder={infoCard === 'description' ? 'Тут може бути опис карточки, який підтримує markdown...' : ' '}
       value={nameCard}
-      className={cardStyle.card__input}
+      className={cardStyle.input}
       onChange={handleChange}
       onBlur={editName}
       onKeyDown={handleKeyDown}

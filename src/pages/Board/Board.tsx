@@ -1,6 +1,5 @@
 import { JSX, useState, useEffect, useRef, CSSProperties } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import instance from '../../api/request';
 import { EditBoardName } from './components/EditBoard/EditBoardName';
 import boardStyle from './components/EditBoard/board.module.scss';
 import { List } from './components/List/List';
@@ -14,13 +13,13 @@ import { clearBoardData, createList, deleteBoard, fetchBoard } from '../../featc
 
 export function Board(): JSX.Element {
   const boardData = useAppSelector((state) => state.board.board);
-  const isLoading = useAppSelector((state) => state.board.isLoading);
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('#ffffff');
   const [lists, setLists] = useState<IList[]>([]);
   const [inputNameBoard, setInputNameBoard] = useState(false);
   const [action, setAction] = useState('');
   const [oldValue, setOldValue] = useState('');
+  const [backgroundForm, openBackForm] = useState(false);
   const { boardId, cardId } = useParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -53,9 +52,8 @@ export function Board(): JSX.Element {
     }
   };
 
-  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const openDialog = (): void => {
-    dialogRef.current?.showModal();
+    openBackForm(true);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>): void => {
@@ -106,36 +104,34 @@ export function Board(): JSX.Element {
   return (
     <div className={boardStyle.container}>
       <nav>
-        <Link
-          to="/"
-          className={boardStyle.container__button_home}
-          style={{ '--bg-color': background } as React.CSSProperties}
-        >
+        <Link to="/" className={boardStyle.buttonHome} style={{ '--bg-color': background } as React.CSSProperties}>
           Home
         </Link>
       </nav>
-      <div style={selectBackground(background)} className={boardStyle.container__board}>
-        <div className={boardStyle.container__board__header}>
+      <div style={selectBackground(background)} className={boardStyle.board}>
+        <div className={boardStyle.header}>
           {inputNameBoard ? (
             <EditBoardName setInput={setInputNameBoard} nameBoard={title} setNameBoard={setTitle} oldValue={oldValue} />
           ) : (
-            <h1 className={boardStyle.container__board__textHeader} onClick={(): void => setInputNameBoard(true)}>
+            <h1 className={boardStyle.textHeader} onClick={(): void => setInputNameBoard(true)}>
               {title}
             </h1>
           )}
-          <select value={action} onChange={handleChange} className={boardStyle.container__board__selectMenu}>
+          <select value={action} onChange={handleChange} className={boardStyle.selectMenu}>
             <option value="">...</option>
             <option value="delete">Видалити дошку</option>
             <option value="changeBg">Змінити фон дошки</option>
           </select>
         </div>
-        <div className={boardStyle.container__board__lists}>
+        <div className={boardStyle.lists}>
           <div>{arrayList}</div>
-          <button type="button" className={boardStyle.container__board__createButton} onClick={handleCreateList}>
+          <button type="button" className={boardStyle.createListButton} onClick={handleCreateList}>
             Створити список
           </button>
         </div>
-        <EditBackBoard dialogRef={dialogRef} defaultValue={background} setAction={setAction} />
+        {backgroundForm && (
+          <EditBackBoard defaultValue={background} setAction={setAction} openBackForm={openBackForm} />
+        )}
         {isOpen && <CardModal setLists={setLists} />}
       </div>
     </div>

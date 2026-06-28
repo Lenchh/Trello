@@ -16,297 +16,295 @@ h3 {
   justify-content: center;
   align-items: center;
   background-color: rgba(95, 95, 95, 0.5);
+}
 
-  &__content {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    background-color: aliceblue;
-    padding: 20px;
-    width: 70%;
-    max-width: 1950px;
-    border: 1px solid var(--bg-color);
-    border-radius: $border-radius;
-    max-height: 80%;
+.content {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: aliceblue;
+  padding: 20px;
+  width: 70%;
+  max-width: 1950px;
+  border: 1px solid var(--bg-color);
+  border-radius: $border-radius;
+  max-height: 80%;
+  overflow-y: auto;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+    gap: 40px;
+  }
+}
+
+.close {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  width: 35px;
+  height: 35px;
+  color: rgb(139, 144, 147);
+  font-size: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid gray;
+  border-radius: 50%;
+  background-color: aliceblue;
+  padding: 0;
+
+  &:hover {
+    color: var(--bg-color);
+    border-color: var(--bg-color);
+  }
+}
+
+.blockInfo {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    align-items: flex-start;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--bg-color);
+  border-radius: $border-radius;
+  padding: 5px;
+
+  @media screen and (max-width: 768px) {
+    width: 75%;
+  }
+
+  h2 {
+    @include theme-header(
+      $padding-head: 5px,
+      $color-head: var(--bg-color),
+      $font-size-header: $font-size-head,
+      $font-family-head: $font-primary
+    );
+    cursor: pointer;
+    align-self: flex-start;
+    padding-bottom: 0;
+    padding-left: 0;
+    word-wrap: break-word;
+    word-break: break-all;
+    max-height: 40px;
     overflow-y: auto;
 
-    @media screen and (max-width: 768px) {
+    &:hover {
+      background-color: var(--bg-color);
+      border-radius: $border-radius;
+      color: $color-primary;
+    }
+  }
+
+  p {
+    @include theme-header(
+      $padding-head: 0,
+      $color-head: #616060,
+      $font-size-header: $font-size-card-text,
+      $font-family-head: $font-primary
+    );
+    word-wrap: break-word;
+    word-break: break-all;
+    max-height: 40px;
+    overflow-y: auto;
+  }
+
+  span {
+    text-decoration: underline;
+    color: var(--bg-color);
+  }
+}
+
+.members {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    list-style-type: none;
+    margin: 0;
+    padding-left: 5px;
+    align-items: center;
+    overflow-y: auto;
+    max-height: 100px;
+  }
+
+  li {
+    display: inline-block;
+    border-radius: 50%;
+    color: transparent;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+}
+
+.headerMembers {
+  @include theme-header(
+    $padding-head: 0,
+    $color-head: #616060,
+    $font-size-header: $font-size-card-text,
+    $font-family-head: $font-primary
+  );
+  font-weight: bold;
+}
+
+.buttonAddMember {
+  border: 2px solid black;
+  border-radius: 50%;
+  color: black;
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+  cursor: pointer;
+  background-color: aliceblue;
+
+  &:hover {
+    color: var(--bg-color);
+    border-color: var(--bg-color);
+  }
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px;
+}
+
+.headerDesc {
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+  padding-left: 0;
+
+  h3 {
+    @include theme-header(
+      $padding-head: 0x,
+      $color-head: #616060,
+      $font-size-header: $font-size-card-text,
+      $font-family-head: $font-primary
+    );
+    font-weight: bold;
+    align-content: flex-end;
+  }
+
+  button {
+    width: 30px;
+    height: 24px;
+    background-color: transparent;
+    background-image: url('../../../../assets/editButton.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+      border: 2px solid rgb(125, 125, 125);
+      border-radius: $border-radius;
+    }
+  }
+}
+
+.contentDesc {
+  @include theme-header(
+    $padding-head: 0x,
+    $color-head: black,
+    $font-size-header: $font-size-card-text,
+    $font-family-head: $font-primary
+  );
+  padding-left: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-all;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(204, 210, 210);
+    border-radius: $border-radius;
+  }
+
+  img {
+    max-width: 60%;
+    object-fit: cover;
+  }
+}
+
+.blockActions {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+  gap: 10px;
+  justify-content: center;
+  align-items: end;
+
+  @media screen and (max-width: 768px) {
+    width: 100%;
+    align-items: flex-start;
+    align-self: flex-start;
+  }
+
+  h3 {
+    @include theme-header(
+      $padding-head: 0x,
+      $color-head: #616060,
+      $font-size-header: $font-size-card-text,
+      $font-family-head: $font-primary
+    );
+    font-weight: bold;
+    text-align: left;
+    padding-top: 15px;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style-type: none;
+    padding: 5px 0 0 0;
+    margin: 0;
+
+    @media screen and (max-width: 576px) {
       flex-direction: column;
-      gap: 40px;
     }
+  }
+}
 
-    &__close {
-      position: absolute;
-      right: 15px;
-      top: 10px;
-      width: 35px;
-      height: 35px;
-      color: rgb(139, 144, 147);
-      font-size: 25px;
-      cursor: pointer;
-      font-weight: bold;
-      border: 2px solid gray;
-      border-radius: 50%;
-      background-color: aliceblue;
-      padding: 0;
+.action {
+  font-size: $font-size-card-text;
+  font-family: $font-primary;
+  font-weight: bold;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  width: 200px;
+  background-color: #d4d9e2;
+  padding: 10px;
+  color: black;
+  text-align: left;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
 
-      &:hover {
-        color: var(--bg-color);
-        border-color: var(--bg-color);
-      }
-    }
+  &:hover {
+    box-shadow: 0px 2px 5px rgb(98, 101, 101);
+  }
+}
 
-    &__block_info {
-      display: flex;
-      flex-direction: column;
-      width: 60%;
-
-      @media screen and (max-width: 768px) {
-        width: 100%;
-        align-items: flex-start;
-      }
-
-      .header {
-        display: flex;
-        flex-direction: column;
-        border: 2px solid var(--bg-color);
-        border-radius: $border-radius;
-        padding: 5px;
-
-        @media screen and (max-width: 768px) {
-          width: 75%;
-        }
-
-        h2 {
-          @include theme-header(
-            $padding-head: 5px,
-            $color-head: var(--bg-color),
-            $font-size-header: $font-size-head,
-            $font-family-head: $font-primary
-          );
-          cursor: pointer;
-          align-self: flex-start;
-          padding-bottom: 0;
-          padding-left: 0;
-          word-wrap: break-word;
-          word-break: break-all;
-          max-height: 40px;
-          overflow-y: auto;
-
-          &:hover {
-            background-color: var(--bg-color);
-            border-radius: $border-radius;
-            color: $color-primary;
-          }
-        }
-
-        p {
-          @include theme-header(
-            $padding-head: 0,
-            $color-head: #616060,
-            $font-size-header: $font-size-card-text,
-            $font-family-head: $font-primary
-          );
-          word-wrap: break-word;
-          word-break: break-all;
-          max-height: 40px;
-          overflow-y: auto;
-        }
-
-        span {
-          text-decoration: underline;
-          color: var(--bg-color);
-        }
-      }
-
-      .members {
-        display: flex;
-        flex-direction: column;
-        padding-top: 20px;
-
-        &__header {
-          @include theme-header(
-            $padding-head: 0,
-            $color-head: #616060,
-            $font-size-header: $font-size-card-text,
-            $font-family-head: $font-primary
-          );
-          font-weight: bold;
-          // padding-left: 0;
-        }
-
-        ul {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 5px;
-          list-style-type: none;
-          margin: 0;
-          padding-left: 5px;
-          align-items: center;
-          overflow-y: auto;
-          max-height: 100px;
-        }
-
-        li {
-          display: inline-block;
-          border-radius: 50%;
-          color: transparent;
-          width: 30px;
-          height: 30px;
-          cursor: pointer;
-        }
-
-        &__addMember {
-          border: 2px solid black;
-          border-radius: 50%;
-          color: black;
-          width: 30px;
-          height: 30px;
-          font-size: 20px;
-          cursor: pointer;
-          background-color: aliceblue;
-
-          &:hover {
-            color: var(--bg-color);
-            border-color: var(--bg-color);
-          }
-        }
-      }
-
-      .description {
-        display: flex;
-        flex-direction: column;
-        padding-top: 15px;
-
-        &__header {
-          display: flex;
-          justify-content: flex-start;
-          gap: 5px;
-          padding-left: 0;
-
-          h3 {
-            @include theme-header(
-              $padding-head: 0x,
-              $color-head: #616060,
-              $font-size-header: $font-size-card-text,
-              $font-family-head: $font-primary
-            );
-            font-weight: bold;
-            align-content: flex-end;
-          }
-
-          button {
-            width: 30px;
-            height: 24px;
-            background-color: transparent;
-            background-image: url('../../../../assets/editButton.svg');
-            background-repeat: no-repeat;
-            background-position: center;
-            border: 0;
-            cursor: pointer;
-
-            &:hover {
-              border: 2px solid rgb(125, 125, 125);
-              border-radius: $border-radius;
-            }
-          }
-        }
-
-        &__content {
-          @include theme-header(
-            $padding-head: 0x,
-            $color-head: black,
-            $font-size-header: $font-size-card-text,
-            $font-family-head: $font-primary
-          );
-          padding-left: 10px;
-          max-height: 200px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          word-break: break-all;
-          cursor: pointer;
-
-          &:hover {
-            background-color: rgb(204, 210, 210);
-            border-radius: $border-radius;
-          }
-
-          img {
-            max-width: 60%;
-            object-fit: cover;
-          }
-        }
-      }
-    }
-
-    &__block_actions {
-      display: flex;
-      flex-direction: column;
-      width: 30%;
-      gap: 10px;
-      justify-content: center;
-      align-items: end;
-
-      @media screen and (max-width: 768px) {
-        width: 100%;
-        align-items: flex-start;
-        align-self: flex-start;
-      }
-
-      h3 {
-        @include theme-header(
-          $padding-head: 0x,
-          $color-head: #616060,
-          $font-size-header: $font-size-card-text,
-          $font-family-head: $font-primary
-        );
-        font-weight: bold;
-        text-align: left;
-        padding-top: 15px;
-      }
-
-      ul {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        list-style-type: none;
-        padding: 5px 0 0 0;
-        margin: 0;
-
-        @media screen and (max-width: 576px) {
-          flex-direction: column;
-        }
-      }
-
-      .action {
-        font-size: $font-size-card-text;
-        font-family: $font-primary;
-        font-weight: bold;
-        display: inline-flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 10px;
-        width: 200px;
-        background-color: #d4d9e2;
-        padding: 10px;
-        color: black;
-        text-align: left;
-        border: 0;
-        border-radius: 8px;
-        cursor: pointer;
-
-        &:hover {
-          box-shadow: 0px 2px 5px rgb(98, 101, 101);
-        }
-      }
-
-      .deleteButton {
-        color: red;
-
-        &:hover {
-          box-shadow: 0px 2px 5px rgba(240, 27, 27, 0.571);
-        }
-      }
-    }
+.deleteButton {
+  color: red;
+  &:hover {
+    box-shadow: 0px 2px 5px rgba(240, 27, 27, 0.571);
   }
 }

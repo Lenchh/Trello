@@ -1,11 +1,6 @@
 @import '/src/styles/variables.scss';
 @import '/src/styles/mixins.scss';
 
-body {
-  background-color: $color-secondary;
-  box-sizing: border-box;
-}
-
 .container {
   width: 90%;
   margin: 20px auto;
@@ -13,108 +8,95 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
 
-  &__button_home {
-    border: 2px solid #136cf1;
-    border-radius: 12px;
-    color: #136cf1;
-    padding: 5px;
-    margin: 5px;
-    font-size: 18px;
-    background-image: url('../../../../assets/home.svg');
-    background-repeat: no-repeat;
-    padding-left: 25px;
-    background-position: left;
+.buttonHome {
+  border: 2px solid #136cf1;
+  border-radius: 12px;
+  color: #136cf1;
+  padding: 5px;
+  margin: 5px;
+  font-size: 18px;
+  background-image: url('../../../../assets/home.svg');
+  background-repeat: no-repeat;
+  padding-left: 25px;
+  background-position: left;
 
-    &:hover {
-      background-color: #136cf1;
-      color: #ffffff;
-      background-image: url('../../../../assets/homeHover.svg');
-    }
+  &:hover {
+    background-color: #136cf1;
+    color: #ffffff;
+    background-image: url('../../../../assets/homeHover.svg');
   }
+}
 
-  &__board {
-    @include theme-container(
-      $width-container: 100%,
-      $margin-container: 5px auto,
-      $background-container: var(--bg-color),
-      $border-container: 2px solid $color-secondary,
-      $border-radius: $border-radius
-    );
-    box-shadow: $shadow-background;
-    min-height: 85vh;
+.board {
+  @include theme-container(
+    $width-container: 100%,
+    $margin-container: 5px auto,
+    $background-container: var(--bg-color),
+    $border-container: 2px solid $color-secondary,
+    $border-radius: $border-radius
+  );
+  box-shadow: $shadow-background;
+  max-height: 85vh;
+  overflow-y: auto;
+}
 
-    &__header {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid $color-text-card;
-      border-radius: $border-radius;
-      box-shadow: $shadow-secondary;
-      background-color: rgba(255, 255, 255, 0);
-    }
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid $color-text-card;
+  border-radius: $border-radius;
+  box-shadow: $shadow-secondary;
+  background-color: rgba(255, 255, 255, 0);
+}
 
-    &__textHeader {
-      @include theme-header(
-        $padding-head: 15px,
-        $color-head: $color-primary,
-        $font-size-header: $font-size-head,
-        $font-family-head: $font-primary
-      );
-      cursor: pointer;
-      border: 1px solid var(--bg-color);
-      border-radius: $border-radius;
+.textHeader {
+  @include theme-header(
+    $padding-head: 15px,
+    $color-head: $color-primary,
+    $font-size-header: $font-size-head,
+    $font-family-head: $font-primary
+  );
+  cursor: pointer;
+  border: 1px solid var(--bg-color);
+  border-radius: $border-radius;
 
-      &:hover {
-        background-color: var(--bg-color);
-        border-color: $color-text-list;
-      }
-    }
+  &:hover {
+    background-color: var(--bg-color);
+    border-color: $color-text-list;
+  }
+}
 
-    &__textError {
-      @include theme-header(
-        $padding-head: 15px,
-        $color-head: $color-primary,
-        $font-size-header: $font-size-head,
-        $font-family-head: $font-primary
-      );
-      cursor: pointer;
-      border: 1px solid var(--bg-color);
-      border-radius: $border-radius;
-      background-color: var(--bg-color);
-      border-color: $color-text-list;
-    }
+.lists {
+  margin: 10px auto 0 auto;
+  padding: 10px;
+  display: flex;
+  overflow-x: auto;
 
-    &__lists {
-      margin: 10px auto 0 auto;
-      padding: 10px;
-      display: flex;
-      overflow-x: auto;
+  div {
+    display: flex;
+  }
+}
 
-      div {
-        display: flex;
-      }
-    }
+.createListButton {
+  @include theme-button;
+  align-self: flex-start;
+  margin: 10px 5px;
+  flex-shrink: 0;
+  height: 100px;
+  width: 120px;
+  font-size: 18px;
+}
 
-    &__createButton {
-      @include theme-button;
-      align-self: flex-start;
-      margin: 10px 5px;
-      flex-shrink: 0;
-      height: 100px;
-      width: 120px;
-      font-size: 18px;
-    }
+.selectMenu {
+  @include theme-button;
+  margin: 10px;
 
-    &__selectMenu {
-      @include theme-button;
-      margin: 10px;
-
-      &:hover {
-        background-color: $color-primary;
-        color: var(--bg-color);
-        border: 1px solid black;
-        box-shadow: $shadow-background-list;
-      }
-    }
+  &:hover {
+    background-color: $color-primary;
+    color: var(--bg-color);
+    border: 1px solid black;
+    box-shadow: $shadow-background-list;
   }
 }

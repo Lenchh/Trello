@@ -51,7 +51,7 @@ export function EditNameList({ listId, setIsNameList, nameList, setNameList, old
     <input
       type="text"
       value={nameList}
-      className={listStyle.list__input}
+      className={listStyle.input}
       onChange={handleChange}
       onBlur={editName}
       onKeyDown={handleKeyDown}

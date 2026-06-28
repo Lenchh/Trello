@@ -29,8 +29,11 @@ export function CardModal({ setLists }: props): JSX.Element {
   const currentCard = useAppSelector((state) => state.modal.card);
   const currentLists = useAppSelector((state) => state.board.board?.lists);
 
+  const [isCompleted, setCompleted] = useState(currentCard?.title.includes('|DONE|') || false);
+
   const [isNameCard, setIsNameCard] = useState(true);
-  const [nameCard, setNameCard] = useState(currentCard?.title || 'Default name');
+  const cleanTitle = currentCard?.title.replace('|DONE|', '').trim();
+  const [nameCard, setNameCard] = useState(cleanTitle || 'Default name');
 
   const [isDescriptionCard, setIsDescription] = useState(true);
   const [descriptionCard, setDescription] = useState(currentCard?.description || '');
@@ -58,7 +61,7 @@ export function CardModal({ setLists }: props): JSX.Element {
       }
       if (event.key === 'Escape' && (!isNameCard || !isDescriptionCard)) {
         if (!isNameCard) {
-          setNameCard(currentCard?.title || 'Default name');
+          setNameCard(currentCard?.title.replace('|DONE|', '') || 'Default name');
           setIsNameCard(true);
         } else {
           setDescription(currentCard?.description || '');
@@ -109,11 +112,11 @@ export function CardModal({ setLists }: props): JSX.Element {
 
   return (
     <div className={cardModalStyle.modal} onClick={clickToClose}>
-      <div className={cardModalStyle.modal__content}>
-        <button className={cardModalStyle.modal__content__close} onClick={closeWindow}>
+      <div className={cardModalStyle.content}>
+        <button className={cardModalStyle.close} onClick={closeWindow}>
           &times;
         </button>
-        <section className={cardModalStyle.modal__content__block_info}>
+        <section className={cardModalStyle.blockInfo}>
           <header className={cardModalStyle.header}>
             {isNameCard && currentCard?.title ? (
               <h2 onClick={(): void => setIsNameCard(false)}>{nameCard}</h2>
@@ -124,8 +127,9 @@ export function CardModal({ setLists }: props): JSX.Element {
                 setIsNameCard={setIsNameCard}
                 nameCard={nameCard}
                 setNameCard={setNameCard}
-                oldValue={currentCard?.title}
+                oldValue={currentCard?.title.replace('|DONE|', '')}
                 infoCard="title"
+                isCompleted={isCompleted}
               />
             )}
             <p>
@@ -133,23 +137,23 @@ export function CardModal({ setLists }: props): JSX.Element {
             </p>
           </header>
           <div className={cardModalStyle.members}>
-            <h3 className={cardModalStyle.members__header}>УЧАСНИКИ</h3>
+            <h3 className={cardModalStyle.headerMembers}>УЧАСНИКИ</h3>
             <ul>
               {listMembers}
               <li>
-                <button className={cardModalStyle.members__addMember}>+</button>
+                <button className={cardModalStyle.buttonAddMember}>+</button>
               </li>
             </ul>
           </div>
           <div className={cardModalStyle.description}>
-            <div className={cardModalStyle.description__header}>
+            <div className={cardModalStyle.headerDesc}>
               <h3>ОПИС</h3>
               <button onClick={(): void => setIsDescription(false)} aria-label="Description card">
                 {' '}
               </button>
             </div>
             {isDescriptionCard ? (
-              <div className={cardModalStyle.description__content} onClick={(): void => setIsDescription(false)}>
+              <div className={cardModalStyle.contentDesc} onClick={(): void => setIsDescription(false)}>
                 <ReactMarkdown remarkPlugins={[remarkGfm, remarkGemoji]}>{descriptionCard}</ReactMarkdown>
               </div>
             ) : (
@@ -161,12 +165,13 @@ export function CardModal({ setLists }: props): JSX.Element {
                 setNameCard={setDescription}
                 oldValue={currentCard?.description}
                 infoCard="description"
+                isCompleted={isCompleted}
               />
             )}
           </div>
         </section>
 
-        <section className={cardModalStyle.modal__content__block_actions}>
+        <section className={cardModalStyle.blockActions}>
           <div>
             <h3>ДІЇ</h3>
             <ul>

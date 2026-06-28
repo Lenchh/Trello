@@ -1,0 +1,123 @@
+@import '/src/styles/variables.scss';
+@import '/src/styles/mixins.scss';
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(95, 95, 95, 0.5);
+}
+
+.dialogWindow {
+  max-width: 1800px;
+  width: 40%;
+  background-color: $color-primary;
+  border: 4px solid var(--bg-color);
+  border-radius: $border-radius;
+
+  @media screen and (max-width: 768px) {
+    width: 60%;
+  }
+}
+
+.header {
+  @include theme-header(
+    $padding-head: 10px,
+    $color-head: $color-dark,
+    $font-size-header: $font-size-head,
+    $font-family-head: $font-primary
+  );
+  padding-right: 0;
+  font-weight: 500;
+}
+
+.form {
+  @include theme-header(
+    $padding-head: 0,
+    $color-head: black,
+    $font-size-header: $font-size-head-list,
+    $font-family-head: $font-primary
+  );
+  font-weight: 500;
+  padding-right: 0;
+  display: block;
+  padding-left: 10px;
+}
+
+.input {
+  border-radius: $border-radius;
+  outline: none;
+  max-width: 50%;
+  margin-left: 15px;
+
+  &:focus {
+    border: 2px solid var(--bg-color);
+    border-radius: $border-radius;
+  }
+}
+
+.dialogActions {
+  display: flex;
+  justify-content: right;
+  padding: 15px 0;
+  gap: 5px;
+}
+
+.action {
+  @include theme-button($background-hover: var(--bg-color));
+  flex-shrink: 0;
+  padding: 5px;
+}
+
+.customFileInput {
+  color: transparent;
+}
+
+.customFileInput::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.customFileInput::before {
+  content: 'Select some files';
+  color: #136cf1;
+  display: inline-block;
+  background: #f9f9f9;
+  border: 2px solid #136cf1;
+  border-radius: 12px;
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  cursor: pointer;
+  text-shadow: 1px 1px #fff;
+  font-weight: 700;
+  font-size: 10pt;
+}
+
+.customFileInput:hover::before {
+  border-color: black;
+  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+  color: black;
+}
+
+.customFileInput:active {
+  outline: 0;
+}
+
+.customFileInput:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+}
+
+.previewBackground {
+  width: 100px;
+  height: 80px;
+  border: 2px solid #136cf1;
+  border-radius: 12px;
+  display: block;
+  margin: 10px;
+}

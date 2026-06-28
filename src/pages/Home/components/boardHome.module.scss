@@ -1,22 +1,27 @@
-@import "/src/styles/variables.scss";
-@import "/src/styles/mixins.scss";
+@import '/src/styles/variables.scss';
+@import '/src/styles/mixins.scss';
 
 .board {
-     @include theme-container($width-container: 200px, $margin-container: 10px 10px, 
-                             $background-container: var(--bg-color) ,
-                             $border-container: 1px solid $color-primary, 
-                             $border-radius: $border-radius); 
-    height: 100px;
-    overflow-y: auto;
-    justify-self: center;
-    cursor: pointer;
+  @include theme-container(
+    $width-container: 200px,
+    $margin-container: 10px 10px,
+    $background-container: var(--bg-color),
+    $border-container: 1px solid $color-primary,
+    $border-radius: $border-radius
+  );
+  height: 100px;
+  overflow-y: auto;
+  justify-self: center;
+  cursor: pointer;
+  box-shadow: 6px 12px 15px rgba(0, 0, 0, 0.438);
+}
 
-   //   &:hover {
-   //      box-shadow: 6px 12px 15px rgba(var(--bg-color), 0.7);
-   //   }
-
-    .textHead {
-          @include theme-header($padding-head: 5px, $color-head: $color-primary, $font-size-header: $font-size-head-list, 
-                            $font-family-head: $font-primary);
-    }
+.textHead {
+  @include theme-header(
+    $padding-head: 5px,
+    $color-head: $color-primary,
+    $font-size-header: $font-size-head-list,
+    $font-family-head: $font-primary
+  );
+  font-weight: 500;
 }

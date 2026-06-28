@@ -128,11 +128,11 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, setLi
 
   return (
     <div className={positionModalStyle.modal} onClick={clickToClose}>
-      <div className={positionModalStyle.modal__content}>
-        <button className={positionModalStyle.modal__content__close} onClick={closeWindow}>
+      <div className={positionModalStyle.content}>
+        <button className={positionModalStyle.close} onClick={closeWindow}>
           &times;
         </button>
-        <div className={positionModalStyle.modal__content__form}>
+        <div className={positionModalStyle.form}>
           <h2>Перемістити картку</h2>
           <label>
             СПИСОК
@@ -146,7 +146,7 @@ export function WindowOfChangePosition({ setIsChangePosition, currentCard, setLi
               {positionOptions}
             </select>
           </label>
-          <button type="button" className={positionModalStyle.modal__content__form__buttonMove} onClick={moveCard}>
+          <button type="button" className={positionModalStyle.buttonMove} onClick={moveCard}>
             Перемістити
           </button>
         </div>

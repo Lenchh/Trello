@@ -1,15 +1,15 @@
-import { ChangeEvent, JSX, useRef, useState } from 'react';
-import homeStyle from '../home.module.scss';
+import { ChangeEvent, Dispatch, JSX, SetStateAction, useRef, useState } from 'react';
+import boardCreateStyle from './boardCreation.module.scss';
 import { toastrInfo } from '../../../common/toastr/info/toastr-options-info';
 import { useAppDispatch } from '../../../featchers/hooks';
 import { createBoard } from '../../../featchers/slices/boardSlice';
 
 interface props {
-  dialogRef: React.RefObject<HTMLDialogElement | null>;
   onRefresh: () => Promise<void>;
+  openCreationForm: Dispatch<SetStateAction<boolean>>;
 }
 
-export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
+export function BoardCreation({ onRefresh, openCreationForm }: props): JSX.Element {
   const dispatch = useAppDispatch();
   const [inputValue, setInputValue] = useState<string>('');
   const [inputBackground, setInputBackground] = useState<string>('#136CF1');
@@ -22,8 +22,14 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
     setInputValue('');
     setNameFile('');
     setInputBackground('#136CF1');
-    dialogRef.current?.close();
+    openCreationForm(false);
   };
+
+  function clickToClose(event: React.MouseEvent<HTMLDivElement>): void {
+    if (event.target === event.currentTarget) {
+      closeDialog();
+    }
+  }
 
   const createBoardData = async (event: React.FormEvent): Promise<void> => {
     event.preventDefault();
@@ -67,68 +73,70 @@ export function BoardCreation({ dialogRef, onRefresh }: props): JSX.Element {
   };
 
   return (
-    <dialog ref={dialogRef} className={homeStyle.home__dialog}>
-      <h2 className={homeStyle.home__dialog__header}>Створення дошки</h2>
-      <form onSubmit={createBoardData}>
-        <label className={homeStyle.home__dialog__form}>
-          Ім'я дошки:
-          <input type="text" value={inputValue} onChange={handleChange} className={homeStyle.home__dialog__input} />
-        </label>
-        <div className={homeStyle.home__dialog__form}>
-          Колір Фону:
-          <br />
-          <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="color"
-              checked={selectedOption === 'color'}
-              onChange={changeOption}
-            />
-            Колір
+    <div className={boardCreateStyle.modal} onClick={clickToClose}>
+      <div className={boardCreateStyle.dialogWindow}>
+        <h2 className={boardCreateStyle.header}>Створення дошки</h2>
+        <form onSubmit={createBoardData}>
+          <label className={boardCreateStyle.form}>
+            Ім'я дошки:
+            <input type="text" value={inputValue} onChange={handleChange} className={boardCreateStyle.input} />
           </label>
-          <label>
-            <input
-              type="radio"
-              name="boardAction"
-              value="image"
-              checked={selectedOption === 'image'}
-              onChange={changeOption}
-            />
-            Зображення
-          </label>
-          <br />
-          {selectedOption === 'color' ? (
-            <input
-              key="color"
-              type="color"
-              value={inputBackground}
-              onChange={handleColor}
-              className={homeStyle.home__dialog__input}
-            />
-          ) : (
-            <>
+          <div className={boardCreateStyle.form}>
+            Колір Фону:
+            <br />
+            <label>
               <input
-                key="image"
-                ref={imageBackgroundRef}
-                type="file"
-                accept="image/*"
-                onChange={handleImage}
-                className={homeStyle.custom_file_input}
+                type="radio"
+                name="boardAction"
+                value="color"
+                checked={selectedOption === 'color'}
+                onChange={changeOption}
               />
-              {nameFile && <img src={nameFile} alt="" className={homeStyle.imgBack} />}
-            </>
-          )}
-        </div>
-        <div className={homeStyle.home__dialog__buttons}>
-          <button type="submit" className={homeStyle.home__dialog__button}>
-            Надіслати
-          </button>
-          <button type="button" onClick={closeDialog} className={homeStyle.home__dialog__button}>
-            Закрити
-          </button>
-        </div>
-      </form>
-    </dialog>
+              Колір
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="boardAction"
+                value="image"
+                checked={selectedOption === 'image'}
+                onChange={changeOption}
+              />
+              Зображення
+            </label>
+            <br />
+            {selectedOption === 'color' ? (
+              <input
+                key="color"
+                type="color"
+                value={inputBackground}
+                onChange={handleColor}
+                className={boardCreateStyle.input}
+              />
+            ) : (
+              <>
+                <input
+                  key="image"
+                  ref={imageBackgroundRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImage}
+                  className={boardCreateStyle.customFileInput}
+                />
+                {nameFile && <img src={nameFile} alt="" className={boardCreateStyle.previewBackground} />}
+              </>
+            )}
+          </div>
+          <div className={boardCreateStyle.dialogActions}>
+            <button type="submit" className={boardCreateStyle.action}>
+              Надіслати
+            </button>
+            <button type="button" onClick={closeDialog} className={boardCreateStyle.action}>
+              Закрити
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

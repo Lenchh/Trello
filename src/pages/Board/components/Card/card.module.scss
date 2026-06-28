@@ -20,126 +20,149 @@
     $border-radius: $border-radius
   );
   background-color: rgb(255, 255, 255);
-
-  &__textCard {
-    @include theme-header(
-      $padding-head: 5px,
-      $color-head: $color-text-card,
-      $font-size-header: $font-size-card-text,
-      $font-family-head: $font-primary
-    );
-    display: block;
-    width: 95%;
-    max-height: 50px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border: 1px solid $color-primary;
-    border-radius: $border-radius;
-    word-break: break-all;
-    display: flex;
-    justify-content: space-between;
-
-    p {
-      width: 85%;
-    }
-
-    &:active {
-      background-color: rgba(128, 128, 128, 0.475);
-      border: 1px solid $color-primary;
-      border-radius: $border-radius;
-      width: 95%;
-      transform: rotate(0deg);
-    }
-
-    &__containerButton {
-      display: flex;
-      justify-content: space-between;
-      gap: 5px;
-    }
-
-    &__editButton {
-      width: 30px;
-      height: 30px;
-      padding: 5px;
-      background-image: url('../../../../assets/editButton.svg');
-      background-position: center;
-      background-repeat: no-repeat;
-      border: 0;
-      border-radius: $border-radius;
-      cursor: pointer;
-    }
-
-    &__deleteButton {
-      background-image: url('../../../../assets/delete_icon.svg');
-    }
-  }
-
   &:hover {
     background-color: rgb(205, 205, 205);
     cursor: pointer;
   }
+}
 
-  &__greySlot {
-    @extend .card;
-    background-color: rgba(128, 128, 128, 0.475);
-    color: rgba(128, 128, 128, 0);
-    min-height: 30px;
-    max-height: 50px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    word-break: break-all;
-    pointer-events: none;
+.textCard {
+  @include theme-header(
+    $padding-head: 5px,
+    $color-head: $color-text-card,
+    $font-size-header: $font-size-card-text,
+    $font-family-head: $font-primary
+  );
+  width: 95%;
+  // max-height: 100px;
+  // overflow-y: auto;
+  // overflow-x: hidden;
+  border: 1px solid $color-primary;
+  border-radius: $border-radius;
+  word-break: break-word;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+
+  p {
+    width: 85%;
+    align-self: center;
   }
 
-  &__ghost {
-    @extend .card;
+  &:active {
     background-color: rgba(128, 128, 128, 0.475);
-    max-height: 50px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    word-break: break-all;
-    color: black;
-    position: absolute;
-    left: -9999px;
-    width: 217px;
-    border: 2px dashed #c1c7d0;
-  }
-
-  &__input {
-    @include theme-header(
-      $padding-head: 5px,
-      $color-head: $color-text-card,
-      $font-size-header: $font-size-card-text,
-      $font-family-head: $font-primary
-    );
-    background-color: rgb(255, 255, 255);
     border: 1px solid $color-primary;
     border-radius: $border-radius;
-    max-width: 100%;
     width: 95%;
-    resize: vertical;
-
-    &__CardModal {
-      width: 100%;
-    }
+    transform: rotate(0deg);
   }
+}
 
-  &__dragging {
-    background-color: #92939600;
-    border: none;
-    // border: 2px dashed #c1c7d0;
-    box-shadow: none;
-    color: transparent;
-    opacity: 1;
-    cursor: grabbing;
-    padding: 0;
-    margin: 0 auto;
-    height: 0px;
-    overflow: hidden;
-  }
+.containerButton {
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+}
 
-  &__dragging > * {
-    opacity: 0;
-    pointer-events: none;
+.actionButton {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  background-image: url('../../../../assets/editButton.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 0;
+  border-radius: $border-radius;
+  cursor: pointer;
+}
+
+.deleteButton {
+  background-image: url('../../../../assets/delete_icon.svg');
+}
+
+.checkEmpty {
+  width: 30px;
+  height: 30px;
+  background-color: transparent;
+  background-image: url('../../../../assets/emptyCircle.svg');
+
+  &:hover {
+    background-color: $color-primary;
   }
+}
+
+.checkFilled {
+  background-color: transparent;
+  background-image: url('../../../../assets/checkCircle.svg');
+
+  &:hover {
+    background-color: $color-primary;
+  }
+}
+
+.taskCompleted {
+  text-decoration: line-through;
+}
+
+.greySlot {
+  @extend .card;
+  background-color: rgba(128, 128, 128, 0.475);
+  color: rgba(128, 128, 128, 0);
+  min-height: 30px;
+  max-height: 50px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-all;
+  pointer-events: none;
+}
+
+.ghost {
+  @extend .card;
+  background-color: rgba(128, 128, 128, 0.475);
+  max-height: 50px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  word-break: break-all;
+  color: black;
+  position: absolute;
+  left: -9999px;
+  width: 217px;
+  border: 2px dashed #c1c7d0;
+}
+
+.input {
+  @include theme-header(
+    $padding-head: 5px,
+    $color-head: $color-text-card,
+    $font-size-header: $font-size-card-text,
+    $font-family-head: $font-primary
+  );
+  background-color: rgb(255, 255, 255);
+  border: 1px solid $color-primary;
+  border-radius: $border-radius;
+  max-width: 100%;
+  width: 95%;
+  resize: vertical;
+}
+
+.CardModal {
+  width: 100%;
+}
+
+.dragging {
+  background-color: #92939600;
+  border: none;
+  box-shadow: none;
+  color: transparent;
+  opacity: 1;
+  cursor: grabbing;
+  padding: 0;
+  margin: 0 auto;
+  height: 0px;
+  overflow: hidden;
+}
+
+.dragging > * {
+  opacity: 0;
+  pointer-events: none;
 }
