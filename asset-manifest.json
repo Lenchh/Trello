@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/Trello/static/css/main.4b654abc.css",
-    "main.js": "/Trello/static/js/main.8873c11b.js",
+    "main.css": "/Trello/static/css/main.d06f0c07.css",
+    "main.js": "/Trello/static/js/main.e554a00f.js",
     "static/js/453.fd2f0c4a.chunk.js": "/Trello/static/js/453.fd2f0c4a.chunk.js",
     "index.html": "/Trello/index.html",
     "static/media/checkCircle.svg": "/Trello/static/media/checkCircle.9225300e93f494604bd7.svg",
@@ -10,17 +10,21 @@
     "static/media/icon-success.svg": "/Trello/static/media/icon-success.e5faa3ef39cf1b02097e.svg",
     "static/media/home.svg": "/Trello/static/media/home.5c821059c0ea5f6ed66e.svg",
     "static/media/homeHover.svg": "/Trello/static/media/homeHover.c9d0177691441bb7944d.svg",
+    "static/media/colorButton.svg": "/Trello/static/media/colorButton.aadfa7ac1115eae2a663933016881437.svg",
+    "static/media/colorButtonActive.svg": "/Trello/static/media/colorButtonActive.cb365582c17e750dd634f8f1ba9165bf.svg",
     "static/media/emptyCircle.svg": "/Trello/static/media/emptyCircle.91b7647ffb5f207c2cd3.svg",
     "static/media/copy_icon.svg": "/Trello/static/media/copy_icon.bc947dd3a001a91bccb725b0277a9b13.svg",
     "static/media/editButton.svg": "/Trello/static/media/editButton.07842bd5851414980d2f.svg",
+    "static/media/imageButton.svg": "/Trello/static/media/imageButton.709a6326c5400ff3d097e45799d712af.svg",
+    "static/media/imageButtonActive.svg": "/Trello/static/media/imageButtonActive.c87400ea8ebde40b05b0c6999fbe16ed.svg",
     "static/media/delete_icon.svg": "/Trello/static/media/delete_icon.196f26ccb4ac4b5744722eb0c9b78d89.svg",
     "static/media/arrow_icon.svg": "/Trello/static/media/arrow_icon.a559a2b12127450481bb4dddb8a99383.svg",
-    "main.4b654abc.css.map": "/Trello/static/css/main.4b654abc.css.map",
-    "main.8873c11b.js.map": "/Trello/static/js/main.8873c11b.js.map",
+    "main.d06f0c07.css.map": "/Trello/static/css/main.d06f0c07.css.map",
+    "main.e554a00f.js.map": "/Trello/static/js/main.e554a00f.js.map",
     "453.fd2f0c4a.chunk.js.map": "/Trello/static/js/453.fd2f0c4a.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.4b654abc.css",
-    "static/js/main.8873c11b.js"
+    "static/css/main.d06f0c07.css",
+    "static/js/main.e554a00f.js"
   ]
 }
