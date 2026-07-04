@@ -63,10 +63,12 @@ export function BoardCreation({ onRefresh, openCreationForm }: props): JSX.Eleme
 
   const handleInputColor = (event: ChangeEvent<HTMLInputElement>): void => {
     setInputBackground(event.target.value);
+    setNameFile('');
   };
 
   const handleColor = (color: string): void => {
     setInputBackground(color);
+    setNameFile('');
   };
 
   const handleImage = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -143,7 +145,7 @@ export function BoardCreation({ onRefresh, openCreationForm }: props): JSX.Eleme
             <input
               key="image"
               style={{
-                backgroundImage: inputBackground ? `url(${inputBackground})` : `url(${imageButton})`,
+                backgroundImage: nameFile ? `url(${inputBackground})` : `url(${imageButton})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
