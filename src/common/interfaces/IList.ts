@@ -1,7 +1,7 @@
-import { ICard } from "./ICard";
+import { ICard } from './ICard';
 
 export interface IList {
-    id: number;
-    title: string;
-    cards: ICard[];
+  id: number;
+  title: string;
+  cards: ICard[];
 }
