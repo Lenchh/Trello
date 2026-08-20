@@ -1,8 +1,8 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
 import { api } from '../common/constants';
-import 'nprogress/nprogress.css';
-import '../styles/nprogress-custom.css';
+// import 'nprogress/nprogress.css';
+// import '../styles/nprogress-custom.css';
 
 const instance = axios.create({
   baseURL: api.baseURL,

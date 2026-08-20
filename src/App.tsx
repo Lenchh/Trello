@@ -1,18 +1,20 @@
 import { JSX } from 'react';
 import { Routes, Route, HashRouter } from 'react-router-dom';
-import './App.css';
 import { Board } from './pages/Board/Board';
 import { Home } from './pages/Home/Home';
 import { Login } from './pages/Login/Login';
 import { Register } from './pages/Register/Register';
+import { PrivateRoutes } from './common/private_routes/PrivateRoutes';
 
 function App(): JSX.Element {
   return (
     <HashRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/board/:boardId" element={<Board />} />
-        <Route path="/board/:boardId/card/:cardId" element={<Board />} />
+        <Route element={<PrivateRoutes />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/board/:boardId" element={<Board />} />
+          <Route path="/board/:boardId/card/:cardId" element={<Board />} />
+        </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
