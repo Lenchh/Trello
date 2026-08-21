@@ -2,13 +2,12 @@ import axios from 'axios';
 import NProgress from 'nprogress';
 import { api } from '../common/constants';
 // import 'nprogress/nprogress.css';
-// import '../styles/nprogress-custom.css';
+import '../styles/nprogress-custom.css';
 
 const instance = axios.create({
   baseURL: api.baseURL,
   headers: {
     'Content-Type': 'application/json',
-    Authorization: 'Bearer 123',
   },
 });
 
@@ -19,6 +18,10 @@ instance.interceptors.request.use(
     activeRequests++;
     if (activeRequests === 1) {
       NProgress.start();
+    }
+    if (!config.url?.includes('login') && !config.url?.includes('register')) {
+      const token = localStorage.getItem('token');
+      if (token) config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

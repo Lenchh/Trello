@@ -1,18 +1,25 @@
 import { useState, type JSX } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validate } from 'email-validator';
+import instance from '../../api/request';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 import { toastrError } from '../../common/toastr/error/toastr-options-error';
 import loginStyle from './login.module.scss';
+
+interface userInterface {
+  email: string;
+  password: string;
+}
 
 export function Login(): JSX.Element {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const isEmptyInputPassword = !password && isSubmitted;
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitted(true);
     if (!validate(email)) {
@@ -23,7 +30,32 @@ export function Login(): JSX.Element {
       toastrError('Введіть коректний пароль.', 'Некоректні дані');
       return;
     }
-    toastrSuccess('eee', 'eee');
+    try {
+      const userData: userInterface = {
+        email,
+        password,
+      };
+      const response = await instance.post('/login', userData);
+      const { token, refreshToken } = response.data;
+      if (token && refreshToken) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        toastrSuccess('Користувача успішно авторизовано.', 'Успішна авторизація');
+        navigate('/');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        const backendError = error.response.data.error;
+        if (backendError === 'Unauthorized') {
+          toastrError('Неправильний логін або пароль.', 'Помилка авторизації');
+        } else {
+          toastrError(`Помилка: ${backendError}`, 'Помилка авторизації');
+        }
+      } else {
+        toastrError("Немає зв'язку з сервером. Перевірте підключення.", 'Помилка мережі');
+      }
+    }
   };
   return (
     <div className={loginStyle.container}>
@@ -36,7 +68,7 @@ export function Login(): JSX.Element {
             placeholder="Введіть електронну пошту"
             value={email}
             onChange={(e): void => setEmail(e.target.value)}
-            style={(email || isSubmitted) && !validate(email) ? { borderColor: 'red' } : { borderColor: '#136cf1' }}
+            style={isSubmitted && !validate(email) ? { borderColor: 'red' } : { borderColor: '#136cf1' }}
           />
         </div>
         <div className={loginStyle.info}>

@@ -1,5 +1,5 @@
 import { JSX, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BoardHome } from './components/BoardHome';
 import { BoardCreation } from './components/BoardCreation';
 import instance from '../../api/request';
@@ -10,6 +10,13 @@ import { toastrError } from '../../common/toastr/error/toastr-options-error';
 export function Home(): JSX.Element {
   const [boards, setBoards] = useState<IBoard[]>([]);
   const [creationForm, openCreationForm] = useState(false);
+  const navigate = useNavigate();
+
+  const logOut = (): void => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    navigate('/login');
+  };
 
   const openDialog = (): void => {
     openCreationForm(true);
@@ -38,7 +45,7 @@ export function Home(): JSX.Element {
     <div className={homeStyle.home}>
       <div className={homeStyle.header}>
         <h1>Мої дошки</h1>
-        <Link to="/login">Увійти</Link>
+        <button onClick={logOut}>Вийти</button>
       </div>
       <div className={homeStyle.boards}>
         {arrayBoards}

@@ -1,13 +1,13 @@
 import { useState, type JSX } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { validate } from 'email-validator';
 import PasswordStrengthBar from 'react-password-strength-bar';
 import loginStyle from '../Login/login.module.scss';
 import { toastrSuccess } from '../../common/toastr/success/toastr-options-success';
 import { toastrError } from '../../common/toastr/error/toastr-options-error';
+import instance from '../../api/request';
 
 interface userInterface {
-  id: number;
   email: string;
   password: string;
 }
@@ -18,10 +18,11 @@ export function Register(): JSX.Element {
   const [passwordScore, SetPasswordScore] = useState(0);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const navigate = useNavigate();
 
   const isPasswordMismatch = confirmPassword.length > 0 && password !== confirmPassword;
   const isEmptyInput = !confirmPassword && isSubmitted;
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setIsSubmitted(true);
     if (!validate(email)) {
@@ -36,13 +37,35 @@ export function Register(): JSX.Element {
       toastrError('Паролі не співпадають.', 'Некоректні дані');
       return;
     }
-    const userObject: userInterface = {
-      id: 1,
-      email,
-      password,
-    };
-    console.log('new user: ', userObject);
-    toastrSuccess('eee', 'eee');
+    try {
+      const userData: userInterface = {
+        email,
+        password,
+      };
+      await instance.post('/user', userData);
+      toastrSuccess('Користувача успішно зареєстровано.', 'Успішна реєстрація');
+
+      const response = await instance.post('/login', userData);
+      const { token, refreshToken } = response.data;
+      if (token && refreshToken) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        toastrSuccess('Користувача успішно авторизовано.', 'Успішна авторизація');
+        navigate('/');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        const backendError = error.response.data.error;
+        if (backendError === 'User already exists') {
+          toastrError('Користувач з такою електронною поштою вже існує.', 'Помилка реєстрації');
+        } else {
+          toastrError(`Помилка: ${backendError}`, 'Помилка реєстрації');
+        }
+      } else {
+        toastrError("Немає зв'язку з сервером. Перевірте підключення.", 'Помилка мережі');
+      }
+    }
   };
   return (
     <div className={loginStyle.container}>
@@ -55,7 +78,7 @@ export function Register(): JSX.Element {
             placeholder="Введіть електронну пошту"
             value={email}
             onChange={(e): void => setEmail(e.target.value)}
-            style={(email || isSubmitted) && !validate(email) ? { borderColor: 'red' } : { borderColor: '#136cf1' }}
+            style={isSubmitted && !validate(email) ? { borderColor: 'red' } : { borderColor: '#136cf1' }}
           />
         </div>
         <div className={loginStyle.info}>

@@ -5,6 +5,7 @@ import { Home } from './pages/Home/Home';
 import { Login } from './pages/Login/Login';
 import { Register } from './pages/Register/Register';
 import { PrivateRoutes } from './common/private_routes/PrivateRoutes';
+import './App.css';
 
 function App(): JSX.Element {
   return (

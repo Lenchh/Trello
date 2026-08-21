@@ -36,7 +36,10 @@
     font-weight: 550;
     font-style: normal;
   }
-  a {
+  button {
+    font-family: $font-primary;
+    text-decoration: none;
+    cursor: pointer;
     border: 2px solid #136cf1;
     border-radius: 12px;
     color: #136cf1;
